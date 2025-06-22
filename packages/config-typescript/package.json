@@ -1,0 +1,19 @@
+{
+  "name": "@uturi/config-typescript",
+  "version": "0.0.0",
+  "description": "TypeScript configuration for Uturi monorepo",
+  "main": "tsconfig.json",
+  "files": [
+    "tsconfig.json",
+    "tsconfig.base.json",
+    "tsconfig.react.json"
+  ],
+  "keywords": [
+    "typescript",
+    "config",
+    "uturi"
+  ],
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

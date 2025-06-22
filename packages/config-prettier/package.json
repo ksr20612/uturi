@@ -1,0 +1,21 @@
+{
+  "name": "@uturi/config-prettier",
+  "version": "0.0.0",
+  "description": "Prettier configuration for Uturi monorepo",
+  "main": "index.mjs",
+  "type": "module",
+  "files": [
+    "index.mjs"
+  ],
+  "keywords": [
+    "prettier",
+    "config",
+    "uturi"
+  ],
+  "devDependencies": {
+    "prettier": "^3.5.3"
+  },
+  "peerDependencies": {
+    "prettier": "^3.5.3"
+  }
+}

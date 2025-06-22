@@ -1,0 +1,30 @@
+{
+  "name": "@uturi/config-vitest",
+  "version": "0.0.0",
+  "description": "Vitest configuration for Uturi monorepo",
+  "main": "vitest.base.mjs",
+  "type": "module",
+  "files": [
+    "vitest.base.mjs",
+    "vitest.node.mjs",
+    "vitest.browser.mjs",
+    "vitest.setup.mjs"
+  ],
+  "keywords": [
+    "vitest",
+    "config",
+    "testing",
+    "uturi"
+  ],
+  "devDependencies": {
+    "vitest": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4"
+  },
+  "peerDependencies": {
+    "vite": "^5.0.0",
+    "vitest": "^3.2.4",
+    "jsdom": "^23.0.0",
+    "@testing-library/jest-dom": "^6.0.0"
+  }
+}
