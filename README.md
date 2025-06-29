@@ -12,7 +12,7 @@ Our mission is to create inclusive digital experiences by providing high-quality
 
 ## 📦 Packages
 
-### @uturi/sonification
+### [@uturi/sonification](https://github.com/ksr20612/uturi/blob/main/packages/sonification/README.md)
 
 A data sonification library that converts numerical data into musical melodies, making data visualization accessible to visually impaired users.
 
