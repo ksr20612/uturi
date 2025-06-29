@@ -1,26 +1,27 @@
-# @uturi/monorepo
+# Uturi
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Turborepo](https://img.shields.io/badge/Turborepo-EF4444?logo=turborepo&logoColor=white)](https://turborepo.org/)
+Uturi is a monorepo dedicated to creating accessibility tools and libraries that empower people with disabilities. The name "Uturi" comes from the Korean folktale "Baby General Uturi" (아기장수 우투리), where Uturi overcomes disabilities and become a hero who fights for the weak.
 
-## 🚀 Features
+## 🎯 Mission
+
+Our mission is to create inclusive digital experiences by providing high-quality accessibility libraries that help developers build applications accessible to everyone regardless of their abilities.
+
+- **Overcoming barriers**: Just as Uturi overcame his disabilities, we help both developers and users overcome accessibility challenges
+- **Empowering others**: Like Uturi who fought for the vulnerable, we create tools that empower people with disabilities
+- **Inclusive leadership**: Uturi became a leader despite his differences, just as we advocate for inclusive design
 
 ## 📦 Packages
 
-This monorepo contains the following packages:
+### @uturi/sonification
+
+A data sonification library that converts numerical data into musical melodies, making data visualization accessible to visually impaired users.
+
+**Features:**
+
+- 4 sonification methods: frequency, volume, rhythm, melody
+- Real-time audio generation using Web Audio API
+- Accessibility-focused design
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/ksr20612/uturi/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/ksr20612/uturi/discussions)
-- **Email**: ksr20612@gmail.com
-
----
-
-Made with ❤️ by [ksr20612](https://github.com/ksr20612)

@@ -68,3 +68,8 @@ jspm_packages/
 # OS
 .DS_Store
 Thumbs.db 
+
+# 빌드 폴더
+dist/
+
+playwright-report/
