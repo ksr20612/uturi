@@ -1,6 +1,7 @@
 {
   "name": "@uturi/monorepo",
   "description": "Uturi monorepo",
+  "version": "1.0.0",
   "private": true,
   "author": {
     "name": "ksr20612",
