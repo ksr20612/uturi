@@ -1,5 +1,11 @@
 # @uturi/sonification
 
+## 0.0.1
+
+### Patch Changes
+
+- 0e3e319: test release
+
 ## 0.0.2
 
 ### Patch Changes
