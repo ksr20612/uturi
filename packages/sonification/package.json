@@ -1,6 +1,9 @@
 {
   "name": "@uturi/sonification",
   "version": "0.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Accessibility tool that converts numerical data into musical melodies for visually impaired users",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -18,14 +21,9 @@
   "keywords": [
     "accessibility",
     "a11y",
-    "synesthesia",
-    "audio",
-    "data-visualization",
+    "sonification",
     "music",
-    "melody",
-    "chart",
-    "table",
-    "numerical-data"
+    "melody"
   ],
   "scripts": {
     "build": "vite build",
@@ -50,9 +48,5 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-dts": "^4.0.0"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
   }
 }

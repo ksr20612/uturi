@@ -1,6 +1,7 @@
 {
   "name": "@uturi/config-typescript",
   "version": "0.0.0",
+  "private": true,
   "description": "TypeScript configuration for Uturi monorepo",
   "main": "tsconfig.json",
   "files": [

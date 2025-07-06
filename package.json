@@ -32,7 +32,10 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "clean": "turbo run clean"
+    "clean": "turbo run clean",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "publish": "turbo run build && changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",

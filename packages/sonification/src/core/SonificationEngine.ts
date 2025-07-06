@@ -1,4 +1,4 @@
-import {
+import type {
   SonificationConfig,
   DataPoint,
   SonificationResult,
@@ -41,7 +41,8 @@ export default class SonificationEngine {
 
   // TODO: 최적화 필요
   async play(audioBuffer: AudioBuffer): Promise<void> {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioContext = new (window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     const source = audioContext.createBufferSource();
     source.buffer = audioBuffer;
     source.connect(audioContext.destination);
@@ -96,7 +97,8 @@ export default class SonificationEngine {
       }
     }
 
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioContext = new (window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
     buffer.copyToChannel(audioData, 0);
 
@@ -153,7 +155,8 @@ export default class SonificationEngine {
       }
     }
 
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioContext = new (window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
     buffer.copyToChannel(audioData, 0);
 
@@ -190,7 +193,8 @@ export default class SonificationEngine {
       }
     }
 
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioContext = new (window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
     buffer.copyToChannel(audioData, 0);
 
@@ -227,7 +231,8 @@ export default class SonificationEngine {
       }
     }
 
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioContext = new (window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
     buffer.copyToChannel(audioData, 0);
 

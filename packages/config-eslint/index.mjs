@@ -5,6 +5,5 @@ export default {
   configs: {
     javascript,
     typescript,
-    react,
   },
 };

@@ -1,4 +1,4 @@
-import { SonificationConfig } from '../typings/sonification';
+import type { SonificationConfig } from '../typings/sonification';
 import SonificationEngine from './SonificationEngine';
 
 export default async function sonifyArray(

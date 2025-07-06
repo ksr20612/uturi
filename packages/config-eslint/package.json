@@ -1,6 +1,7 @@
 {
   "name": "@uturi/config-eslint",
   "version": "0.0.0",
+  "private": true,
   "description": "ESLint configuration for Uturi monorepo",
   "main": "index.mjs",
   "type": "module",
@@ -28,4 +29,4 @@
   "peerDependencies": {
     "eslint": "^9.25.1"
   }
-} 
+}
