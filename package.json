@@ -1,7 +1,6 @@
 {
   "name": "@uturi/monorepo",
   "description": "Uturi monorepo",
-  "version": "1.0.0",
   "author": {
     "name": "ksr20612",
     "email": "ksr20612@gmail.com",
@@ -22,7 +21,6 @@
   "bugs": {
     "url": "https://github.com/ksr20612/uturi/issues"
   },
-  "private": true,
   "workspaces": [
     "packages/*"
   ],
