@@ -1,5 +1,9 @@
 # Uturi
 
+
+<img src="https://github.com/user-attachments/assets/3fc7ba69-400f-458f-81eb-f1a22fd28066" width="200px" height="200px" />
+
+
 Uturi is a monorepo dedicated to creating accessibility tools and libraries that empower people with disabilities. The name "Uturi" comes from the Korean folktale "Baby General Uturi" (아기장수 우투리), where Uturi overcomes disabilities and become a hero who fights for the weak.
 
 ## 🎯 Mission
