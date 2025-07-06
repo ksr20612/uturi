@@ -1,36 +1,36 @@
 # @uturi/sonification
 
-시각 장애인을 위한 접근성 도구로, 수치 데이터를 음악적 멜로디로 변환하여 데이터를 청각적으로 경험할 수 있게 해주는 라이브러리입니다.
+A data sonification library that transforms numerical data into musical melodies, enabling visually impaired users to experience data audibly. Inspired by synesthesia—a condition where people experience colors when hearing music—and synesthetic imagery in literature, this library bridges the gap between visual and auditory perception.
 
-## 🎵 주요 기능
+## 🎵 Features
 
-- **4가지 소리화 방법**: frequency, volume, rhythm, melody
-- **유연한 설정**: 주파수, 볼륨, 리듬 등 다양한 파라미터 조정 가능
-- **TypeScript 지원**: 완전한 타입 안전성 제공
-- **접근성 중심**: 시각 장애인을 위한 데이터 시각화 대안
+- **4 Sonification Methods**: frequency, volume, rhythm, melody
+- **Flexible Configuration**: Adjust parameters such as frequency, volume, rhythm, and more
+- **TypeScript Support**: Full type safety
+- **Accessibility Focused**: An alternative to data visualization for the visually impaired
 
-## 📦 설치
+## 📦 Installation
 
 ```bash
 npm install @uturi/sonification
-# 또는
+# or
 yarn add @uturi/sonification
-# 또는
+# or
 pnpm add @uturi/sonification
 ```
 
-## 🚀 빠른 시작
+## 🚀 Quick Start
 
-### 기본 사용법
+### Basic Usage
 
 ```typescript
 import { sonify, SonificationEngine } from '@uturi/sonification';
 
-// 간단한 사용법
+// Simple usage
 const data = [10, 50, 30, 80, 20, 90, 40, 70];
 const result = await sonify(data, 'frequency');
 
-// AudioBuffer를 사용하여 오디오 재생
+// Play audio using AudioBuffer
 const audioContext = new AudioContext();
 const source = audioContext.createBufferSource();
 source.buffer = result.audioBuffer;
@@ -38,7 +38,7 @@ source.connect(audioContext.destination);
 source.start();
 ```
 
-### SonificationEngine 사용법
+### Using SonificationEngine
 
 ```typescript
 import { SonificationEngine } from '@uturi/sonification';
@@ -54,68 +54,68 @@ const result = await engine.sonify([1, 2, 3, 4, 5], 'melody', {
   autoPlay: true,
 });
 
-console.log('생성된 데이터 포인트:', result.dataPoints);
-console.log('오디오 길이:', result.duration);
+console.log('Generated data points:', result.dataPoints);
+console.log('Audio duration:', result.duration);
 ```
 
-## 🎛️ 소리화 방법
+## 🎛️ Sonification Methods
 
-### 1. Frequency (주파수)
+### 1. Frequency
 
-값에 따라 주파수가 변화합니다.
+The frequency changes according to the value.
 
 ```typescript
 const result = await sonify(data, 'frequency');
 ```
 
-### 2. Volume (볼륨)
+### 2. Volume
 
-값에 따라 볼륨이 변화합니다.
+The volume changes according to the value.
 
 ```typescript
 const result = await sonify(data, 'volume');
 ```
 
-### 3. Rhythm (리듬)
+### 3. Rhythm
 
-값에 따라 리듬 패턴이 변화합니다.
+The rhythm pattern changes according to the value.
 
 ```typescript
 const result = await sonify(data, 'rhythm');
 ```
 
-### 4. Melody (멜로디)
+### 4. Melody
 
-값에 따라 음계가 변화하여 멜로디를 만듭니다.
+The scale changes according to the value, creating a melody.
 
 ```typescript
 const result = await sonify(data, 'melody');
 ```
 
-## ⚙️ 설정 옵션
+## ⚙️ Configuration Options
 
 ### SonificationConfig
 
 ```typescript
 interface SonificationConfig {
-  // 기본 오디오 설정
-  sampleRate?: number; // 샘플레이트 (기본값: 44100)
-  duration?: number; // 오디오 길이 (기본값: 2.0초)
+  // Basic audio settings
+  sampleRate?: number; // Sample rate (default: 44100)
+  duration?: number; // Audio duration (default: 2.0 seconds)
 
-  // 주파수 설정
-  frequency?: number; // 기본 주파수 (기본값: 825Hz)
-  minFrequency?: number; // 최소 주파수 (기본값: 150Hz)
-  maxFrequency?: number; // 최대 주파수 (기본값: 1500Hz)
+  // Frequency settings
+  frequency?: number; // Base frequency (default: 825Hz)
+  minFrequency?: number; // Minimum frequency (default: 150Hz)
+  maxFrequency?: number; // Maximum frequency (default: 1500Hz)
 
-  // 볼륨 설정
-  volume?: number; // 기본 볼륨 (범위: 0 ~ 1, 기본값: 0.3)
-  minVolume?: number; // 최소 볼륨 (기본값: 0.1)
-  maxVolume?: number; // 최대 볼륨 (기본값: 0.5)
+  // Volume settings
+  volume?: number; // Base volume (range: 0 ~ 1, default: 0.3)
+  minVolume?: number; // Minimum volume (default: 0.1)
+  maxVolume?: number; // Maximum volume (default: 0.5)
 
-  // 리듬 설정
-  rhythm?: number; // 기본 리듬 (범위: 0 ~ 1, 기본값: 0.5)
-  minRhythm?: number; // 최소 리듬 (기본값: 0.1)
-  maxRhythm?: number; // 최대 리듬 (기본값: 1)
+  // Rhythm settings
+  rhythm?: number; // Base rhythm (range: 0 ~ 1, default: 0.5)
+  minRhythm?: number; // Minimum rhythm (default: 0.1)
+  maxRhythm?: number; // Maximum rhythm (default: 1)
 }
 ```
 
@@ -123,19 +123,19 @@ interface SonificationConfig {
 
 ```typescript
 interface SonificationOptions {
-  autoPlay?: boolean; // 자동 재생 여부
+  autoPlay?: boolean; // Whether to play audio automatically
 }
 ```
 
-## 📊 반환 데이터
+## 📊 Return Data
 
 ### SonificationResult
 
 ```typescript
 interface SonificationResult {
-  audioBuffer: AudioBuffer; // 생성된 오디오 버퍼
-  duration: number; // 오디오 길이 (초)
-  dataPoints: DataPoint[]; // 데이터 포인트 배열
+  audioBuffer: AudioBuffer; // Generated audio buffer
+  duration: number; // Audio duration (seconds)
+  dataPoints: DataPoint[]; // Array of data points
 }
 ```
 
@@ -143,24 +143,24 @@ interface SonificationResult {
 
 ```typescript
 interface DataPoint {
-  value: number; // 원본 값
-  timestamp: number; // 시간 위치 (초)
-  volume: number; // 볼륨 값
-  frequency: number; // 주파수 값
-  note?: string; // 음계 이름 (melody 방식에서만)
+  value: number; // Original value
+  timestamp: number; // Time position (seconds)
+  volume: number; // Volume value
+  frequency: number; // Frequency value
+  note?: string; // Note name (only for melody method)
 }
 ```
 
-## 📋 요구사항
+## 📋 Requirements
 
-- **Node.js**: 18.0.0 이상
-- **브라우저**: Web Audio API 지원 브라우저
-- **TypeScript**: 5.0.0 이상 (개발 시)
+- **Node.js**: 18.0.0 or higher
+- **Browser**: Web Audio API supported browsers
+- **TypeScript**: 5.0.0 or higher (for development)
 
-## 📄 라이선스
+## 📄 License
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 [LICENSE](LICENSE) 파일을 참조하세요.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## 🎵 접근성
+## 🎵 Accessibility
 
-이 라이브러리는 시각 장애인을 위한 데이터 접근성을 향상시키기 위해 개발되었습니다. 데이터 시각화의 대안으로 청각적 표현을 제공하여, 모든 사용자가 데이터를 효과적으로 이해할 수 있도록 돕습니다.
+This library is developed to enhance data accessibility for visually impaired users. By providing an auditory alternative to data visualization, it helps everyone understand data more effectively.
