@@ -1,6 +1,7 @@
 {
   "name": "@uturi/monorepo",
   "description": "Uturi monorepo",
+  "private": true,
   "author": {
     "name": "ksr20612",
     "email": "ksr20612@gmail.com",
