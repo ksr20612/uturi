@@ -2,4 +2,4 @@
 '@uturi/sonification': patch
 ---
 
-test
+test release
