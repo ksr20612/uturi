@@ -54,7 +54,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: pnpm publish
+          publish: pnpm publish --filter=!@uturi/monorepo --filter=!@uturi/config-eslint --filter=!@uturi/config-typescript --filter=!@uturi/config-prettier --filter=!@uturi/config-vitest
           title: 'release: version packages'
           commit: 'release: version packages'
         env:
