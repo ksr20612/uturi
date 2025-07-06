@@ -7,13 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": [
-    "@uturi/config-eslint",
-    "@uturi/config-typescript",
-    "@uturi/config-prettier",
-    "@uturi/config-vitest"
-  ],
-  "___experimentalUnsafeOptions_WILL_CHANGE_IN_PATCH": {
-    "onlyUpdatePeerDependentsWhenOutOfRange": true
-  }
+  "ignore": []
 }
