@@ -4,15 +4,26 @@
 <img src="https://github.com/user-attachments/assets/3fc7ba69-400f-458f-81eb-f1a22fd28066" width="200px" height="200px" />
 
 
-Uturi is a monorepo dedicated to creating accessibility tools and libraries that empower people with disabilities. The name "Uturi" comes from the Korean folktale "Baby General Uturi" (아기장수 우투리), where Uturi overcomes disabilities and become a hero who fights for the weak.
+Uturi is a set of accessibility tools and libraries that give people with disabilities greater autonomy and access to information. The name "Uturi" comes from the Korean folktale "Baby General Uturi" (아기장수 우투리), where Uturi overcomes disabilities and becomes a hero who fights for the weak.
 
 ## 🎯 Mission
 
-Our mission is to create inclusive digital experiences by providing high-quality accessibility libraries that help developers build applications accessible to everyone regardless of their abilities.
+Our mission is to make the digital world more inclusive for people with disabilities.
 
-- **Overcoming barriers**: Just as Uturi overcame his disabilities, we help both developers and users overcome accessibility challenges
-- **Empowering others**: Like Uturi who fought for the vulnerable, we create tools that empower people with disabilities
-- **Inclusive leadership**: Uturi became a leader despite his differences, just as we advocate for inclusive design
+We do this by:
+- Providing developers with high-quality accessibility libraries
+- Helping applications become truly usable by everyone, regardless of ability
+- Reducing accessibility barriers through practical, well-designed tools
+
+## 🌍 Vision
+
+We envision a world where no one is excluded from digital experiences —  
+a world where accessibility is not a feature, but a foundation.
+
+Uturi strives to:
+- Make inclusive design the default, not the exception  
+- Bridge the gap between standards and real-world usability  
+- Build a community that values empathy, ethics, and equal access
 
 ## 📦 Packages
 
@@ -24,7 +35,6 @@ A data sonification library that converts numerical data into musical melodies, 
 
 - 4 sonification methods: frequency, volume, rhythm, melody
 - Real-time audio generation using Web Audio API
-- Accessibility-focused design
 
 ## 📄 License
 
