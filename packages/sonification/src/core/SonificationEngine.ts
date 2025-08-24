@@ -9,6 +9,7 @@ import defaultConfig from '../constants/defaultConfig';
 
 export default class SonificationEngine {
   private config: Required<SonificationConfig>;
+  private lastProcessedData: number[] | null = null;
 
   constructor(config: SonificationConfig = {}) {
     this.config = {
@@ -22,6 +23,8 @@ export default class SonificationEngine {
     method: T,
     options?: SonificationOptions,
   ): Promise<SonificationResult> {
+    this.lastProcessedData = data;
+
     const { audioBuffer, dataPoints } = await this.generateAudio(data, method);
 
     if (options?.autoPlay) {
@@ -43,10 +46,19 @@ export default class SonificationEngine {
   async play(audioBuffer: AudioBuffer): Promise<void> {
     const audioContext = new (window.AudioContext ||
       (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
+
     const source = audioContext.createBufferSource();
     source.buffer = audioBuffer;
     source.connect(audioContext.destination);
     source.start();
+
+    return new Promise((resolve) => {
+      source.onended = () => resolve();
+    });
   }
 
   private async generateAudio(
@@ -67,7 +79,7 @@ export default class SonificationEngine {
     }
   }
 
-  // Sonification by volume
+  // Sonificate by volume
   private async generateVolumeAudio(
     data: number[],
   ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
@@ -105,7 +117,7 @@ export default class SonificationEngine {
     return { audioBuffer: buffer, dataPoints };
   }
 
-  // Sonification by rhythm
+  // Sonificate by rhythm
   private async generateRhythmAudio(
     data: number[],
   ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
@@ -239,9 +251,21 @@ export default class SonificationEngine {
     return { audioBuffer: buffer, dataPoints };
   }
 
-  private mapValueToFrequency(value: number): number {
-    const normalizedValue = Math.max(0, Math.min(1, value));
+  private normalizeValue(value: number): number {
+    // lastProcessedData가 없거나 비어있는 경우, 입력값을 0-1 범위로 정규화
+    if (!this.lastProcessedData || this.lastProcessedData.length === 0) {
+      return Math.max(0, Math.min(1, value));
+    }
 
+    const dataMin = Math.min(...this.lastProcessedData);
+    const dataMax = Math.max(...this.lastProcessedData);
+    const dataRange = dataMax - dataMin;
+
+    return dataRange > 0 ? Math.max(0, Math.min(1, (value - dataMin) / dataRange)) : 0.5;
+  }
+
+  private mapValueToFrequency(value: number): number {
+    const normalizedValue = this.normalizeValue(value);
     const minFrequency = this.config.minFrequency;
     const maxFrequency = this.config.maxFrequency;
 
@@ -249,8 +273,7 @@ export default class SonificationEngine {
   }
 
   private mapValueToVolume(value: number): number {
-    const normalizedValue = Math.max(0, Math.min(1, value));
-
+    const normalizedValue = this.normalizeValue(value);
     const minVolume = this.config.minVolume;
     const maxVolume = this.config.maxVolume;
 
@@ -258,8 +281,7 @@ export default class SonificationEngine {
   }
 
   private mapValueToInterval(value: number): number {
-    const normalizedValue = Math.max(0, Math.min(1, value));
-
+    const normalizedValue = this.normalizeValue(value);
     const minRhythm = this.config.minRhythm;
     const maxRhythm = this.config.maxRhythm;
 
@@ -267,8 +289,7 @@ export default class SonificationEngine {
   }
 
   private mapValueToNote(value: number): number {
-    const normalizedValue = Math.max(0, Math.min(1, value));
-
+    const normalizedValue = this.normalizeValue(value);
     const notes = [261.63, 293.66, 329.63, 349.23, 392.0, 440.0, 493.88];
     const noteIndex = Math.min(Math.floor(normalizedValue * 7), 6);
 
@@ -276,7 +297,7 @@ export default class SonificationEngine {
   }
 
   private mapValueToNoteName(value: number): string {
-    const normalizedValue = Math.max(0, Math.min(1, value));
+    const normalizedValue = this.normalizeValue(value);
     const noteNames = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
     const noteIndex = Math.min(Math.floor(normalizedValue * 7), 6);
 

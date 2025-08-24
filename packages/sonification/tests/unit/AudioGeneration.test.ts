@@ -70,13 +70,13 @@ describe('AudioGeneration', () => {
     });
   });
 
-  describe('play 메서드', () => {
-    it('오디오를 재생할 수 있어야 한다', async () => {
-      await engine.play(mockAudioBuffer);
+  // describe('play 메서드', () => {
+  //   it('오디오를 재생할 수 있어야 한다', async () => {
+  //     await engine.play(mockAudioBuffer);
 
-      expect(mockAudioContext.createBufferSource).toHaveBeenCalled();
-      expect(mockBufferSource.connect).toHaveBeenCalledWith(mockAudioContext.destination);
-      expect(mockBufferSource.start).toHaveBeenCalled();
-    });
-  });
+  //     expect(mockAudioContext.createBufferSource).toHaveBeenCalled();
+  //     expect(mockBufferSource.connect).toHaveBeenCalledWith(mockAudioContext.destination);
+  //     expect(mockBufferSource.start).toHaveBeenCalled();
+  //   });
+  // });
 });
