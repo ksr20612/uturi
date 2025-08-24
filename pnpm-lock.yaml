@@ -148,8 +148,8 @@ importers:
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0)(@types/react@18.3.23)(react@18.3.1)
       '@uturi/sonification':
-        specifier: workspace:*
-        version: link:../sonification
+        specifier: 0.0.3
+        version: 0.0.3
       next:
         specifier: ^14.0.0
         version: 14.2.32(react-dom@18.3.1)(react@18.3.1)
@@ -2286,6 +2286,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@uturi/sonification@0.0.3:
+    resolution: {integrity: sha512-iWnagn9wBZ2gVLTLc81EBwss/k8mAZMOdtkC+iZE69SYjggwXvuNxEoKB5BoTESjJOQMNSpPHKSNQs56tcplBw==}
+    dev: false
 
   /@vitest/coverage-v8@3.2.4(vitest@3.2.4):
     resolution: {integrity: sha512-EyF9SXU6kS5Ku/U82E259WSnvg6c8KTjppUncuNdm5QHpe17mwREHnjDzozC8x9MZ0xfBUFSaLkRv4TMA75ALQ==}
