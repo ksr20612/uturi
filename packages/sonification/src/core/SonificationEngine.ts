@@ -252,8 +252,13 @@ export default class SonificationEngine {
   }
 
   private normalizeValue(value: number): number {
-    const dataMin = Math.min(...(this.lastProcessedData || [value]));
-    const dataMax = Math.max(...(this.lastProcessedData || [value]));
+    // lastProcessedData가 없거나 비어있는 경우, 입력값을 0-1 범위로 정규화
+    if (!this.lastProcessedData || this.lastProcessedData.length === 0) {
+      return Math.max(0, Math.min(1, value));
+    }
+
+    const dataMin = Math.min(...this.lastProcessedData);
+    const dataMax = Math.max(...this.lastProcessedData);
     const dataRange = dataMax - dataMin;
 
     return dataRange > 0 ? Math.max(0, Math.min(1, (value - dataMin) / dataRange)) : 0.5;
