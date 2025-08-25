@@ -22,3 +22,13 @@ function IntroSection() {
 }
 
 export default IntroSection;
+
+/*
+    <Field.Root required>
+      <Field.Label>
+        Email <Field.RequiredIndicator />
+      </Field.Label>
+      <Input placeholder="Enter your email" />
+      <Field.HelperText>We'll never share your email.</Field.HelperText>
+    </Field.Root>
+*/

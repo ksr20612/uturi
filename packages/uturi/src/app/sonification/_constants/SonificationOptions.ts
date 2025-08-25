@@ -1,10 +1,5 @@
 import { createListCollection } from '@chakra-ui/react';
-
-/*
-            <option value={SonificationMethod.MELODY}>음계 변화</option>
-            <option value={SonificationMethod.VOLUME}>음량 변화</option>
-            <option value={SonificationMethod.RHYTHM}>리듬 변화</option>
-*/
+import type { SonificationConfig } from '@uturi/sonification';
 
 export const enum SonificationMethod {
   FREQUENCY = 'frequency',
@@ -12,6 +7,20 @@ export const enum SonificationMethod {
   RHYTHM = 'rhythm',
   MELODY = 'melody',
 }
+
+export const DEFAULT_CONFIG: SonificationConfig = {
+  sampleRate: 44100,
+  duration: 2.0,
+  frequency: 825,
+  minFrequency: 150,
+  maxFrequency: 1500,
+  volume: 0.3,
+  minVolume: 0.1,
+  maxVolume: 0.5,
+  rhythm: 0.5,
+  minRhythm: 0.1,
+  maxRhythm: 1,
+};
 
 export const SONIFICATION_LIST_COLLECTION = createListCollection({
   items: [
