@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Link as ChakraLink, Container, Heading, Stack } from '@chakra-ui/react';
+import { Box, Container, Heading, Stack } from '@chakra-ui/react';
 import Link from 'next/link';
 
 import ROUTES from '../../_constants/Routes';
@@ -25,15 +25,23 @@ export function Header() {
 
           <Stack direction="row" gap={8} display={{ base: 'none', md: 'flex' }}>
             {ROUTES.map((item) => (
-              <Link key={item.url} href={item.url} passHref>
-                <ChakraLink
+              <Link
+                key={item.url}
+                href={item.url}
+                style={{
+                  color: 'inherit',
+                  textDecoration: 'none',
+                }}
+              >
+                <Box
+                  as="span"
                   color="gray.600"
                   _hover={{ color: 'primary.500' }}
                   transition="color 0.3s ease"
-                  textDecoration="none"
+                  cursor="pointer"
                 >
                   {item.label}
-                </ChakraLink>
+                </Box>
               </Link>
             ))}
           </Stack>
