@@ -1,104 +1,65 @@
 # @uturi/uturi
 
-Uturi 조직의 소개 페이지이자 접근성 도구들의 체험 공간입니다.
+https://uturi.vercel.app/
 
-## 소개
+Uturi의 혁신적인 접근성 도구들을 소개합니다.
+Uturi의 접근성 도구들을 살펴보고 체험해보세요.
 
-이 프로젝트는 Uturi 조직의 미션과 비전을 소개하고, 개발한 접근성 도구들을 직접 체험해볼 수 있는 웹 애플리케이션입니다.
+## 🎵 @uturi/sonification
 
-## 기술 스택
+- **데모 페이지**: `/sonification`
+- 시계열 데이터를 소리로 변환하여 비시각적 사용자에게 데이터 변화를 전달합니다.
+- 멜로디, 리듬, 음량 등 다양한 방식으로 커스터마이징이 가능합니다.
+- 실시간으로 오디오를 재생하거나, audioBuffer를 통해 오디오 파일을 생성할 수도 있습니다.
 
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **Accessibility Tools**: @uturi/sonification
+## 🎨 @uturi/ui (개발중)
 
-## 주요 기능
+- DatePicker, AutoComplete 등의 복잡한 컴포넌트에 접근성을
+- WCAG 2.2 가이드라인이 완벽하게 준수된, 스크린리더 등의 보조도구에서도 접근이 가능한 형태입니다.
+- 커스터마이징이 가능합니다.
 
-- 🏠 **조직 소개**: Uturi의 미션, 비전, 기술 스택 소개
-- 🎵 **Sonification 체험**: 수치 데이터를 음악으로 변환하는 기능 직접 체험
-- 📱 **반응형 디자인**: 모든 디바이스에서 최적화된 사용자 경험
-- ♿ **접근성 고려**: WCAG 가이드라인을 준수한 접근성 설계
+## 🎨 @uturi/auto-contrast (개발중)
 
-## 개발 환경 설정
+- DOM 요소의 텍스트 색상을 배경색에 맞춰 자동 조정
+- WCAG 2.2 1.4.3 Contrast 조건 자동 만족
 
-### 필수 요구사항
+---
 
-- Node.js 18.0.0 이상
-- pnpm 8.0.0 이상
+Powered by
+**Next.js 14**
+**Chakra UI**
 
-### 설치 및 실행
+## 🤝 기여하기
 
-```bash
-# 의존성 설치
-pnpm install
+1. 이슈 생성 또는 기존 이슈 확인
+2. 브랜치 생성 (`feature/기능명` 또는 `fix/버그명`)
+3. 코드 작성 및 테스트
+4. 커밋 메시지 작성 (Conventional Commits)
+5. Pull Request 생성
 
-# 개발 서버 실행
-pnpm dev
-
-# 빌드
-pnpm build
-
-# 프로덕션 서버 실행
-pnpm start
-
-# 린트 검사
-pnpm lint
-
-# 타입 체크
-pnpm type-check
-```
-
-## 프로젝트 구조
+### 커밋 메시지 규칙
 
 ```
-src/
-├── app/                 # Next.js App Router
-│   ├── layout.tsx      # 루트 레이아웃
-│   ├── page.tsx        # 메인 페이지
-│   └── globals.css     # 전역 스타일
-├── components/         # 재사용 가능한 컴포넌트
-│   └── SonificationDemo.tsx  # Sonification 체험 컴포넌트
+feat: 새로운 기능 추가
+fix: 버그 수정
+docs: 문서 수정
+style: 코드 스타일 변경
+refactor: 코드 리팩토링
+test: 테스트 추가/수정
+chore: 빌드 프로세스 또는 보조 도구 변경
 ```
 
-## Sonification 체험하기
+## 📄 라이선스
 
-1. 메인 페이지의 "체험" 섹션으로 이동
-2. 숫자 데이터를 입력하거나 샘플 데이터 선택
-3. "Sonification 재생" 버튼 클릭
-4. 데이터가 음악으로 변환되어 재생되는 것을 확인
+MIT License - 자세한 내용은 [LICENSE](../../LICENSE) 파일을 참조하세요.
 
-### 샘플 데이터 예시
+## 🔗 관련 링크
 
-- **오름차순**: `1,2,3,4,5,6,7,8,9,10`
-- **내림차순**: `10,9,8,7,6,5,4,3,2,1`
-- **랜덤**: `1,5,2,8,3,9,4,7,6,10`
-- **반복 패턴**: `1,1,1,5,5,5,10,10,10,1`
+- [GitHub Repository](https://github.com/ksr20612/uturi)
+- [@uturi/sonification](../sonification/README.md)
+- [@uturi/ui](../ui/README.md)
+- [@uturi/auto-contrast](../auto-contrast/README.md)
 
-## 접근성
+---
 
-이 웹사이트는 다음과 같은 접근성 기능을 제공합니다:
-
-- 키보드 네비게이션 지원
-- 스크린 리더 호환성
-- 적절한 색상 대비
-- 의미있는 HTML 구조
-- ARIA 라벨 및 역할
-
-## 라이선스
-
-MIT License
-
-## 기여하기
-
-1. 이 저장소를 포크합니다
-2. 새로운 기능 브랜치를 생성합니다 (`git checkout -b feature/amazing-feature`)
-3. 변경사항을 커밋합니다 (`git commit -m 'Add some amazing feature'`)
-4. 브랜치에 푸시합니다 (`git push origin feature/amazing-feature`)
-5. Pull Request를 생성합니다
-
-## 연락처
-
-- GitHub: [https://github.com/ksr20612/uturi](https://github.com/ksr20612/uturi)
-- Email: ksr20612@gmail.com
-
+**Uturi** - 모든 사용자를 위한 접근성 혁신 🚀

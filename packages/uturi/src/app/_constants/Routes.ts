@@ -5,8 +5,12 @@ export interface Route {
 }
 
 const ROUTES = Object.freeze<Route[]>([
-  { label: '소개', url: '/', description: '홈페이지' },
-  { label: '@uturi/sonification', url: '/sonification', description: '@uturi/sonification 소개' },
+  { label: 'Home', url: '/', description: 'Homepage' },
+  {
+    label: '@uturi/sonification',
+    url: '/sonification',
+    description: '@uturi/sonification overview',
+  },
 ]);
 
 export default ROUTES;
