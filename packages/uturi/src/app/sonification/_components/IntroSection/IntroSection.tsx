@@ -4,19 +4,85 @@ import { Text } from '@chakra-ui/react/text';
 
 function IntroSection() {
   return (
-    <Box textAlign="center">
-      <Heading as="h1" size="2xl" mb={4}>
-        @uturi/sonification
+    <Box as="section" py={20} textAlign="center" position="relative" overflow="hidden">
+      <Heading
+        as="h1"
+        fontSize={{ base: '4xl', md: '6xl', lg: '7xl' }}
+        fontWeight="bold"
+        lineHeight="1.1"
+        mb={8}
+        color="white"
+      >
+        <Box as="span" color="white">
+          Transform{' '}
+        </Box>
+        <Box
+          as="span"
+          style={{
+            background: 'linear-gradient(to right, #22d3ee, #3b82f6, #9333ea)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          Data
+        </Box>
+        <Box as="span" color="white">
+          {' '}
+          into{' '}
+        </Box>
+        <Box
+          as="span"
+          style={{
+            background: 'linear-gradient(to right, #facc15, #f97316, #ef4444)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          Sound
+        </Box>
       </Heading>
-      <Text fontSize="lg" color="gray.600" maxW="2xl" mx="auto" wordBreak="keep-all">
-        데이터를 시각화한 차트, 비시각 사용자들에게는 동일한 경험을 전달할 수 없습니다.
-        <br />
-        이제{' '}
-        <Text as="strong" color="teal.solid">
-          소리
-        </Text>
-        를 통해 데이터의 변화량을 빠르고 쉽게 전달해보세요.
+
+      <Text
+        fontSize={{ base: 'xl', md: '2xl' }}
+        color="gray.300"
+        maxW="6xl"
+        mx="auto"
+        lineHeight="1.6"
+        mb={8}
+      >
+        Data visualization charts cannot provide the same experience to non-visual users. <br />
+        Now use{' '}
+        <Text as="strong" color="teal.400">
+          @uturi/sonification
+        </Text>{' '}
+        to quickly and easily convey data changes through sound.
       </Text>
+
+      {/* Background Decorations */}
+      <Box
+        position="absolute"
+        top={10}
+        left={10}
+        w={32}
+        h={32}
+        bg="teal.500"
+        opacity={0.1}
+        borderRadius="full"
+        filter="blur(30px)"
+      />
+      <Box
+        position="absolute"
+        bottom={10}
+        right={10}
+        w={40}
+        h={40}
+        bg="purple.500"
+        opacity={0.1}
+        borderRadius="full"
+        filter="blur(40px)"
+      />
     </Box>
   );
 }

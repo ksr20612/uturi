@@ -4,13 +4,13 @@ import { ToolStatus } from '../../_constants/Tools';
 function getStatusText(status: Tool['status']) {
   switch (status) {
     case ToolStatus.STABLE:
-      return '안정';
+      return 'Stable';
     case ToolStatus.BETA:
-      return '베타';
+      return 'Beta';
     case ToolStatus.ALPHA:
-      return '알파';
+      return 'Alpha';
     default:
-      return '개발중';
+      return 'In Development';
   }
 }
 

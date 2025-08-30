@@ -22,7 +22,7 @@ function ToolCard({ name, githubUrl, url, status, description, features, id }: T
       <Box mb={4}>
         <VStack align="start" gap={2}>
           <HStack justify="space-between" w="full">
-            <Box as="p" fontWeight="bold" color="primary.500">
+            <Box as="p" fontWeight="bold" color="primary.text">
               {name}
             </Box>
             {githubUrl && (
@@ -37,18 +37,18 @@ function ToolCard({ name, githubUrl, url, status, description, features, id }: T
               >
                 <Box
                   as="span"
-                  color="gray.500"
-                  _hover={{ color: 'gray.700' }}
+                  color="fg.subtle"
+                  _hover={{ color: 'fg.muted' }}
                   _focus={{
-                    color: 'gray.700',
+                    color: 'fg.muted',
                     outline: '2px solid',
-                    outlineColor: 'primary.500',
+                    outlineColor: 'primary.text',
                     outlineOffset: '2px',
                     borderRadius: 'md',
                   }}
                   transition="color 0.2s"
                   cursor="pointer"
-                  aria-label={`${name} GitHub 저장소 (새 탭에서 열림)`}
+                  aria-label={`${name} GitHub repository (opens in new tab)`}
                 >
                   <FaGithub size={20} />
                 </Box>
@@ -62,14 +62,14 @@ function ToolCard({ name, githubUrl, url, status, description, features, id }: T
       </Box>
 
       <Box flex="1">
-        <Text color="gray.600" mb={4}>
+        <Text color="fg.muted" mb={4}>
           {description}
         </Text>
 
         {features.length > 0 && (
           <VStack align="start" gap={2}>
-            <Text fontSize="sm" fontWeight="semibold" color="gray.700" id={`features-${id}`}>
-              주요 기능:
+            <Text fontSize="sm" fontWeight="semibold" color="fg.muted" id={`features-${id}`}>
+              Key Features:
             </Text>
             <Box
               as="ul"
@@ -78,7 +78,7 @@ function ToolCard({ name, githubUrl, url, status, description, features, id }: T
               listStylePosition="inside"
             >
               {features.map((feature, index) => (
-                <Text key={index} as="li" fontSize="sm" color="gray.600" mb={1}>
+                <Text key={index} as="li" fontSize="sm" color="fg.subtle" mb={1}>
                   {feature}
                 </Text>
               ))}
@@ -91,13 +91,17 @@ function ToolCard({ name, githubUrl, url, status, description, features, id }: T
         {status === ToolStatus.DEVELOPING ? (
           <Button
             as="div"
-            colorScheme="gray"
-            variant="outline"
             size="sm"
             w="full"
+            bg="bg.muted"
+            color="fg.subtle"
+            border="1px solid"
+            borderColor="border.muted"
             disabled
             cursor="not-allowed"
             aria-describedby={`status-${id}`}
+            _hover={{}}
+            _focus={{}}
           >
             {getStatusLabel(status)}
           </Button>
@@ -110,29 +114,34 @@ function ToolCard({ name, githubUrl, url, status, description, features, id }: T
           >
             <Button
               as="span"
-              colorScheme="primary"
-              variant="outline"
               size="sm"
               w="full"
-              _hover={{ bg: 'primary.500' }}
+              border="1px solid"
+              _hover={{
+                bg: 'primary.hover',
+                borderColor: 'primary.hover',
+                transform: 'translateY(-1px)',
+                boxShadow: '0 4px 12px 0 rgba(20, 184, 166, 0.3)',
+              }}
               _focus={{
-                bg: 'primary.500',
-                color: 'white',
-                outline: '2px solid',
-                outlineColor: 'primary.600',
+                bg: 'primary.hover',
+                borderColor: 'primary.hover',
+                outline: '3px solid',
+                outlineColor: 'primary.text',
                 outlineOffset: '2px',
               }}
+              transition="all 0.3s ease"
               cursor="pointer"
-              aria-label={`${name} 자세히 보기`}
+              aria-label={`Learn more about ${name}`}
             >
-              자세히 보기
+              Learn More
             </Button>
           </Link>
         )}
         <VisuallyHidden id={`status-${id}`}>
           {status === ToolStatus.DEVELOPING
-            ? '이 도구는 현재 개발 중입니다'
-            : '이 도구는 사용 가능합니다'}
+            ? 'This tool is currently in development'
+            : 'This tool is available for use'}
         </VisuallyHidden>
       </Box>
     </>

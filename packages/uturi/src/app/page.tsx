@@ -5,7 +5,7 @@ import ToolSection from './_components/MainContents/ToolSection/ToolSection';
 
 export default function Home() {
   return (
-    <Box bg="gray.50" minH="100vh">
+    <Box minH="100%">
       <HeroSection />
       <ToolSection />
     </Box>

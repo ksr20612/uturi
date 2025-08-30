@@ -22,20 +22,21 @@ const TOOLS = Object.freeze<Tool[]>([
   {
     id: 'sonification',
     name: '@uturi/sonification',
-    description: '표나 시계열 그래프의 수치 변화를 소리로 간단하게 전달해보세요.',
+    description:
+      'Convert data from tables and time series charts into audio for enhanced accessibility.',
     status: ToolStatus.ALPHA,
     url: '/sonification',
     githubUrl: 'https://github.com/ksr20612/uturi/tree/main/packages/sonification',
     features: [
-      '커스터마이징 가능한 오디오 설정',
-      '멜로디, 리듬, 음량으로 커스터마이징 가능',
-      '반응형 오디오 생성',
+      'Customizable audio settings',
+      'Customize with melody, rhythm, and volume',
+      'Responsive audio generation',
     ],
   },
   {
     id: 'ui',
     name: '@uturi/ui',
-    description: 'DatePicker, AutoComplete 등의 복잡한 컴포넌트의 접근성을 챙겨보세요.',
+    description: 'Ensure accessibility for complex components like DatePicker and AutoComplete.',
     status: ToolStatus.DEVELOPING,
     url: '/color-contrast-checker',
     githubUrl: 'https://github.com/ksr20612/uturi/tree/main/packages/ui',

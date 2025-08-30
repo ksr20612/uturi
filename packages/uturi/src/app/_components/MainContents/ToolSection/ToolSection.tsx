@@ -6,12 +6,12 @@ import ToolCard from './ToolCard/ToolCard';
 
 function ToolSection() {
   return (
-    <Box as="section" bg="gray.50">
+    <Box as="section" bg="bg.DEFAULT">
       <Container maxW="7xl">
         <VStack gap={12} align="stretch">
           <VisuallyHidden textAlign="center">
             <Heading as="h2" id="tools-heading">
-              접근성 도구들
+              Accessibility Tools
             </Heading>
           </VisuallyHidden>
 
@@ -26,12 +26,18 @@ function ToolSection() {
               <Box
                 as="li"
                 key={tool.id}
-                bg="white"
-                borderRadius="lg"
+                bg="gray.800"
+                borderRadius="xl"
                 p={6}
-                shadow="md"
-                _hover={{ shadow: 'xl' }}
-                transition="all 0.3s"
+                border="1px solid"
+                borderColor="gray.700"
+                boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+                _hover={{
+                  transform: 'translateY(-8px) rotate(-1deg)',
+                  boxShadow: '0 35px 60px -12px rgba(0, 0, 0, 0.7)',
+                  borderColor: 'gray.600',
+                }}
+                transition="all 0.3s ease"
                 h="full"
                 display="flex"
                 flexDirection="column"
@@ -42,12 +48,12 @@ function ToolSection() {
           </Box>
 
           <Box textAlign="center" py={8}>
-            <Text as="p" fontSize="lg" color="gray.500">
-              더 많은 접근성 도구들이 개발 중입니다.
-              <Text as="span" color="primary.500" fontWeight="semibold">
+            <Text as="p" fontSize="lg" color="fg.subtle">
+              More accessibility tools are in development. Check{' '}
+              <Text as="span" color="primary.text" fontWeight="semibold">
                 GitHub
-              </Text>
-              에서 최신 소식을 확인하세요.
+              </Text>{' '}
+              for the latest updates.
             </Text>
           </Box>
         </VStack>

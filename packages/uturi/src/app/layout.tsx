@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { Box } from '@chakra-ui/react';
 import type { Metadata } from 'next';
 
 import { Header } from '@/app/_components/Header/Header';
@@ -21,8 +22,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="ko" suppressHydrationWarning>
       <body>
         <ThemeRegistry>
-          <Header />
-          {children}
+          <Box minH="100vh" display="flex" flexDirection="column" bg="gray.900">
+            <Header />
+            <Box as="main" flex="1">
+              {children}
+            </Box>
+          </Box>
         </ThemeRegistry>
       </body>
     </html>

@@ -24,9 +24,9 @@ export const DEFAULT_CONFIG: SonificationConfig = {
 
 export const SONIFICATION_LIST_COLLECTION = createListCollection({
   items: [
-    { label: '음계 변화', value: SonificationMethod.FREQUENCY },
-    { label: '음량 변화', value: SonificationMethod.VOLUME },
-    { label: '리듬 변화', value: SonificationMethod.RHYTHM },
-    { label: '멜로디 변화', value: SonificationMethod.MELODY },
+    { label: 'Pitch Variation', value: SonificationMethod.FREQUENCY },
+    { label: 'Volume Variation', value: SonificationMethod.VOLUME },
+    { label: 'Rhythm Variation', value: SonificationMethod.RHYTHM },
+    { label: 'Melody Variation', value: SonificationMethod.MELODY },
   ],
 });

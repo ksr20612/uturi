@@ -11,16 +11,16 @@ export function Header() {
       as="header"
       position="sticky"
       top={0}
-      bg="rgba(255, 255, 255, 0.6)"
+      bg="rgba(17, 24, 39, 0.8)"
       backdropFilter="blur(4px)"
       borderBottom="1px solid"
-      borderColor="gray.200"
+      borderColor="border.DEFAULT"
       zIndex={50}
     >
       <Container py={2}>
         <Box display="flex" justifyContent="space-between" alignItems="center">
-          <Heading as="h1" size="lg" fontWeight="bold" color="primary.500">
-            Uturi
+          <Heading as="h1" size="lg" fontWeight="bold" color="primary.text">
+            UTURI
           </Heading>
 
           <Stack direction="row" gap={8} display={{ base: 'none', md: 'flex' }}>
@@ -35,8 +35,8 @@ export function Header() {
               >
                 <Box
                   as="span"
-                  color="gray.600"
-                  _hover={{ color: 'primary.500' }}
+                  color="fg.muted"
+                  _hover={{ color: 'primary.text' }}
                   transition="color 0.3s ease"
                   cursor="pointer"
                 >
