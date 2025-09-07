@@ -10,6 +10,9 @@ export default [
         project: './tsconfig.json',
       },
     },
+    rules: {
+      'react/no-unescaped-entities': 'off',
+    },
   },
   {
     ignores: ['.next/**/*', 'node_modules/**/*', 'dist/**/*', 'out/**/*'],
