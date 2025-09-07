@@ -1,13 +1,14 @@
-import eslintConfig from '@uturi/config-eslint';
+import reactConfig from '@uturi/config-eslint/react/react.mjs';
+import typescriptConfig from '@uturi/config-eslint/typescript/typescript.mjs';
 
 export default [
-  ...eslintConfig.configs.react,
+  ...typescriptConfig,
+  ...reactConfig,
   {
     files: ['src/**/*.ts', 'src/**/*.tsx'],
-    languageOptions: {
-      parserOptions: {
-        project: './tsconfig.json',
-      },
+    rules: {
+      // vanilla-extract .css.ts 대응
+      'import/no-unresolved': 'off',
     },
   },
   {

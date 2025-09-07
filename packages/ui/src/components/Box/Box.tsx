@@ -1,7 +1,7 @@
-import { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode } from 'react';
 
 import { container } from './Box.css';
-import { PolymorphicComponentProps, Spacing, VisuallyHidden } from '../../typings/component';
+import type { PolymorphicComponentProps, Spacing, VisuallyHidden } from '../../typings/component';
 
 export type BoxProps<T extends ElementType = 'div'> = PolymorphicComponentProps<T> &
   Spacing &

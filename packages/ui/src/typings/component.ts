@@ -1,4 +1,9 @@
-import { ComponentPropsWithRef, ComponentPropsWithoutRef, ElementType, ReactNode } from 'react';
+import type {
+  ComponentPropsWithRef,
+  ComponentPropsWithoutRef,
+  ElementType,
+  ReactNode,
+} from 'react';
 
 import type { SpacingKey } from '../theme/tokens/spacing';
 

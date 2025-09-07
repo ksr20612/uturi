@@ -1,4 +1,4 @@
-import { ElementType, ReactNode } from 'react';
+import type { ElementType, ReactNode } from 'react';
 
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 
@@ -16,8 +16,8 @@ import {
   flexWrapVar,
   justifyContentVar,
 } from './Flexbox.css';
-import { SpacingKey } from '../../theme/tokens/spacing';
-import { PolymorphicComponentProps, Spacing, VisuallyHidden } from '../../typings/component';
+import type { SpacingKey } from '../../theme/tokens/spacing';
+import type { PolymorphicComponentProps, Spacing, VisuallyHidden } from '../../typings/component';
 
 export type FlexboxProps<T extends ElementType = 'div'> = PolymorphicComponentProps<T> &
   Spacing &
