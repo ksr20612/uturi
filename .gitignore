@@ -70,6 +70,10 @@ jspm_packages/
 Thumbs.db 
 
 # 빌드 폴더
-dist/
+dist/   
 
 playwright-report/
+
+# Next.js
+.next/
+packages/*/.next/

@@ -1,5 +1,17 @@
 # @uturi/sonification
 
+## 0.0.6
+
+### Patch Changes
+
+- aa78e16: data interpolation modified
+
+## 0.0.5
+
+### Patch Changes
+
+- 601df7e: data interpolation logic modified
+
 ## 0.0.3
 
 ### Patch Changes
