@@ -1,4 +1,4 @@
-export interface SonificationConfig {
+export interface SonifierConfig {
   // 기본 오디오 설정
   sampleRate?: number; // 샘플레이트 (기본값: 44100)
   duration?: number; // 오디오 길이 (기본값: 2.0초)
@@ -19,7 +19,7 @@ export interface SonificationConfig {
   maxRhythm?: number; // 최대 리듬 (기본값: 1)
 }
 
-export interface SonificationOptions {
+export interface SonifierOptions {
   autoPlay?: boolean; // 자동 재생 여부
 }
 
@@ -31,7 +31,7 @@ export interface DataPoint {
   note?: string;
 }
 
-export interface SonificationResult {
+export interface SonifierResult {
   audioBuffer: AudioBuffer;
   duration: number;
   dataPoints: DataPoint[];
@@ -43,7 +43,7 @@ export interface ChartData {
   timestamps?: number[];
 }
 
-export type SonificationMethod =
+export type SonifierMethod =
   | 'frequency' // 값에 따라 주파수 변화
   | 'volume' // 값에 따라 볼륨 변화
   | 'rhythm' // 값에 따라 리듬 변화

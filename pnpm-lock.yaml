@@ -221,7 +221,7 @@ importers:
         specifier: ^15.5.13
         version: 15.5.13
       '@uturi/sonification':
-        specifier: 0.0.6
+        specifier: workspace:*
         version: link:../sonification
       next:
         specifier: ^14.0.0

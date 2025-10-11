@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import SonificationEngine from '../../src/core/SonificationEngine';
+import Sonifier from '../../src/core/Sonifier';
 
 const mockAudioContext = {
   createBuffer: vi.fn(),
@@ -35,7 +35,7 @@ Object.defineProperty(window, 'webkitAudioContext', {
 });
 
 describe('SonificationMethods', () => {
-  let engine: SonificationEngine;
+  let engine: Sonifier;
   let testData: number[];
 
   beforeEach(() => {
@@ -44,7 +44,7 @@ describe('SonificationMethods', () => {
     mockAudioContext.createBufferSource.mockReturnValue(mockBufferSource);
 
     testData = [0.2, 0.5, 0.8, 0.3, 0.9];
-    engine = new SonificationEngine();
+    engine = new Sonifier();
   });
 
   describe('sonify 메서드', () => {

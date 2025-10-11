@@ -124,7 +124,7 @@ function HeroSection() {
               _hover={{ transform: 'rotate(0deg)' }}
               transition="transform 0.3s ease"
               role="img"
-              aria-label="Code example: import sonify from @uturi/sonification, create data array with numbers 1, 5, 3, 8, 6, 12, then await sonify function with justNumbers and frequency parameters"
+              aria-label="Code example: import Sonifier from @uturi/sonification, create data array with numbers 1, 5, 3, 8, 6, 12, then create Sonifier instance and call sonify method with justNumbers and frequency parameters"
               tabIndex={0}
               _focus={{
                 outline: '3px solid',
@@ -154,7 +154,7 @@ function HeroSection() {
                     {'{ '}
                   </Box>
                   <Box as="span" color="cyan.400">
-                    sonify
+                    Sonifier
                   </Box>
                   <Box as="span" color="gray.400">
                     {' }'}{' '}
@@ -169,13 +169,13 @@ function HeroSection() {
                   ;
                 </Box>
 
-                <Box as="div" mt={3}>
+                <Box as="div" mt={1}>
                   <Box as="span" color="blue.400">
                     const
                   </Box>
                   <Box as="span" color="yellow.400">
                     {' '}
-                    justPlainNumbers
+                    data
                   </Box>
                   <Box as="span" color="gray.400">
                     {' '}
@@ -187,19 +187,50 @@ function HeroSection() {
                   ;
                 </Box>
 
-                <Box as="div" mt={2}>
+                <Box as="div" mt={1}>
+                  <Box as="span" color="blue.400">
+                    const
+                  </Box>
+                  <Box as="span" color="yellow.400">
+                    {' '}
+                    sonifier
+                  </Box>
+                  <Box as="span" color="gray.400">
+                    {' '}
+                    ={' '}
+                  </Box>
                   <Box as="span" color="purple.400">
-                    await
+                    new
                   </Box>
                   <Box as="span" color="cyan.400">
                     {' '}
+                    Sonifier
+                  </Box>
+                  <Box as="span" color="gray.400">
+                    ()
+                  </Box>
+                  ;
+                </Box>
+
+                <Box as="div" mt={1}>
+                  <Box as="span" color="purple.400">
+                    await
+                  </Box>
+                  <Box as="span" color="yellow.400">
+                    {' '}
+                    sonifier
+                  </Box>
+                  <Box as="span" color="gray.400">
+                    .
+                  </Box>
+                  <Box as="span" color="cyan.400">
                     sonify
                   </Box>
                   <Box as="span" color="gray.400">
                     (
                   </Box>
                   <Box as="span" color="yellow.400">
-                    justNumbers
+                    data
                   </Box>
                   <Box as="span" color="gray.400">
                     ,{' '}

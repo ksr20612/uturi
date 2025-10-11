@@ -89,7 +89,7 @@ function RuleSection() {
         </Box>
 
         {/* Real-time Data */}
-        <Box
+        {/* <Box
           bg="gray.800"
           p={6}
           borderRadius="xl"
@@ -103,10 +103,10 @@ function RuleSection() {
           <CodeBlock language="typescript" title="Live Chart with Audio Feedback">
             {CODE_EXAMPLES.realTimeData}
           </CodeBlock>
-        </Box>
+        </Box> */}
 
         {/* Accessibility */}
-        <Box
+        {/* <Box
           bg="gray.800"
           p={6}
           borderRadius="xl"
@@ -120,7 +120,7 @@ function RuleSection() {
           <CodeBlock language="typescript" title="Screen Reader + Audio Chart">
             {CODE_EXAMPLES.accessibilityUse}
           </CodeBlock>
-        </Box>
+        </Box> */}
       </VStack>
     </Box>
   );

@@ -17,7 +17,6 @@ export default function SonificationPage() {
             mb={12}
             alignItems="start"
           >
-            <RuleSection />
             <Box
               position={{ base: 'static', lg: 'sticky' }}
               top={{ base: 'auto', lg: '120px' }}
@@ -25,6 +24,7 @@ export default function SonificationPage() {
             >
               <DemoSection />
             </Box>
+            <RuleSection />
           </Box>
         </VStack>
       </Container>

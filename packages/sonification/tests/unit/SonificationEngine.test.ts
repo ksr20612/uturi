@@ -1,5 +1,5 @@
 import { vi } from 'vitest';
-import SonificationEngine from '../../src/core/SonificationEngine';
+import Sonifier from '../../src/core/Sonifier';
 
 const mockAudioContext = {
   createBuffer: vi.fn(),
@@ -35,30 +35,30 @@ Object.defineProperty(window, 'webkitAudioContext', {
 });
 
 describe('SonificationEngine', () => {
-  let engine: SonificationEngine;
+  let engine: Sonifier;
 
   beforeEach(() => {
     vi.clearAllMocks();
     mockAudioContext.createBuffer.mockReturnValue(mockAudioBuffer);
     mockAudioContext.createBufferSource.mockReturnValue(mockBufferSource);
 
-    engine = new SonificationEngine();
+    engine = new Sonifier();
   });
 
   describe('생성자', () => {
     it('기본 설정으로 엔진을 생성할 수 있어야 한다', () => {
-      expect(engine).toBeInstanceOf(SonificationEngine);
+      expect(engine).toBeInstanceOf(Sonifier);
     });
 
     it('사용자 정의 설정으로 엔진을 생성할 수 있어야 한다', () => {
-      const customEngine = new SonificationEngine({
+      const customEngine = new Sonifier({
         sampleRate: 22050,
         duration: 3.0,
         frequency: 440,
         volume: 0.5,
       });
 
-      expect(customEngine).toBeInstanceOf(SonificationEngine);
+      expect(customEngine).toBeInstanceOf(Sonifier);
     });
   });
 
@@ -81,7 +81,7 @@ describe('SonificationEngine', () => {
         volume: 0.8,
       };
 
-      const customEngine = new SonificationEngine(customConfig);
+      const customEngine = new Sonifier(customConfig);
       const config = customEngine.getConfig();
 
       expect(config.sampleRate).toBe(customConfig.sampleRate);
@@ -104,7 +104,7 @@ describe('SonificationEngine', () => {
         volume: 0.7,
       };
 
-      const customEngine = new SonificationEngine(partialConfig);
+      const customEngine = new Sonifier(partialConfig);
       const config = customEngine.getConfig();
 
       expect(config.duration).toBe(5.0);

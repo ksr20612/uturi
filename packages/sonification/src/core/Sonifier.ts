@@ -1,28 +1,38 @@
 import type {
-  SonificationConfig,
+  SonifierConfig,
   DataPoint,
-  SonificationResult,
-  SonificationMethod,
-  SonificationOptions,
+  SonifierResult,
+  SonifierMethod,
+  SonifierOptions,
 } from '../typings/sonification';
 import defaultConfig from '../constants/defaultConfig';
+import AudioWorker from './audioWorker?worker&inline';
 
-export default class SonificationEngine {
-  private config: Required<SonificationConfig>;
+export default class Sonifier {
+  private config: Required<SonifierConfig>;
   private lastProcessedData: number[] | null = null;
+  private audioContext: AudioContext | null = null;
+  private worker: Worker | null = null;
+  private isWorkerSupported: boolean;
 
-  constructor(config: SonificationConfig = {}) {
+  constructor(config: SonifierConfig = {}) {
     this.config = {
       ...defaultConfig,
       ...config,
     };
+
+    this.isWorkerSupported = typeof Worker !== 'undefined';
+
+    if (this.isWorkerSupported) {
+      this.initializeWorker();
+    }
   }
 
-  async sonify<T extends SonificationMethod>(
+  async sonify<T extends SonifierMethod>(
     data: number[],
     method: T,
-    options?: SonificationOptions,
-  ): Promise<SonificationResult> {
+    options?: SonifierOptions,
+  ): Promise<SonifierResult> {
     this.lastProcessedData = data;
 
     const { audioBuffer, dataPoints } = await this.generateAudio(data, method);
@@ -38,14 +48,87 @@ export default class SonificationEngine {
     };
   }
 
-  getConfig(): Required<SonificationConfig> {
+  getConfig(): Required<SonifierConfig> {
     return { ...this.config };
   }
 
-  // TODO: 최적화 필요
+  private getAudioContext(): AudioContext {
+    if (!this.audioContext) {
+      this.audioContext = new (window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    }
+    return this.audioContext;
+  }
+
+  cleanup(): void {
+    if (this.audioContext) {
+      this.audioContext.close();
+      this.audioContext = null;
+    }
+
+    if (this.worker) {
+      this.worker.terminate();
+      this.worker = null;
+    }
+  }
+
+  private initializeWorker(): void {
+    if (this.worker || !this.isWorkerSupported) return;
+
+    try {
+      this.worker = new AudioWorker();
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn('Initialize Web Worker failed, generate on main thread:', error);
+      this.isWorkerSupported = false;
+      this.worker = null;
+    }
+  }
+
+  private generateAudioWithWorker(
+    data: number[],
+    method: SonifierMethod,
+  ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
+    if (!this.worker) {
+      throw new Error('Web Worker initialization failed');
+    }
+
+    return new Promise((resolve, reject) => {
+      // timeout
+      const timeout = setTimeout(() => {
+        reject(new Error('sonification timeout'));
+      }, 1000 * 10);
+
+      const handleMessage = (event: MessageEvent) => {
+        if (event.data.type === 'AUDIO_GENERATED') {
+          clearTimeout(timeout);
+          this.worker!.removeEventListener('message', handleMessage);
+
+          const { audioData, dataPoints, sampleRate } = event.data.payload;
+
+          const audioContext = this.getAudioContext();
+          const buffer = audioContext.createBuffer(1, audioData.length, sampleRate);
+          buffer.copyToChannel(audioData, 0);
+
+          resolve({ audioBuffer: buffer, dataPoints });
+        }
+      };
+
+      this.worker?.addEventListener('message', handleMessage);
+
+      this.worker?.postMessage({
+        type: 'GENERATE_AUDIO',
+        payload: {
+          data,
+          method,
+          config: this.config,
+        },
+      });
+    });
+  }
+
   async play(audioBuffer: AudioBuffer): Promise<void> {
-    const audioContext = new (window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const audioContext = this.getAudioContext();
 
     if (audioContext.state === 'suspended') {
       await audioContext.resume();
@@ -63,7 +146,24 @@ export default class SonificationEngine {
 
   private async generateAudio(
     data: number[],
-    method: SonificationMethod = 'melody',
+    method: SonifierMethod = 'melody',
+  ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
+    if (this.isWorkerSupported && this.worker) {
+      try {
+        return await this.generateAudioWithWorker(data, method);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.warn('Generate Audio with Worker failed, generate on main thread:', error);
+        return this.generateAudioOnMainThread(data, method);
+      }
+    } else {
+      return this.generateAudioOnMainThread(data, method);
+    }
+  }
+
+  private async generateAudioOnMainThread(
+    data: number[],
+    method: SonifierMethod = 'melody',
   ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
     switch (method) {
       case 'melody':
@@ -79,7 +179,7 @@ export default class SonificationEngine {
     }
   }
 
-  // Sonificate by volume
+  // Sonify by volume
   private async generateVolumeAudio(
     data: number[],
   ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
@@ -109,15 +209,14 @@ export default class SonificationEngine {
       }
     }
 
-    const audioContext = new (window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const audioContext = this.getAudioContext();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
     buffer.copyToChannel(audioData, 0);
 
     return { audioBuffer: buffer, dataPoints };
   }
 
-  // Sonificate by rhythm
+  // Sonify by rhythm
   private async generateRhythmAudio(
     data: number[],
   ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
@@ -167,15 +266,14 @@ export default class SonificationEngine {
       }
     }
 
-    const audioContext = new (window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const audioContext = this.getAudioContext();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
     buffer.copyToChannel(audioData, 0);
 
     return { audioBuffer: buffer, dataPoints };
   }
 
-  // Sonification by melody
+  // Sonify by melody
   private async generateMelodyAudio(
     data: number[],
   ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
@@ -205,15 +303,14 @@ export default class SonificationEngine {
       }
     }
 
-    const audioContext = new (window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const audioContext = this.getAudioContext();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
     buffer.copyToChannel(audioData, 0);
 
     return { audioBuffer: buffer, dataPoints };
   }
 
-  // Sonification by frequency
+  // Sonify by frequency
   private async generateFrequencyAudio(
     data: number[],
   ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
@@ -221,7 +318,6 @@ export default class SonificationEngine {
     const audioData = new Float32Array(bufferLength);
     const timeStep = this.config.duration / data.length;
 
-    // DataPoint[] 생성
     const dataPoints: DataPoint[] = data.map((value, index) => ({
       value,
       timestamp: index * timeStep,
@@ -243,8 +339,7 @@ export default class SonificationEngine {
       }
     }
 
-    const audioContext = new (window.AudioContext ||
-      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const audioContext = this.getAudioContext();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
     buffer.copyToChannel(audioData, 0);
 
