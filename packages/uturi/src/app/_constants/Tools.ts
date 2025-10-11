@@ -22,15 +22,14 @@ const TOOLS = Object.freeze<Tool[]>([
   {
     id: 'sonification',
     name: '@uturi/sonification',
-    description:
-      'Convert data from tables and time series charts into audio for enhanced accessibility.',
-    status: ToolStatus.ALPHA,
+    description: 'Transform numbers into sound to make data more accessible.',
+    status: ToolStatus.BETA,
     url: '/sonification',
     githubUrl: 'https://github.com/ksr20612/uturi/tree/main/packages/sonification',
     features: [
       'Customizable audio settings',
-      'Customize with melody, rhythm, and volume',
-      'Responsive audio generation',
+      'Various output formats: Melody, Rhythm, and Volume',
+      'Optimized audio performance',
     ],
   },
   {
