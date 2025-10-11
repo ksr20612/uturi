@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
-import SonificationEngine from '../../src/core/SonificationEngine';
-import type { SonificationMethod } from '../../src/typings/sonification';
+import Sonifier from '../../src/core/Sonifier';
+import type { SonifierMethod } from '../../src/typings/sonification';
 
 const mockAudioContext = {
   createBuffer: vi.fn(),
@@ -36,7 +36,7 @@ Object.defineProperty(window, 'webkitAudioContext', {
 });
 
 describe('AudioGeneration', () => {
-  let engine: SonificationEngine;
+  let engine: Sonifier;
   let testData: number[];
 
   beforeEach(() => {
@@ -45,7 +45,7 @@ describe('AudioGeneration', () => {
     mockAudioContext.createBufferSource.mockReturnValue(mockBufferSource);
 
     testData = [0.2, 0.5, 0.8, 0.3, 0.9];
-    engine = new SonificationEngine();
+    engine = new Sonifier();
   });
 
   describe('오디오 생성', () => {
@@ -61,7 +61,7 @@ describe('AudioGeneration', () => {
     });
 
     it('모든 소리화 메서드가 AudioBuffer를 생성해야 한다', async () => {
-      const methods: SonificationMethod[] = ['melody', 'frequency', 'volume', 'rhythm'];
+      const methods: SonifierMethod[] = ['melody', 'frequency', 'volume', 'rhythm'];
 
       for (const method of methods) {
         const result = await engine.sonify(testData, method);

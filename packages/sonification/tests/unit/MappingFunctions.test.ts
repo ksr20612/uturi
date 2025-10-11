@@ -1,10 +1,10 @@
-import SonificationEngine from '../../src/core/SonificationEngine';
+import Sonifier from '../../src/core/Sonifier';
 
 describe('MappingFunctions', () => {
-  let engine: SonificationEngine;
+  let engine: Sonifier;
 
   beforeEach(() => {
-    engine = new SonificationEngine();
+    engine = new Sonifier();
   });
 
   describe('mapValueToFrequency', () => {

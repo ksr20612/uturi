@@ -1,5 +1,5 @@
 import { createListCollection } from '@chakra-ui/react';
-import type { SonificationConfig } from '@uturi/sonification';
+import type { SonifierConfig } from '@uturi/sonification';
 
 export const enum SonificationMethod {
   FREQUENCY = 'frequency',
@@ -8,7 +8,7 @@ export const enum SonificationMethod {
   MELODY = 'melody',
 }
 
-export const DEFAULT_CONFIG: SonificationConfig = {
+export const DEFAULT_CONFIG: SonifierConfig = {
   sampleRate: 44100,
   duration: 2.0,
   frequency: 825,

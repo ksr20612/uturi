@@ -24,33 +24,30 @@ pnpm add @uturi/sonification
 ### Basic Usage
 
 ```typescript
-import { sonify, SonificationEngine } from '@uturi/sonification';
+import { Sonifier } from '@uturi/sonification';
 
 // Simple usage
 const data = [10, 50, 30, 80, 20, 90, 40, 70];
-const result = await sonify(data, 'frequency');
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'frequency', { autoPlay: true });
 
-// Play audio using AudioBuffer
-const audioContext = new AudioContext();
-const source = audioContext.createBufferSource();
-source.buffer = result.audioBuffer;
-source.connect(audioContext.destination);
-source.start();
+console.log('Generated data points:', result.dataPoints);
+console.log('Audio duration:', result.duration);
 ```
 
-### Using SonificationEngine
+### Advanced Configuration
 
 ```typescript
-import { SonificationEngine } from '@uturi/sonification';
+import { Sonifier } from '@uturi/sonification';
 
-const engine = new SonificationEngine({
+const sonifier = new Sonifier({
   sampleRate: 44100,
   duration: 3.0,
   frequency: 440,
   volume: 0.5,
 });
 
-const result = await engine.sonify([1, 2, 3, 4, 5], 'melody', {
+const result = await sonifier.sonify([1, 2, 3, 4, 5], 'melody', {
   autoPlay: true,
 });
 
@@ -65,7 +62,8 @@ console.log('Audio duration:', result.duration);
 The frequency changes according to the value.
 
 ```typescript
-const result = await sonify(data, 'frequency');
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'frequency', { autoPlay: true });
 ```
 
 ### 2. Volume
@@ -73,7 +71,8 @@ const result = await sonify(data, 'frequency');
 The volume changes according to the value.
 
 ```typescript
-const result = await sonify(data, 'volume');
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'volume', { autoPlay: true });
 ```
 
 ### 3. Rhythm
@@ -81,7 +80,8 @@ const result = await sonify(data, 'volume');
 The rhythm pattern changes according to the value.
 
 ```typescript
-const result = await sonify(data, 'rhythm');
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'rhythm', { autoPlay: true });
 ```
 
 ### 4. Melody
@@ -89,15 +89,16 @@ const result = await sonify(data, 'rhythm');
 The scale changes according to the value, creating a melody.
 
 ```typescript
-const result = await sonify(data, 'melody');
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'melody', { autoPlay: true });
 ```
 
 ## ⚙️ Configuration Options
 
-### SonificationConfig
+### SonifierConfig
 
 ```typescript
-interface SonificationConfig {
+interface SonifierConfig {
   // Basic audio settings
   sampleRate?: number; // Sample rate (default: 44100)
   duration?: number; // Audio duration (default: 2.0 seconds)
@@ -119,20 +120,20 @@ interface SonificationConfig {
 }
 ```
 
-### SonificationOptions
+### SonifierOptions
 
 ```typescript
-interface SonificationOptions {
+interface SonifierOptions {
   autoPlay?: boolean; // Whether to play audio automatically
 }
 ```
 
 ## 📊 Return Data
 
-### SonificationResult
+### SonifierResult
 
 ```typescript
-interface SonificationResult {
+interface SonifierResult {
   audioBuffer: AudioBuffer; // Generated audio buffer
   duration: number; // Audio duration (seconds)
   dataPoints: DataPoint[]; // Array of data points

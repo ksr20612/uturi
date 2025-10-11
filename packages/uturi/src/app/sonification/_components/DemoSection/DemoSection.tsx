@@ -2,14 +2,15 @@
 'use client';
 
 import type { ChangeEvent } from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Chart, useChart } from '@chakra-ui/charts';
 import type { AccordionValueChangeDetails } from '@chakra-ui/react/accordion';
 import { Accordion } from '@chakra-ui/react/accordion';
 import { Box } from '@chakra-ui/react/box';
-import { Button } from '@chakra-ui/react/button';
+import { Button, IconButton } from '@chakra-ui/react/button';
 import { Field } from '@chakra-ui/react/field';
+import { Flex } from '@chakra-ui/react/flex';
 import { Input } from '@chakra-ui/react/input';
 import { InputGroup } from '@chakra-ui/react/input-group';
 import { Portal } from '@chakra-ui/react/portal';
@@ -18,27 +19,33 @@ import { Span } from '@chakra-ui/react/span';
 import { VStack } from '@chakra-ui/react/stack';
 import { Text } from '@chakra-ui/react/text';
 
-import type { SonificationConfig } from '@uturi/sonification';
-import { sonify } from '@uturi/sonification';
+import type { SonifierConfig } from '@uturi/sonification';
+import { Sonifier } from '@uturi/sonification';
+import { GiPerspectiveDiceSixFacesRandom } from 'react-icons/gi';
 
 import { CartesianGrid, Line, LineChart, Tooltip, YAxis } from 'recharts';
 
-import SAMPLES from '@/app/sonification/_constants/Samples';
 import {
   DEFAULT_CONFIG,
   SONIFICATION_LIST_COLLECTION,
   SonificationMethod,
 } from '@/app/sonification/_constants/SonificationOptions';
 
+import ChakraTooltip from '../../../_components/Tooltip/Tooltip';
+
 function DemoSection() {
   const [method, setMethod] = useState<SonificationMethod[]>([SonificationMethod.MELODY]);
   const [isPlaying, setIsPlaying] = useState(false);
-
   const [isAccordionOpen, setIsAccordionOpen] = useState<string[]>([]);
-  const [config, setConfig] = useState<SonificationConfig>(DEFAULT_CONFIG);
+  const [config, setConfig] = useState<SonifierConfig>(DEFAULT_CONFIG);
+  const [dataSamples, setDataSamples] = useState<number[]>([
+    100, 105, 98, 112, 108, 115, 120, 118, 125, 130, 136, 140, 145,
+  ]);
+
+  const sonifier = useMemo(() => new Sonifier(config), [config]);
 
   const chart = useChart({
-    data: SAMPLES.map((value) => ({
+    data: dataSamples.map((value) => ({
       value,
     })),
     series: [
@@ -57,30 +64,22 @@ function DemoSection() {
     setIsAccordionOpen(details.value);
   };
 
-  const handleChangeConfig =
-    (key: keyof SonificationConfig) => (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value.replace(/[^0-9.]/g, '');
+  const handleChangeConfig = (key: keyof SonifierConfig) => (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9.]/g, '');
 
-      setConfig((prev) => ({ ...prev, [key]: value }));
-    };
+    setConfig((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handlePlay = useCallback(async () => {
     try {
       setIsPlaying(true);
       const methodType = method[0];
-      console.log(`Converting data using ${methodType} method:`, SAMPLES);
+      console.log(`Converting data using ${methodType} method:`, dataSamples);
       console.log('Configuration:', config);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      console.log('AudioContext status:', audioContext.state);
-
-      if (audioContext.state === 'suspended') {
-        console.log('AudioContext is suspended. Calling resume().');
-        await audioContext.resume();
-      }
-
-      const result = await sonify([...SAMPLES], methodType, config);
+      const result = await sonifier.sonify([...dataSamples], methodType, {
+        autoPlay: true,
+      });
 
       console.log('Sonification result:', result);
     } catch (error) {
@@ -88,7 +87,18 @@ function DemoSection() {
     } finally {
       setIsPlaying(false);
     }
-  }, [method, config]);
+  }, [dataSamples, method, sonifier, config]);
+
+  const handleClickShuffle = useCallback(() => {
+    const shuffledData = Array.from({ length: 13 }, () => Math.floor(Math.random() * 100) + 50);
+    setDataSamples(shuffledData);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      sonifier.cleanup();
+    };
+  }, [sonifier]);
 
   return (
     <Box as="section">
@@ -479,9 +489,23 @@ function DemoSection() {
             </Accordion.Item>
           </Accordion.Root>
 
-          <Button colorScheme="primary" size="lg" onClick={handlePlay} loading={isPlaying}>
-            Convert
-          </Button>
+          <Flex gap={4} wrap="wrap">
+            <ChakraTooltip content="Shuffle data">
+              <IconButton size="lg" aria-label="shuffle data" onClick={handleClickShuffle}>
+                <GiPerspectiveDiceSixFacesRandom />
+              </IconButton>
+            </ChakraTooltip>
+            <Button
+              colorScheme="primary"
+              size="lg"
+              onClick={handlePlay}
+              loading={isPlaying}
+              loadingText="Playing..."
+              flex={1}
+            >
+              Sonify
+            </Button>
+          </Flex>
         </VStack>
       </Box>
     </Box>

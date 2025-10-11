@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
-import SonificationEngine from '../../src/core/SonificationEngine';
-import type { SonificationMethod } from '../../src/typings/sonification';
+import Sonifier from '../../src/core/Sonifier';
+import type { SonifierMethod } from '../../src/typings/sonification';
 
 const mockAudioContext = {
   createBuffer: vi.fn(),
@@ -36,14 +36,14 @@ Object.defineProperty(window, 'webkitAudioContext', {
 });
 
 describe('DataPoints', () => {
-  let engine: SonificationEngine;
+  let engine: Sonifier;
 
   beforeEach(() => {
     vi.clearAllMocks();
     mockAudioContext.createBuffer.mockReturnValue(mockAudioBuffer);
     mockAudioContext.createBufferSource.mockReturnValue(mockBufferSource);
 
-    engine = new SonificationEngine();
+    engine = new Sonifier();
   });
 
   describe('데이터 포인트 생성', () => {
@@ -79,7 +79,7 @@ describe('DataPoints', () => {
         expect(typeof point.note).toBe('string');
       });
 
-      const otherMethods: SonificationMethod[] = ['frequency', 'volume', 'rhythm'];
+      const otherMethods: SonifierMethod[] = ['frequency', 'volume', 'rhythm'];
       for (const method of otherMethods) {
         const result = await engine.sonify(testValues, method);
         result.dataPoints.forEach((point) => {
