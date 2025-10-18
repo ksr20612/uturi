@@ -1,5 +1,11 @@
 # @uturi/sonification
 
+## 0.2.0
+
+### Minor Changes
+
+- 1bee890: feat(sonification): setConfig added
+
 ## 0.1.0
 
 ### Minor Changes
