@@ -48,16 +48,32 @@ export default class Sonifier {
     };
   }
 
+  async play(audioBuffer: AudioBuffer): Promise<void> {
+    const audioContext = this.getAudioContext();
+
+    if (audioContext.state === 'suspended') {
+      await audioContext.resume();
+    }
+
+    const source = audioContext.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(audioContext.destination);
+    source.start();
+
+    return new Promise((resolve) => {
+      source.onended = () => resolve();
+    });
+  }
+
   getConfig(): Required<SonifierConfig> {
     return { ...this.config };
   }
 
-  private getAudioContext(): AudioContext {
-    if (!this.audioContext) {
-      this.audioContext = new (window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-    }
-    return this.audioContext;
+  setConfig(config: SonifierConfig): void {
+    this.config = {
+      ...defaultConfig,
+      ...config,
+    };
   }
 
   cleanup(): void {
@@ -70,6 +86,14 @@ export default class Sonifier {
       this.worker.terminate();
       this.worker = null;
     }
+  }
+
+  private getAudioContext(): AudioContext {
+    if (!this.audioContext) {
+      this.audioContext = new (window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    }
+    return this.audioContext;
   }
 
   private initializeWorker(): void {
@@ -124,23 +148,6 @@ export default class Sonifier {
           config: this.config,
         },
       });
-    });
-  }
-
-  async play(audioBuffer: AudioBuffer): Promise<void> {
-    const audioContext = this.getAudioContext();
-
-    if (audioContext.state === 'suspended') {
-      await audioContext.resume();
-    }
-
-    const source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
-    source.start();
-
-    return new Promise((resolve) => {
-      source.onended = () => resolve();
     });
   }
 
