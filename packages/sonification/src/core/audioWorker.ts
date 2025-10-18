@@ -22,6 +22,35 @@ interface AudioWorkerResponse {
 let workerConfig: Required<SonifierConfig> | null = null;
 let lastProcessedData: number[] | null = null;
 
+// getter
+function getWorkerConfig(): Required<SonifierConfig> {
+  if (!workerConfig) {
+    throw new Error(
+      'Worker configuration not initialized. Please ensure the worker is properly set up.',
+    );
+  }
+  return workerConfig;
+}
+
+// config 유효성 검증
+function validateConfig(config: Required<SonifierConfig>): void {
+  if (config.sampleRate <= 0) {
+    throw new Error('Sample rate must be positive');
+  }
+  if (config.duration <= 0) {
+    throw new Error('Duration must be positive');
+  }
+  if (config.minFrequency >= config.maxFrequency) {
+    throw new Error('Minimum frequency must be less than maximum frequency');
+  }
+  if (config.minVolume >= config.maxVolume) {
+    throw new Error('Minimum volume must be less than maximum volume');
+  }
+  if (config.minRhythm >= config.maxRhythm) {
+    throw new Error('Minimum rhythm must be less than maximum rhythm');
+  }
+}
+
 // 데이터 정규화
 function normalizeValue(value: number): number {
   if (!lastProcessedData || lastProcessedData.length === 0) {
@@ -35,26 +64,23 @@ function normalizeValue(value: number): number {
   return dataRange > 0 ? Math.max(0, Math.min(1, (value - dataMin) / dataRange)) : 0.5;
 }
 
-// 매핑 함수
+// 데이터 매핑
 function mapValueToFrequency(value: number): number {
+  const config = getWorkerConfig();
   const normalizedValue = normalizeValue(value);
-  const minFrequency = workerConfig!.minFrequency;
-  const maxFrequency = workerConfig!.maxFrequency;
-  return minFrequency + normalizedValue * (maxFrequency - minFrequency);
+  return config.minFrequency + normalizedValue * (config.maxFrequency - config.minFrequency);
 }
 
 function mapValueToVolume(value: number): number {
+  const config = getWorkerConfig();
   const normalizedValue = normalizeValue(value);
-  const minVolume = workerConfig!.minVolume;
-  const maxVolume = workerConfig!.maxVolume;
-  return minVolume + normalizedValue * (maxVolume - minVolume);
+  return config.minVolume + normalizedValue * (config.maxVolume - config.minVolume);
 }
 
 function mapValueToInterval(value: number): number {
+  const config = getWorkerConfig();
   const normalizedValue = normalizeValue(value);
-  const minRhythm = workerConfig!.minRhythm;
-  const maxRhythm = workerConfig!.maxRhythm;
-  return minRhythm + (1 - normalizedValue) * (maxRhythm - minRhythm);
+  return config.minRhythm + (1 - normalizedValue) * (config.maxRhythm - config.minRhythm);
 }
 
 function mapValueToNote(value: number): number {
@@ -73,10 +99,11 @@ function mapValueToNoteName(value: number): string {
 
 // 오디오 생성
 function generateVolumeAudio(data: number[]): { audioData: Float32Array; dataPoints: DataPoint[] } {
-  const bufferLength = workerConfig!.sampleRate * workerConfig!.duration;
+  const config = getWorkerConfig();
+  const bufferLength = config.sampleRate * config.duration;
   const audioData = new Float32Array(bufferLength);
-  const timeStep = workerConfig!.duration / data.length;
-  const baseFrequency = workerConfig!.frequency;
+  const timeStep = config.duration / data.length;
+  const baseFrequency = config.frequency;
 
   const dataPoints: DataPoint[] = data.map((value, index) => ({
     value,
@@ -87,12 +114,12 @@ function generateVolumeAudio(data: number[]): { audioData: Float32Array; dataPoi
 
   for (let i = 0; i < data.length; i++) {
     const value = data[i];
-    const startSample = Math.floor(i * timeStep * workerConfig!.sampleRate);
-    const endSample = Math.floor((i + 1) * timeStep * workerConfig!.sampleRate);
+    const startSample = Math.floor(i * timeStep * config.sampleRate);
+    const endSample = Math.floor((i + 1) * timeStep * config.sampleRate);
     const volume = mapValueToVolume(value);
 
     for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
-      const timePosition = sample / workerConfig!.sampleRate;
+      const timePosition = sample / config.sampleRate;
       const localTime = timePosition - i * timeStep;
       audioData[sample] = Math.sin(2 * Math.PI * baseFrequency * localTime) * volume;
     }
@@ -102,13 +129,14 @@ function generateVolumeAudio(data: number[]): { audioData: Float32Array; dataPoi
 }
 
 function generateRhythmAudio(data: number[]): { audioData: Float32Array; dataPoints: DataPoint[] } {
-  const bufferLength = workerConfig!.sampleRate * workerConfig!.duration;
+  const config = getWorkerConfig();
+  const bufferLength = config.sampleRate * config.duration;
   const audioData = new Float32Array(bufferLength);
-  const baseFrequency = workerConfig!.frequency;
+  const baseFrequency = config.frequency;
 
   const dataPoints: DataPoint[] = data.map((value, index) => ({
     value,
-    timestamp: index * (workerConfig!.duration / data.length),
+    timestamp: index * (config.duration / data.length),
     volume: mapValueToVolume(value),
     frequency: mapValueToFrequency(value),
   }));
@@ -116,21 +144,21 @@ function generateRhythmAudio(data: number[]): { audioData: Float32Array; dataPoi
   for (let i = 0; i < data.length; i++) {
     const value = data[i];
     const interval = mapValueToInterval(value);
-    const timestamp = i * (workerConfig!.duration / data.length);
-    const startSample = Math.floor(timestamp * workerConfig!.sampleRate);
+    const timestamp = i * (config.duration / data.length);
+    const startSample = Math.floor(timestamp * config.sampleRate);
     const soundDuration = Math.min(0.1, interval * 0.1);
-    const soundEndSample = Math.floor((timestamp + soundDuration) * workerConfig!.sampleRate);
+    const soundEndSample = Math.floor((timestamp + soundDuration) * config.sampleRate);
 
     for (let sample = startSample; sample < soundEndSample && sample < audioData.length; sample++) {
-      const time = sample / workerConfig!.sampleRate;
+      const time = sample / config.sampleRate;
       const localTime = time - timestamp;
-      audioData[sample] = Math.sin(2 * Math.PI * baseFrequency * localTime) * workerConfig!.volume;
+      audioData[sample] = Math.sin(2 * Math.PI * baseFrequency * localTime) * config.volume;
     }
 
     if (i < data.length - 1) {
-      const nextTimestamp = (i + 1) * (workerConfig!.duration / data.length);
+      const nextTimestamp = (i + 1) * (config.duration / data.length);
       const silenceStartSample = soundEndSample;
-      const silenceEndSample = Math.floor(nextTimestamp * workerConfig!.sampleRate);
+      const silenceEndSample = Math.floor(nextTimestamp * config.sampleRate);
 
       for (
         let sample = silenceStartSample;
@@ -146,9 +174,10 @@ function generateRhythmAudio(data: number[]): { audioData: Float32Array; dataPoi
 }
 
 function generateMelodyAudio(data: number[]): { audioData: Float32Array; dataPoints: DataPoint[] } {
-  const bufferLength = workerConfig!.sampleRate * workerConfig!.duration;
+  const config = getWorkerConfig();
+  const bufferLength = config.sampleRate * config.duration;
   const audioData = new Float32Array(bufferLength);
-  const timeStep = workerConfig!.duration / data.length;
+  const timeStep = config.duration / data.length;
 
   const dataPoints: DataPoint[] = data.map((value, index) => ({
     value,
@@ -160,14 +189,14 @@ function generateMelodyAudio(data: number[]): { audioData: Float32Array; dataPoi
 
   for (let i = 0; i < data.length; i++) {
     const value = data[i];
-    const startSample = Math.floor(i * timeStep * workerConfig!.sampleRate);
-    const endSample = Math.floor((i + 1) * timeStep * workerConfig!.sampleRate);
+    const startSample = Math.floor(i * timeStep * config.sampleRate);
+    const endSample = Math.floor((i + 1) * timeStep * config.sampleRate);
     const frequency = mapValueToNote(value);
 
     for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
-      const time = sample / workerConfig!.sampleRate;
+      const time = sample / config.sampleRate;
       const localTime = time - i * timeStep;
-      audioData[sample] = Math.sin(2 * Math.PI * frequency * localTime) * workerConfig!.volume;
+      audioData[sample] = Math.sin(2 * Math.PI * frequency * localTime) * config.volume;
     }
   }
 
@@ -178,9 +207,10 @@ function generateFrequencyAudio(data: number[]): {
   audioData: Float32Array;
   dataPoints: DataPoint[];
 } {
-  const bufferLength = workerConfig!.sampleRate * workerConfig!.duration;
+  const config = getWorkerConfig();
+  const bufferLength = config.sampleRate * config.duration;
   const audioData = new Float32Array(bufferLength);
-  const timeStep = workerConfig!.duration / data.length;
+  const timeStep = config.duration / data.length;
 
   const dataPoints: DataPoint[] = data.map((value, index) => ({
     value,
@@ -191,28 +221,29 @@ function generateFrequencyAudio(data: number[]): {
 
   for (let i = 0; i < data.length; i++) {
     const value = data[i];
-    const startSample = Math.floor(i * timeStep * workerConfig!.sampleRate);
-    const endSample = Math.floor((i + 1) * timeStep * workerConfig!.sampleRate);
+    const startSample = Math.floor(i * timeStep * config.sampleRate);
+    const endSample = Math.floor((i + 1) * timeStep * config.sampleRate);
     const frequency = mapValueToFrequency(value);
 
     for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
-      const time = sample / workerConfig!.sampleRate;
+      const time = sample / config.sampleRate;
       const localTime = time - i * timeStep;
-      audioData[sample] = Math.sin(2 * Math.PI * frequency * localTime) * workerConfig!.volume;
+      audioData[sample] = Math.sin(2 * Math.PI * frequency * localTime) * config.volume;
     }
   }
 
   return { audioData, dataPoints };
 }
 
-// Worker 메시지 처리
+// 메시지 수신 처리
 self.onmessage = (event: MessageEvent<AudioWorkerMessage>) => {
   const { type, payload } = event.data;
 
   if (type === 'GENERATE_AUDIO') {
     const { data, method, config } = payload;
 
-    // 설정 및 데이터 업데이트
+    validateConfig(config);
+
     workerConfig = config;
     lastProcessedData = data;
 
