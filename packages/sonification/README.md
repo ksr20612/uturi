@@ -40,6 +40,7 @@ console.log('Audio duration:', result.duration);
 ```typescript
 import { Sonifier } from '@uturi/sonification';
 
+// configuration can also be dynamically set by `Sonifier.setConfig()`
 const sonifier = new Sonifier({
   sampleRate: 44100,
   duration: 3.0,
