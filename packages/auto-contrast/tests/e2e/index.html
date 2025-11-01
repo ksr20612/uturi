@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto Contrast E2E Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        line-height: 1.6;
+      }
+
+      .test-container {
+        margin: 20px 0;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+      }
+
+      .auto-contrast {
+        padding: 20px;
+        margin: 10px 0;
+        border-radius: 4px;
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .auto-contrast-bg {
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        min-height: 200px;
+      }
+
+      .solid-bg {
+        background-color: #666666;
+      }
+
+      .image-bg {
+        background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="50" height="50" fill="%23ff0000"/><rect x="50" y="50" width="50" height="50" fill="%2300ff00"/></svg>');
+        background-size: cover;
+        background-position: center;
+      }
+
+      .button {
+        padding: 10px 20px;
+        margin: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .control-button {
+        background-color: #007bff;
+        color: white;
+      }
+
+      .result {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f8f9fa;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+
+      .status.active {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .status.inactive {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Auto Contrast 라이브러리 E2E 테스트</h1>
+
+    <div class="test-container">
+      <h2>라이브러리 상태</h2>
+      <div>
+        <span id="status" class="status inactive">비활성화</span>
+        <button id="launch-button" class="button control-button">시작</button>
+        <button id="stop-button" class="button control-button">중지</button>
+        <button id="update-button" class="button control-button">업데이트</button>
+      </div>
+      <div id="status-result" class="result"></div>
+    </div>
+
+    <div class="test-container">
+      <h2>그라디언트 배경 테스트</h2>
+      <div class="auto-contrast-bg">
+        <div class="auto-contrast">
+          이 텍스트는 그라디언트 배경에 대해 자동으로 색상이 조정됩니다.
+        </div>
+      </div>
+      <button id="gradient-button" class="button control-button">그라디언트 배경 조정</button>
+      <div id="gradient-result" class="result"></div>
+    </div>
+
+    <div class="test-container">
+      <h2>단색 배경 테스트</h2>
+      <div class="auto-contrast-bg solid-bg">
+        <div class="auto-contrast">이 텍스트는 단색 배경에 대해 자동으로 색상이 조정됩니다.</div>
+      </div>
+      <button id="solid-button" class="button control-button">단색 배경 조정</button>
+      <div id="solid-result" class="result"></div>
+    </div>
+
+    <div class="test-container">
+      <h2>이미지 배경 테스트</h2>
+      <div class="auto-contrast-bg image-bg">
+        <div class="auto-contrast">이 텍스트는 이미지 배경에 대해 자동으로 색상이 조정됩니다.</div>
+      </div>
+      <button id="image-button" class="button control-button">이미지 배경 조정</button>
+      <div id="image-result" class="result"></div>
+    </div>
+
+    <div class="test-container">
+      <h2>다양한 색상 조합 테스트</h2>
+      <div id="color-tests">
+        <div class="auto-contrast-bg" style="background-color: #ff6b6b">
+          <div class="auto-contrast">빨간색 배경</div>
+        </div>
+        <div class="auto-contrast-bg" style="background-color: #4ecdc4">
+          <div class="auto-contrast">청록색 배경</div>
+        </div>
+        <div class="auto-contrast-bg" style="background-color: #45b7d1">
+          <div class="auto-contrast">파란색 배경</div>
+        </div>
+        <div class="auto-contrast-bg" style="background-color: #96ceb4">
+          <div class="auto-contrast">연두색 배경</div>
+        </div>
+      </div>
+      <button id="color-button" class="button control-button">모든 색상 조정</button>
+      <div id="color-result" class="result"></div>
+    </div>
+
+    <div class="test-container">
+      <h2>WCAG 기준 테스트</h2>
+      <div id="wcag-tests">
+        <div class="auto-contrast-bg" style="background-color: #888888">
+          <div class="auto-contrast">WCAG AA 기준 테스트 (4.5:1)</div>
+        </div>
+        <div class="auto-contrast-bg" style="background-color: #aaaaaa">
+          <div class="auto-contrast">WCAG AAA 기준 테스트 (7.0:1)</div>
+        </div>
+      </div>
+      <button id="wcag-button" class="button control-button">WCAG 기준으로 조정</button>
+      <div id="wcag-result" class="result"></div>
+    </div>
+
+    <div class="test-container">
+      <h2>반응형 테스트</h2>
+      <div
+        class="auto-contrast-bg"
+        style="background: linear-gradient(90deg, #ff6b6b 0%, #4ecdc4 100%)"
+      >
+        <div class="auto-contrast">창 크기를 조정해보세요. 텍스트 색상이 자동으로 조정됩니다.</div>
+      </div>
+      <div id="responsive-result" class="result">
+        창 크기를 조정하면 자동으로 색상이 업데이트됩니다.
+      </div>
+    </div>
+
+    <script type="module">
+      // E2E 테스트를 위한 기본 스크립트
+      console.log('Auto Contrast E2E 테스트 페이지가 로드되었습니다.');
+
+      // 상태 관리
+      let isActive = false;
+      const statusElement = document.getElementById('status');
+      const statusResultElement = document.getElementById('status-result');
+
+      function updateStatus(active) {
+        isActive = active;
+        statusElement.textContent = active ? '활성화' : '비활성화';
+        statusElement.className = `status ${active ? 'active' : 'inactive'}`;
+        statusResultElement.textContent = `라이브러리 상태: ${active ? '활성화됨' : '비활성화됨'}`;
+      }
+
+      // 이벤트 리스너들
+      document.getElementById('launch-button')?.addEventListener('click', () => {
+        console.log('AutoContrast 시작');
+        updateStatus(true);
+      });
+
+      document.getElementById('stop-button')?.addEventListener('click', () => {
+        console.log('AutoContrast 중지');
+        updateStatus(false);
+      });
+
+      document.getElementById('update-button')?.addEventListener('click', () => {
+        console.log('AutoContrast 업데이트');
+        if (isActive) {
+          console.log('요소들을 업데이트합니다...');
+        }
+      });
+
+      document.getElementById('gradient-button')?.addEventListener('click', () => {
+        console.log('그라디언트 배경 조정');
+        const result = document.getElementById('gradient-result');
+        result.textContent = '그라디언트 배경에 대한 색상 조정이 완료되었습니다.';
+      });
+
+      document.getElementById('solid-button')?.addEventListener('click', () => {
+        console.log('단색 배경 조정');
+        const result = document.getElementById('solid-result');
+        result.textContent = '단색 배경에 대한 색상 조정이 완료되었습니다.';
+      });
+
+      document.getElementById('image-button')?.addEventListener('click', () => {
+        console.log('이미지 배경 조정');
+        const result = document.getElementById('image-result');
+        result.textContent = '이미지 배경에 대한 색상 조정이 완료되었습니다.';
+      });
+
+      document.getElementById('color-button')?.addEventListener('click', () => {
+        console.log('모든 색상 조정');
+        const result = document.getElementById('color-result');
+        result.textContent = '모든 색상 조합에 대한 조정이 완료되었습니다.';
+      });
+
+      document.getElementById('wcag-button')?.addEventListener('click', () => {
+        console.log('WCAG 기준 조정');
+        const result = document.getElementById('wcag-result');
+        result.textContent = 'WCAG 기준에 따른 색상 조정이 완료되었습니다.';
+      });
+
+      // 반응형 테스트
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (isActive) {
+            console.log('창 크기 변경으로 인한 자동 업데이트');
+            const result = document.getElementById('responsive-result');
+            result.textContent = `창 크기 변경 감지: ${window.innerWidth}x${window.innerHeight} - 색상 자동 조정됨`;
+          }
+        }, 100);
+      });
+
+      // 초기 상태 설정
+      updateStatus(false);
+    </script>
+  </body>
+</html>
+

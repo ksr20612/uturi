@@ -1,0 +1,66 @@
+{
+  "name": "@uturi/auto-contrast",
+  "version": "0.1.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "Accessibility library that automatically adjusts text colors based on background elements to meet WCAG 2.2 standards",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/**"
+  ],
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "contrast",
+    "color",
+    "wcag",
+    "automation",
+    "dom",
+    "background",
+    "text"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "dev:test": "npx http-server . -p 3001 -c-1",
+    "lint": "eslint src --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.53.1",
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@uturi/config-eslint": "workspace:*",
+    "@uturi/config-typescript": "workspace:*",
+    "@uturi/config-vitest": "workspace:*",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ksr20612/uturi.git",
+    "directory": "packages/auto-contrast"
+  },
+  "homepage": "https://github.com/ksr20612/uturi/tree/main/packages/auto-contrast#readme",
+  "bugs": {
+    "url": "https://github.com/ksr20612/uturi/issues"
+  }
+}
+
