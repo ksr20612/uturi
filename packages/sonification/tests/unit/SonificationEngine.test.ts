@@ -8,10 +8,11 @@ const mockAudioContext = {
   sampleRate: 44100,
 };
 
+const mockChannelData = new Float32Array(88200);
 const mockAudioBuffer = {
   copyToChannel: vi.fn(),
   copyFromChannel: vi.fn(),
-  getChannelData: vi.fn(),
+  getChannelData: vi.fn(() => mockChannelData),
   length: 88200,
   duration: 2.0,
   numberOfChannels: 1,

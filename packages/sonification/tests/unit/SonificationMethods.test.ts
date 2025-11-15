@@ -8,10 +8,11 @@ const mockAudioContext = {
   sampleRate: 44100,
 };
 
+const mockChannelData = new Float32Array(88200);
 const mockAudioBuffer = {
   copyToChannel: vi.fn(),
   copyFromChannel: vi.fn(),
-  getChannelData: vi.fn(),
+  getChannelData: vi.fn(() => mockChannelData),
   length: 88200,
   duration: 2.0,
   numberOfChannels: 1,
@@ -48,7 +49,7 @@ describe('SonificationMethods', () => {
   });
 
   describe('sonify 메서드', () => {
-    it('melody 메서드로 소리화할 수 있어야 한다', async () => {
+    it('melody 메서드로 음성화할 수 있어야 한다', async () => {
       const result = await engine.sonify(testData, 'melody');
 
       expect(result).toHaveProperty('audioBuffer');
@@ -71,7 +72,7 @@ describe('SonificationMethods', () => {
       });
     });
 
-    it('frequency 메서드로 소리화할 수 있어야 한다', async () => {
+    it('frequency 메서드로 음성화할 수 있어야 한다', async () => {
       const result = await engine.sonify(testData, 'frequency');
 
       expect(result).toHaveProperty('audioBuffer');
@@ -92,7 +93,7 @@ describe('SonificationMethods', () => {
       });
     });
 
-    it('volume 메서드로 소리화할 수 있어야 한다', async () => {
+    it('volume 메서드로 음성화할 수 있어야 한다', async () => {
       const result = await engine.sonify(testData, 'volume');
 
       expect(result).toHaveProperty('audioBuffer');
@@ -113,7 +114,7 @@ describe('SonificationMethods', () => {
       });
     });
 
-    it('rhythm 메서드로 소리화할 수 있어야 한다', async () => {
+    it('rhythm 메서드로 음성화할 수 있어야 한다', async () => {
       const result = await engine.sonify(testData, 'rhythm');
 
       expect(result).toHaveProperty('audioBuffer');
@@ -134,7 +135,7 @@ describe('SonificationMethods', () => {
       });
     });
 
-    it('빈 데이터로도 소리화할 수 있어야 한다', async () => {
+    it('빈 데이터로도 음성화할 수 있어야 한다', async () => {
       const emptyData: number[] = [];
       const result = await engine.sonify(emptyData, 'melody');
 

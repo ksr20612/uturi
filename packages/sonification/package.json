@@ -45,6 +45,7 @@
     "@uturi/config-eslint": "workspace:*",
     "@uturi/config-typescript": "workspace:*",
     "@uturi/config-vitest": "workspace:*",
+    "standardized-audio-context-mock": "^9.7.24",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-dts": "^4.0.0"
