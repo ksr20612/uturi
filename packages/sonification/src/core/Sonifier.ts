@@ -132,7 +132,7 @@ export default class Sonifier {
 
           const audioContext = this.getAudioContext();
           const buffer = audioContext.createBuffer(1, audioData.length, sampleRate);
-          buffer.copyToChannel(audioData, 0);
+          buffer.getChannelData(0).set(audioData);
 
           resolve({ audioBuffer: buffer, dataPoints });
         }
@@ -218,7 +218,7 @@ export default class Sonifier {
 
     const audioContext = this.getAudioContext();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
-    buffer.copyToChannel(audioData, 0);
+    buffer.getChannelData(0).set(audioData);
 
     return { audioBuffer: buffer, dataPoints };
   }
@@ -275,7 +275,7 @@ export default class Sonifier {
 
     const audioContext = this.getAudioContext();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
-    buffer.copyToChannel(audioData, 0);
+    buffer.getChannelData(0).set(audioData);
 
     return { audioBuffer: buffer, dataPoints };
   }
@@ -312,7 +312,7 @@ export default class Sonifier {
 
     const audioContext = this.getAudioContext();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
-    buffer.copyToChannel(audioData, 0);
+    buffer.getChannelData(0).set(audioData);
 
     return { audioBuffer: buffer, dataPoints };
   }
@@ -348,7 +348,7 @@ export default class Sonifier {
 
     const audioContext = this.getAudioContext();
     const buffer = audioContext.createBuffer(1, bufferLength, this.config.sampleRate);
-    buffer.copyToChannel(audioData, 0);
+    buffer.getChannelData(0).set(audioData);
 
     return { audioBuffer: buffer, dataPoints };
   }

@@ -9,10 +9,11 @@ const mockAudioContext = {
   sampleRate: 44100,
 };
 
+const mockChannelData = new Float32Array(88200);
 const mockAudioBuffer = {
   copyToChannel: vi.fn(),
   copyFromChannel: vi.fn(),
-  getChannelData: vi.fn(),
+  getChannelData: vi.fn(() => mockChannelData),
   length: 88200, // 44100Hz * 2s
   duration: 2.0,
   numberOfChannels: 1,
@@ -57,10 +58,10 @@ describe('AudioGeneration', () => {
         88200, // 샘플 수 (2초 * 44100Hz)
         44100, // 샘플레이트
       );
-      expect(mockAudioBuffer.copyToChannel).toHaveBeenCalled();
+      expect(mockAudioBuffer.getChannelData).toHaveBeenCalledWith(0);
     });
 
-    it('모든 소리화 메서드가 AudioBuffer를 생성해야 한다', async () => {
+    it('모든 음성화 메서드가 AudioBuffer를 생성해야 한다', async () => {
       const methods: SonifierMethod[] = ['melody', 'frequency', 'volume', 'rhythm'];
 
       for (const method of methods) {

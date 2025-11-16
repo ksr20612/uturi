@@ -66,7 +66,7 @@
     </div>
 
     <div class="test">
-      <h3>모든 소리화 방법 테스트</h3>
+      <h3>모든 음성화 방법 테스트</h3>
       <button id="methods-test-btn" disabled>모든 방법 테스트</button>
       <div id="methods-result" class="result loading">라이브러리 로딩 중...</div>
     </div>
@@ -97,7 +97,7 @@
             throw new Error('라이브러리가 로드되지 않았습니다');
           }
 
-          // 기본 소리화 테스트
+          // 기본 음성화 테스트
           const result = await sonifyArray(testData, 'frequency');
 
           // AudioBuffer가 생성되었는지 확인
@@ -168,7 +168,7 @@
         }
       }
 
-      // 모든 소리화 방법 테스트
+      // 모든 음성화 방법 테스트
       async function testAllMethods() {
         try {
           const methods = ['frequency', 'volume', 'rhythm', 'melody'];
@@ -179,14 +179,14 @@
             results.push({ method, success: true, dataPoints: result.dataPoints.length });
           }
 
-          showResult('methods-result', `✅ 모든 소리화 방법 테스트 성공! ${methods.join(', ')}`);
+          showResult('methods-result', `✅ 모든 음성화 방법 테스트 성공! ${methods.join(', ')}`);
           window.testResults = {
             ...window.testResults,
             methods: 'success',
             methodResults: results,
           };
         } catch (error) {
-          showResult('methods-result', `❌ 소리화 방법 테스트 실패: ${error.message}`, false);
+          showResult('methods-result', `❌ 음성화 방법 테스트 실패: ${error.message}`, false);
           window.testResults = {
             ...window.testResults,
             methods: 'failed',
