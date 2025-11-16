@@ -73,6 +73,7 @@ Thumbs.db
 dist/   
 
 playwright-report/
+test-results/
 
 # Next.js
 .next/
