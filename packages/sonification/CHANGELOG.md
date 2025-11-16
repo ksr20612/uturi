@@ -1,5 +1,11 @@
 # @uturi/sonification
 
+## 1.0.0
+
+### Major Changes
+
+- 33c0f83: release(sonification): v1.0.0
+
 ## 0.2.1
 
 ### Patch Changes
