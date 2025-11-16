@@ -1,5 +1,11 @@
 # @uturi/sonification
 
+## 1.1.0
+
+### Minor Changes
+
+- ac18c3d: feat(sonification): useSonifier hook added for React projects
+
 ## 1.0.0
 
 ### Major Changes
