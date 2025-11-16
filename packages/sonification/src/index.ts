@@ -1,2 +1,3 @@
 export type * from './typings/sonification';
-export { default as Sonifier } from './core/Sonifier';
+export * from './core';
+export * from './react';

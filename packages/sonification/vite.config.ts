@@ -7,14 +7,22 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
+        core: resolve(__dirname, 'src/core/index.ts'),
+        react: resolve(__dirname, 'src/react/index.ts'),
       },
       name: 'UturiSonification',
-      fileName: (format) => {
-        return `index.${format === 'es' ? 'mjs' : 'js'}`;
+      fileName: (format, entryName) => {
+        return `${entryName}.${format === 'es' ? 'mjs' : 'js'}`;
       },
     },
     rollupOptions: {
-      output: {},
+      external: ['react', 'react-dom'],
+      output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+        },
+      },
     },
     minify: 'esbuild',
     sourcemap: false,
