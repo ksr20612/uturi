@@ -2,7 +2,7 @@
 'use client';
 
 import type { ChangeEvent } from 'react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { Chart, useChart } from '@chakra-ui/charts';
 import type { AccordionValueChangeDetails } from '@chakra-ui/react/accordion';
@@ -20,7 +20,7 @@ import { VStack } from '@chakra-ui/react/stack';
 import { Text } from '@chakra-ui/react/text';
 
 import type { SonifierConfig } from '@uturi/sonification';
-import { Sonifier } from '@uturi/sonification';
+import { useSonifier } from '@uturi/sonification/react';
 import { GiPerspectiveDiceSixFacesRandom } from 'react-icons/gi';
 
 import { CartesianGrid, Line, LineChart, Tooltip, YAxis } from 'recharts';
@@ -35,14 +35,13 @@ import ChakraTooltip from '../../../_components/Tooltip/Tooltip';
 
 function DemoSection() {
   const [method, setMethod] = useState<SonificationMethod[]>([SonificationMethod.MELODY]);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [isAccordionOpen, setIsAccordionOpen] = useState<string[]>([]);
   const [config, setConfig] = useState<SonifierConfig>(DEFAULT_CONFIG);
   const [dataSamples, setDataSamples] = useState<number[]>([
     100, 105, 98, 112, 108, 115, 120, 118, 125, 130, 136, 140, 145,
   ]);
 
-  const sonifier = useMemo(() => new Sonifier(config), [config]);
+  const { sonify, isPlaying, setConfig: updateConfig } = useSonifier(config);
 
   const chart = useChart({
     data: dataSamples.map((value) => ({
@@ -67,27 +66,24 @@ function DemoSection() {
   const handleChangeConfig = (key: keyof SonifierConfig) => (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^0-9.]/g, '');
 
-    setConfig((prev) => ({ ...prev, [key]: value }));
+    setConfig({ ...config, [key]: Number(value) });
   };
 
   const handlePlay = useCallback(async () => {
     try {
-      setIsPlaying(true);
       const methodType = method[0];
       console.log(`Converting data using ${methodType} method:`, dataSamples);
       console.log('Configuration:', config);
 
-      const result = await sonifier.sonify([...dataSamples], methodType, {
+      const result = await sonify([...dataSamples], methodType, {
         autoPlay: true,
       });
 
       console.log('Sonification result:', result);
     } catch (error) {
       console.error('Sonification error:', error);
-    } finally {
-      setIsPlaying(false);
     }
-  }, [dataSamples, method, sonifier, config]);
+  }, [dataSamples, method, sonify, config]);
 
   const handleClickShuffle = useCallback(() => {
     const shuffledData = Array.from({ length: 13 }, () => Math.floor(Math.random() * 100) + 50);
@@ -95,10 +91,8 @@ function DemoSection() {
   }, []);
 
   useEffect(() => {
-    return () => {
-      sonifier.cleanup();
-    };
-  }, [sonifier]);
+    updateConfig(config);
+  }, [config, updateConfig]);
 
   return (
     <Box as="section">

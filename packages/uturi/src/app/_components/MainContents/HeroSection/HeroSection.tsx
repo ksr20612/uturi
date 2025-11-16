@@ -233,12 +233,6 @@ function HeroSection() {
                     data
                   </Box>
                   <Box as="span" color="gray.400">
-                    ,{' '}
-                  </Box>
-                  <Box as="span" color="green.400">
-                    'frequency'
-                  </Box>
-                  <Box as="span" color="gray.400">
                     )
                   </Box>
                   ;
