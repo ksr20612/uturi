@@ -14,8 +14,10 @@ export interface Tool {
   status: ToolStatus;
   url: string;
   githubUrl?: string;
+  npmUrl?: string;
   features: string[];
   icon?: string;
+  version?: string;
 }
 
 const TOOLS = Object.freeze<Tool[]>([
@@ -23,22 +25,26 @@ const TOOLS = Object.freeze<Tool[]>([
     id: 'sonification',
     name: '@uturi/sonification',
     description: 'Transform numbers into sound to make data more accessible.',
-    status: ToolStatus.BETA,
+    status: ToolStatus.STABLE,
     url: '/sonification',
     githubUrl: 'https://github.com/ksr20612/uturi/tree/main/packages/sonification',
+    npmUrl: 'https://www.npmjs.com/package/@uturi/sonification',
     features: [
-      'Customizable audio settings',
-      'Various output formats: Melody, Rhythm, and Volume',
-      'Optimized audio performance',
+      'Customizable Audio Settings',
+      'Various Output Formats: Melody, Volume, Frequency and Rhythm',
+      'Optimized Audio Performance',
+      'Hook Available for React Projects',
     ],
+    version: '1.1.0',
   },
   {
     id: 'ui',
-    name: '@uturi/ui',
-    description: 'Ensure accessibility for complex components like DatePicker and AutoComplete.',
+    name: '@uturi/maru',
+    description:
+      'Rapidly Build Accessible UI Components Like AutoComplete, Select, and ChainPicker',
     status: ToolStatus.DEVELOPING,
-    url: '/color-contrast-checker',
-    githubUrl: 'https://github.com/ksr20612/uturi/tree/main/packages/ui',
+    url: '/maru',
+    githubUrl: 'https://github.com/ksr20612/uturi/tree/main/packages/maru',
     features: [],
   },
   // {

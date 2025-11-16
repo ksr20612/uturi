@@ -7,16 +7,24 @@ import { Text } from '@chakra-ui/react/text';
 import { VisuallyHidden } from '@chakra-ui/react/visually-hidden';
 import Link from 'next/link';
 
-import { FaGithub } from 'react-icons/fa';
+import { FaGithub, FaNpm } from 'react-icons/fa';
 
 import type { Tool } from '@/app/_constants/Tools';
 import { ToolStatus } from '@/app/_constants/Tools';
 import getStatusColor from '@/app/_utils/getStatusColor/getStatusColor';
 import getStatusLabel from '@/app/_utils/getStatusLabel/getStatusLabel';
 
-interface ToolCardProps extends Tool {}
-
-function ToolCard({ name, githubUrl, url, status, description, features, id }: ToolCardProps) {
+function ToolCard({
+  name,
+  githubUrl,
+  npmUrl,
+  url,
+  status,
+  description,
+  features,
+  id,
+  version,
+}: Tool) {
   return (
     <>
       <Box mb={4}>
@@ -25,39 +33,69 @@ function ToolCard({ name, githubUrl, url, status, description, features, id }: T
             <Box as="p" fontWeight="bold" color="primary.text">
               {name}
             </Box>
-            {githubUrl && (
-              <Link
-                href={githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  color: 'inherit',
-                  textDecoration: 'none',
-                }}
-              >
-                <Box
-                  as="span"
-                  color="fg.subtle"
-                  _hover={{ color: 'fg.muted' }}
-                  _focus={{
-                    color: 'fg.muted',
-                    outline: '2px solid',
-                    outlineColor: 'primary.text',
-                    outlineOffset: '2px',
-                    borderRadius: 'md',
+            <HStack gap={3}>
+              {githubUrl && (
+                <Link
+                  href={githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    color: 'inherit',
+                    textDecoration: 'none',
                   }}
-                  transition="color 0.2s"
-                  cursor="pointer"
-                  aria-label={`${name} GitHub repository (opens in new tab)`}
                 >
-                  <FaGithub size={20} />
-                </Box>
-              </Link>
-            )}
+                  <Box
+                    as="span"
+                    color="fg.subtle"
+                    _hover={{ color: 'fg.muted' }}
+                    _focus={{
+                      color: 'fg.muted',
+                      outline: '2px solid',
+                      outlineColor: 'primary.text',
+                      outlineOffset: '2px',
+                      borderRadius: 'md',
+                    }}
+                    transition="color 0.2s"
+                    cursor="pointer"
+                    aria-label={`${name} GitHub repository (opens in new tab)`}
+                  >
+                    <FaGithub size={20} />
+                  </Box>
+                </Link>
+              )}
+              {npmUrl && (
+                <Link href={npmUrl} target="_blank" rel="noopener noreferrer">
+                  <Box
+                    as="span"
+                    color="fg.subtle"
+                    _hover={{ color: 'fg.muted' }}
+                    _focus={{
+                      color: 'fg.muted',
+                      outline: '2px solid',
+                      outlineColor: 'primary.text',
+                      outlineOffset: '2px',
+                      borderRadius: 'md',
+                    }}
+                    transition="color 0.2s"
+                    cursor="pointer"
+                    aria-label={`${name} GitHub repository (opens in new tab)`}
+                  >
+                    <FaNpm size={20} />
+                  </Box>
+                </Link>
+              )}
+            </HStack>
           </HStack>
-          <Badge colorScheme={getStatusColor(status)} variant="subtle">
-            {getStatusLabel(status)}
-          </Badge>
+          <HStack gap={2} flexWrap="wrap">
+            {version && (
+              <Badge colorPalette="blue" variant="subtle" size="md">
+                v{version}
+              </Badge>
+            )}
+            <Badge colorPalette={getStatusColor(status)} variant="subtle" size="md">
+              {getStatusLabel(status)}
+            </Badge>
+          </HStack>
         </VStack>
       </Box>
 

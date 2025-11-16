@@ -45,6 +45,37 @@ function ChartWithSound() {
   );
 }`,
 
+  reactHook: `import { useSonifier } from '@uturi/sonification/react';
+import { useCallback } from 'react';
+
+function ChartWithSound() {
+  const chartData = [10, 25, 15, 40, 35, 60];
+  
+  const { sonify, isPlaying, error, result } = useSonifier({
+    duration: 2.0,
+    volume: 0.5,
+  });
+
+  const handlePlaySound = useCallback(async () => {
+    try {
+      const sonificationResult = await sonify(chartData, 'melody', { autoPlay: true });
+      console.log('Sonification result:', sonificationResult);
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  }, [chartData, sonify]);
+
+  return (
+    <div>
+      <button onClick={handlePlaySound} disabled={isPlaying}>
+        {isPlaying ? 'Playing...' : 'Play Chart Sound'}
+      </button>
+      {error && <div>Error: {error.message}</div>}
+      {result && <div>Last result: {result.dataPoints.length} data points</div>}
+    </div>
+  );
+}`,
+
   sonificationMethods: `// 4 different conversion methods
 const data = [10, 20, 30, 40, 50];
 const sonifier = new Sonifier();

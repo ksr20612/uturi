@@ -47,8 +47,8 @@ function RuleSection() {
               </CodeBlock>
             </Box>
             <Box w="full">
-              <CodeBlock language="typescript" title="React Component Example">
-                {CODE_EXAMPLES.reactBasic}
+              <CodeBlock language="typescript" title="React Hook Example (Recommended)">
+                {CODE_EXAMPLES.reactHook}
               </CodeBlock>
             </Box>
           </VStack>
