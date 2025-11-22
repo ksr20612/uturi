@@ -130,7 +130,10 @@ export function useSonifier(initialConfig?: SonifierConfig) {
     /** Contains the last successful sonification result */
     result,
 
-    /** Underlying Sonifier instance (if needed for advanced usage) */
-    sonifier,
+    /**
+     * Gets the underlying Sonifier instance (if needed for advanced usage).
+     * Returns the Sonifier instance directly.
+     */
+    getSonifier: () => sonifier,
   };
 }

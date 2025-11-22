@@ -23,6 +23,16 @@
       "types": "./dist/react.d.ts",
       "import": "./dist/react.mjs",
       "require": "./dist/react.js"
+    },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "import": "./dist/vue.mjs",
+      "require": "./dist/vue.js"
+    },
+    "./svelte": {
+      "types": "./dist/svelte.d.ts",
+      "import": "./dist/svelte.mjs",
+      "require": "./dist/svelte.js"
     }
   },
   "sideEffects": false,
@@ -49,7 +59,20 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "peerDependencies": {
-    "react": "^18.0.0"
+    "react": "^18.0.0",
+    "vue": "^3.0.0",
+    "svelte": "^3.0.0 || ^4.0.0 || ^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@playwright/test": "^1.53.1",
@@ -59,10 +82,12 @@
     "@uturi/config-eslint": "workspace:*",
     "@uturi/config-typescript": "workspace:*",
     "@uturi/config-vitest": "workspace:*",
+    "svelte": "^4.0.0",
     "standardized-audio-context-mock": "^9.7.24",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
-    "vite-plugin-dts": "^4.0.0"
+    "vite-plugin-dts": "^4.0.0",
+    "vue": "^3.0.0"
   },
   "repository": {
     "type": "git",
