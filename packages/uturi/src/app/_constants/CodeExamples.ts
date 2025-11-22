@@ -76,6 +76,58 @@ function ChartWithSound() {
   );
 }`,
 
+  vueExample: `import { useSonifier } from '@uturi/sonification/vue';
+
+const chartData = [10, 25, 15, 40, 35, 60];
+const { sonify, isPlaying, error, result } = useSonifier({
+  duration: 2.0,
+  volume: 0.5,
+});
+
+const handlePlaySound = async () => {
+  try {
+    await sonify(chartData, 'melody', { autoPlay: true });
+  } catch (err) {
+    console.error('Error:', err);
+  }
+};
+
+<template>
+  <div>
+    <button @click="handlePlaySound" :disabled="isPlaying">
+      {{ isPlaying ? 'Playing...' : 'Play Chart Sound' }}
+    </button>
+    <div v-if="error">Error: {{ error.message }}</div>
+    <div v-if="result">Last result: {{ result.dataPoints.length }} data points</div>
+  </div>
+</template>`,
+
+  svelteExample: `import { useSonifier } from '@uturi/sonification/svelte';
+
+const chartData = [10, 25, 15, 40, 35, 60];
+const { sonify, isPlaying, error, result } = useSonifier({
+  duration: 2.0,
+  volume: 0.5,
+});
+
+const handlePlaySound = async () => {
+  try {
+    await sonify(chartData, 'melody', { autoPlay: true });
+  } catch (err) {
+    console.error('Error:', err);
+  }
+};
+
+<button on:click={handlePlaySound} disabled={$isPlaying}>
+  {$isPlaying ? 'Playing...' : 'Play Chart Sound'}
+</button>
+{#if $error}
+  <div>Error: {$error.message}</div>
+{/if}
+{#if $result}
+  <div>Last result: {$result.dataPoints.length} data points</div>
+{/if}`,
+
   sonificationMethods: `// 4 different conversion methods
 const data = [10, 20, 30, 40, 50];
 const sonifier = new Sonifier();
@@ -91,6 +143,67 @@ await sonifier.sonify(data, 'rhythm', { autoPlay: true });
 
 // 4. Melody variation (musical scale: C, D, E, F, G, A, B)
 await sonifier.sonify(data, 'melody', { autoPlay: true });`,
+
+  frequencyMethod: `// Frequency: Pitch changes according to value
+// Higher values produce higher pitches
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'frequency', { autoPlay: true });`,
+
+  volumeMethod: `// Volume: Volume changes according to value
+// Higher values produce louder sounds
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'volume', { autoPlay: true });`,
+
+  rhythmMethod: `// Rhythm: Rhythm pattern changes according to value
+// Higher values produce faster rhythms
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'rhythm', { autoPlay: true });`,
+
+  melodyMethod: `// Melody: Scale changes according to value
+// Creates a musical melody using notes (C, D, E, F, G, A, B)
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'melody', { autoPlay: true });`,
+
+  manualPlayback: `// Generate audio without auto-playing
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'melody', { autoPlay: false });
+
+// Play later
+await sonifier.play(result.audioBuffer);
+
+// Or use with Web Audio API directly
+const audioContext = new AudioContext();
+const source = audioContext.createBufferSource();
+source.buffer = result.audioBuffer;
+source.connect(audioContext.destination);
+source.start();`,
+
+  errorHandling: `// Error handling example
+try {
+  const result = await sonifier.sonify(data, 'melody', { autoPlay: true });
+  console.log('Success:', result);
+  console.log('Data points:', result.dataPoints);
+  console.log('Duration:', result.duration);
+} catch (error) {
+  console.error('Sonification failed:', error);
+  // Handle error appropriately
+}`,
+
+  dynamicConfig: `// Update configuration dynamically
+const sonifier = new Sonifier({
+  duration: 2.0,
+  volume: 0.3,
+});
+
+// Later, update the configuration
+sonifier.setConfig({
+  duration: 4.0,
+  volume: 0.6,
+});
+
+// Get current configuration
+const currentConfig = sonifier.getConfig();
+console.log('Current config:', currentConfig);`,
 
   customConfig: `// Fine-tuned configuration customization
 const sonifier = new Sonifier({
