@@ -1,0 +1,114 @@
+name: ♿ Accessibility Issue
+description: Report an accessibility issue or suggest accessibility improvements
+title: '[A11y] '
+labels: ['accessibility']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thank you for reporting an accessibility issue!
+        Accessibility is at the core of our mission. Your feedback helps us make our tools more inclusive.
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package does this accessibility issue relate to?
+      options:
+        - '@uturi/sonification'
+        - '@uturi/uturi (website)'
+        - Other / Not sure
+      required: true
+
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Issue Type
+      description: What kind of accessibility issue is this?
+      options:
+        - Bug - Something is not accessible
+        - Enhancement - Accessibility can be improved
+        - WCAG Compliance - WCAG guideline violation
+        - Screen Reader - Screen reader compatibility issue
+        - Keyboard Navigation - Keyboard navigation issue
+        - Other
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the accessibility issue
+      placeholder: A clear and concise description of the accessibility problem
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Who is affected and how?
+      placeholder: |
+        - Which users are affected? (e.g., screen reader users, keyboard-only users, users with visual impairments)
+        - What is the impact on their ability to use the tool?
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to '...'
+        2. Use assistive technology (e.g., screen reader, keyboard only)
+        3. Observe the issue
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected accessible behavior
+      description: How should this work for users with disabilities?
+      placeholder: A clear description of the expected accessible behavior
+      required: true
+
+  - type: dropdown
+    id: wcag
+    attributes:
+      label: WCAG Guideline (if applicable)
+      description: Which WCAG guideline does this relate to?
+      options:
+        - 1.1.1 Non-text Content
+        - 1.3.1 Info and Relationships
+        - 1.4.3 Contrast (Minimum)
+        - 2.1.1 Keyboard
+        - 2.4.3 Focus Order
+        - 2.4.7 Focus Visible
+        - 4.1.2 Name, Role, Value
+        - Other / Not sure
+        - N/A
+
+  - type: dropdown
+    id: assistive_tech
+    attributes:
+      label: Assistive Technology Used
+      description: What assistive technology were you using when you encountered this issue?
+      options:
+        - Screen Reader (NVDA)
+        - Screen Reader (JAWS)
+        - Screen Reader (VoiceOver)
+        - Screen Reader (TalkBack)
+        - Keyboard Only
+        - Voice Control
+        - Other
+        - N/A
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: Version of the package where the issue occurs
+      placeholder: e.g. @uturi/sonification@1.2.3
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      placeholder: Any other information that might be helpful (e.g., browser, OS, specific use case)

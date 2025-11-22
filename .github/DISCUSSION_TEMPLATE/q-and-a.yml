@@ -1,0 +1,56 @@
+title: ❓ Q&A
+labels: ['question', 'help']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Ask a Question
+        Have a question about using Uturi? Ask it here and the community can help!
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package is your question about?
+      options:
+        - '@uturi/sonification'
+        - General / Multiple packages
+        - Other
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: Ask your question here
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide context about what you're trying to achieve
+      placeholder: |
+        - What are you trying to accomplish?
+        - What have you tried so far?
+        - Any relevant code or error messages?
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code Example (if applicable)
+      description: If your question involves code, please share a minimal example
+      placeholder: |
+        ```typescript
+        // Your code here
+        ```
+      render: markdown
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: Version you're using (if applicable)
+      placeholder: e.g. @uturi/sonification@1.2.3

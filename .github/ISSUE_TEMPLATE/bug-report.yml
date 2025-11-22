@@ -1,0 +1,81 @@
+name: 🐛 Bug Report
+description: Report a bug to help us fix issues
+title: '[Bug] '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thank you for reporting a bug!
+        Please provide as much detail as possible to help us reproduce and fix it.
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package does this bug relate to?
+      options:
+        - '@uturi/sonification'
+        - '@uturi/uturi (website)'
+        - Other / Not sure
+      required: true
+
+  - type: input
+    id: description
+    attributes:
+      label: Describe the bug
+      placeholder: A clear and concise description of what the bug is
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to '...'
+        2. Click '...'
+        3. Scroll down '...'
+        4. See error
+      required: true
+
+  - type: input
+    id: expected
+    attributes:
+      label: Expected behavior
+      placeholder: A clear and concise description of what you expected to happen
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      placeholder: If applicable, add screenshots to help explain your problem
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - Windows
+        - macOS
+        - Linux
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: e.g. Chrome, Firefox, Safari
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: Version of the package where the bug occurs (if applicable)
+      placeholder: e.g. @uturi/sonification@1.2.3
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      placeholder: Any other information that might be relevant

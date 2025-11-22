@@ -1,0 +1,63 @@
+title: 🎉 Show and Tell
+labels: ['showcase']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Share Your Work!
+        Show off how you're using Uturi in your projects! This helps inspire others and showcases the impact of accessible tools.
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package Used
+      description: Which Uturi package did you use?
+      options:
+        - '@uturi/sonification'
+        - Multiple packages
+        - Other
+      required: true
+
+  - type: textarea
+    id: project
+    attributes:
+      label: Project Description
+      description: Tell us about your project
+      placeholder: |
+        - What is your project?
+        - How are you using Uturi?
+        - What accessibility challenges did it help solve?
+      required: true
+
+  - type: textarea
+    id: demo
+    attributes:
+      label: Demo / Screenshots
+      description: Share links, screenshots, or demos of your work
+      placeholder: |
+        - Live demo URL
+        - Screenshots
+        - Code snippets
+        - Video links
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: How has this improved accessibility for your users?
+      placeholder: Share the positive impact on users with disabilities
+      required: true
+
+  - type: textarea
+    id: lessons
+    attributes:
+      label: Lessons Learned (optional)
+      description: Any insights or tips you'd like to share with the community?
+      placeholder: What did you learn? What would you do differently?
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      placeholder: Any other details you'd like to share

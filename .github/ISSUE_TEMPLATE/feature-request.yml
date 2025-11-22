@@ -1,0 +1,63 @@
+name: ✨ Feature Request
+description: Suggest an idea for a new feature or improvement
+title: '[Feature] '
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thank you for suggesting a feature!
+        Please provide details so we can understand and prioritize it.
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package would this feature be for?
+      options:
+        - '@uturi/sonification'
+        - '@uturi/uturi (website)'
+        - Other / Not sure
+      required: true
+
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      placeholder: A short description of the feature
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation / Problem
+      placeholder: Explain why this feature is needed or what problem it solves
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      placeholder: Describe the solution or approach you have in mind
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Low
+        - Medium
+        - High
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      placeholder: Describe other options or approaches you considered
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      placeholder: Any other information that might be helpful

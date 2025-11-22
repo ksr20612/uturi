@@ -1,0 +1,60 @@
+title: 💡 Ideas
+labels: ['idea']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Share Your Ideas
+        Have an idea for improving Uturi or making it more accessible? Share it here!
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package would this idea apply to?
+      options:
+        - '@uturi/sonification'
+        - General / Multiple packages
+        - New package idea
+        - Other
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your Idea
+      description: Describe your idea in detail
+      placeholder: What would you like to see improved or added?
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why is this idea valuable? What problem does it solve?
+      placeholder: Explain the benefits and use cases
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation Thoughts (optional)
+      description: Do you have any thoughts on how this could be implemented?
+      placeholder: Share any technical considerations or approaches you've thought about
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      description: What impact would this idea have?
+      options:
+        - Low - Nice to have
+        - Medium - Would benefit many users
+        - High - Critical for accessibility or usability
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      placeholder: Any other information that might be helpful

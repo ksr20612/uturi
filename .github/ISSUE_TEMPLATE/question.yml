@@ -1,0 +1,62 @@
+name: 💬 Question / Support
+description: Ask a question or request help with using the library
+title: '[Question] '
+labels: ['question']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Thank you for your question!
+        We're here to help. Please provide as much detail as possible so we can assist you better.
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package is your question about?
+      options:
+        - '@uturi/sonification'
+        - Other / Not sure
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: What is your question?
+      placeholder: Please describe your question in detail
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What are you trying to achieve? What have you tried so far?
+      placeholder: |
+        - What are you trying to accomplish?
+        - What have you already tried?
+        - Any code examples or error messages?
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code example (if applicable)
+      description: If your question involves code, please share a minimal example
+      placeholder: |
+        ```typescript
+        // Your code here
+        ```
+      render: markdown
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: Version of the package you're using (if applicable)
+      placeholder: e.g. @uturi/sonification@1.2.3
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      placeholder: Any other information that might be helpful

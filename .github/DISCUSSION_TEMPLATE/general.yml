@@ -1,0 +1,43 @@
+title: 💬 General Discussion
+labels: ['discussion']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Welcome to the discussion!
+        This is a place for general discussions about Uturi, accessibility, and related topics.
+
+  - type: textarea
+    id: topic
+    attributes:
+      label: Discussion Topic
+      description: What would you like to discuss?
+      placeholder: Share your thoughts, questions, or ideas
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: What category does this discussion fall under?
+      options:
+        - General Discussion
+        - Accessibility Best Practices
+        - Usage Examples
+        - Community
+        - Other
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Provide more context or details about your discussion topic
+      placeholder: Elaborate on your topic, share examples, or ask questions
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      placeholder: Any other information that might be relevant to the discussion
