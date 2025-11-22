@@ -234,8 +234,8 @@ importers:
         specifier: ^15.5.13
         version: 15.5.13
       '@uturi/sonification':
-        specifier: 1.1.0
-        version: 1.1.0(react@18.3.1)
+        specifier: 2.0.0
+        version: link:../sonification
       next:
         specifier: ^14.0.0
         version: 14.2.32(react-dom@18.3.1)(react@18.3.1)
@@ -2788,14 +2788,6 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
-
-  /@uturi/sonification@1.1.0(react@18.3.1):
-    resolution: {integrity: sha512-wetyyP/oTdsnk7Cgl7s3A/BVeRGV+1XePgCNAv7seeVVbnKBi3bmIOUy7zjuu9u47tUiK/dxacZMGE8VK1q8Gw==}
-    peerDependencies:
-      react: ^18.0.0
-    dependencies:
-      react: 18.3.1
-    dev: false
 
   /@vanilla-extract/babel-plugin-debug-ids@1.2.2:
     resolution: {integrity: sha512-MeDWGICAF9zA/OZLOKwhoRlsUW+fiMwnfuOAqFVohL31Agj7Q/RBWAYweqjHLgFBCsdnr6XIfwjJnmb2znEWxw==}
