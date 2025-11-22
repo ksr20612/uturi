@@ -16,7 +16,9 @@ body:
       description: Which package is your question about?
       options:
         - '@uturi/sonification'
+        - '@uturi/uturi (website)'
         - Other / Not sure
+    validations:
       required: true
 
   - type: textarea
@@ -24,6 +26,7 @@ body:
     attributes:
       label: What is your question?
       placeholder: Please describe your question in detail
+    validations:
       required: true
 
   - type: textarea
@@ -35,6 +38,7 @@ body:
         - What are you trying to accomplish?
         - What have you already tried?
         - Any code examples or error messages?
+    validations:
       required: true
 
   - type: textarea

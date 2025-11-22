@@ -18,6 +18,7 @@ body:
         - '@uturi/sonification'
         - '@uturi/uturi (website)'
         - Other / Not sure
+    validations:
       required: true
 
   - type: input
@@ -25,6 +26,7 @@ body:
     attributes:
       label: Summary
       placeholder: A short description of the feature
+    validations:
       required: true
 
   - type: textarea
@@ -32,6 +34,7 @@ body:
     attributes:
       label: Motivation / Problem
       placeholder: Explain why this feature is needed or what problem it solves
+    validations:
       required: true
 
   - type: textarea
@@ -39,6 +42,7 @@ body:
     attributes:
       label: Proposed solution
       placeholder: Describe the solution or approach you have in mind
+    validations:
       required: true
 
   - type: dropdown

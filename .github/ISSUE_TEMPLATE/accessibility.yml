@@ -18,6 +18,7 @@ body:
         - '@uturi/sonification'
         - '@uturi/uturi (website)'
         - Other / Not sure
+    validations:
       required: true
 
   - type: dropdown
@@ -32,6 +33,7 @@ body:
         - Screen Reader - Screen reader compatibility issue
         - Keyboard Navigation - Keyboard navigation issue
         - Other
+    validations:
       required: true
 
   - type: textarea
@@ -39,6 +41,7 @@ body:
     attributes:
       label: Describe the accessibility issue
       placeholder: A clear and concise description of the accessibility problem
+    validations:
       required: true
 
   - type: textarea
@@ -49,6 +52,7 @@ body:
       placeholder: |
         - Which users are affected? (e.g., screen reader users, keyboard-only users, users with visual impairments)
         - What is the impact on their ability to use the tool?
+    validations:
       required: true
 
   - type: textarea
@@ -59,6 +63,7 @@ body:
         1. Go to '...'
         2. Use assistive technology (e.g., screen reader, keyboard only)
         3. Observe the issue
+    validations:
       required: true
 
   - type: textarea
@@ -67,6 +72,7 @@ body:
       label: Expected accessible behavior
       description: How should this work for users with disabilities?
       placeholder: A clear description of the expected accessible behavior
+    validations:
       required: true
 
   - type: dropdown
