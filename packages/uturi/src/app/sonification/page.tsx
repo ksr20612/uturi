@@ -19,7 +19,7 @@ export default function SonificationPage() {
           >
             <Box
               position={{ base: 'static', lg: 'sticky' }}
-              top={{ base: 'auto', lg: '120px' }}
+              top={{ base: 'auto', lg: '90px' }}
               alignSelf="start"
             >
               <DemoSection />

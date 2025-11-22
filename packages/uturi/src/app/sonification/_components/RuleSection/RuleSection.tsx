@@ -23,7 +23,7 @@ function RuleSection() {
           boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.5)"
         >
           <Heading as="h3" size="md" mb={4} color="white">
-            📦 Installation
+            Installation
           </Heading>
           <CodeBlock language="bash">{CODE_EXAMPLES.installation}</CodeBlock>
         </Box>
@@ -38,17 +38,27 @@ function RuleSection() {
           boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.5)"
         >
           <Heading as="h3" size="md" mb={4} color="white">
-            🚀 Quick Start
+            Quick Start
           </Heading>
           <VStack gap={4} align="start">
             <Box w="full">
-              <CodeBlock language="typescript" title="Basic Example">
+              <CodeBlock language="typescript" title="Vanilla JavaScript / TypeScript">
                 {CODE_EXAMPLES.quickStart}
               </CodeBlock>
             </Box>
             <Box w="full">
-              <CodeBlock language="typescript" title="React Hook Example (Recommended)">
+              <CodeBlock language="tsx" title="React">
                 {CODE_EXAMPLES.reactHook}
+              </CodeBlock>
+            </Box>
+            <Box w="full">
+              <CodeBlock language="tsx" title="Vue">
+                {CODE_EXAMPLES.vueExample}
+              </CodeBlock>
+            </Box>
+            <Box w="full">
+              <CodeBlock language="tsx" title="Svelte">
+                {CODE_EXAMPLES.svelteExample}
               </CodeBlock>
             </Box>
           </VStack>
@@ -64,11 +74,42 @@ function RuleSection() {
           boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.5)"
         >
           <Heading as="h3" size="md" mb={4} color="white">
-            🎵 Sonification Methods
+            Sonification Methods
           </Heading>
-          <CodeBlock language="typescript" title="4 Different Audio Mapping Methods">
-            {CODE_EXAMPLES.sonificationMethods}
-          </CodeBlock>
+          <VStack gap={4} align="start">
+            <Box w="full">
+              <CodeBlock
+                language="typescript"
+                title="1. Frequency - Pitch changes according to value"
+              >
+                {CODE_EXAMPLES.frequencyMethod}
+              </CodeBlock>
+            </Box>
+            <Box w="full">
+              <CodeBlock
+                language="typescript"
+                title="2. Volume - Volume changes according to value"
+              >
+                {CODE_EXAMPLES.volumeMethod}
+              </CodeBlock>
+            </Box>
+            <Box w="full">
+              <CodeBlock
+                language="typescript"
+                title="3. Rhythm - Rhythm pattern changes according to value"
+              >
+                {CODE_EXAMPLES.rhythmMethod}
+              </CodeBlock>
+            </Box>
+            <Box w="full">
+              <CodeBlock
+                language="typescript"
+                title="4. Melody - Musical scale using notes (C, D, E, F, G, A, B)"
+              >
+                {CODE_EXAMPLES.melodyMethod}
+              </CodeBlock>
+            </Box>
+          </VStack>
         </Box>
 
         {/* Custom Configuration */}
@@ -81,10 +122,53 @@ function RuleSection() {
           boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.5)"
         >
           <Heading as="h3" size="md" mb={4} color="white">
-            ⚙️ Custom Configuration
+            Custom Configuration
           </Heading>
-          <CodeBlock language="typescript" title="Detailed Audio Settings">
-            {CODE_EXAMPLES.customConfig}
+          <VStack gap={4} align="start">
+            <Box w="full">
+              <CodeBlock language="typescript" title="Initial Configuration">
+                {CODE_EXAMPLES.customConfig}
+              </CodeBlock>
+            </Box>
+            <Box w="full">
+              <CodeBlock language="typescript" title="Dynamic Configuration Update">
+                {CODE_EXAMPLES.dynamicConfig}
+              </CodeBlock>
+            </Box>
+          </VStack>
+        </Box>
+
+        {/* Manual Audio Playback */}
+        <Box
+          bg="gray.800"
+          p={6}
+          borderRadius="xl"
+          border="1px solid"
+          borderColor="gray.700"
+          boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+        >
+          <Heading as="h3" size="md" mb={4} color="white">
+            Manual Audio Playback
+          </Heading>
+          <CodeBlock language="typescript" title="Generate audio and play later">
+            {CODE_EXAMPLES.manualPlayback}
+          </CodeBlock>
+        </Box>
+
+        {/* Error Handling */}
+        <Box
+          bg="gray.800"
+          p={6}
+          borderRadius="xl"
+          border="1px solid"
+          borderColor="gray.700"
+          boxShadow="0 25px 50px -12px rgba(0, 0, 0, 0.5)"
+        >
+          <Heading as="h3" size="md" mb={4} color="white">
+            Error Handling
+          </Heading>
+          <CodeBlock language="typescript" title="Proper error handling pattern">
+            {CODE_EXAMPLES.errorHandling}
           </CodeBlock>
         </Box>
 

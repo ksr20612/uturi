@@ -2,7 +2,7 @@
 'use client';
 
 import type { ChangeEvent } from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Chart, useChart } from '@chakra-ui/charts';
 import type { AccordionValueChangeDetails } from '@chakra-ui/react/accordion';
@@ -37,11 +37,13 @@ function DemoSection() {
   const [method, setMethod] = useState<SonificationMethod[]>([SonificationMethod.MELODY]);
   const [isAccordionOpen, setIsAccordionOpen] = useState<string[]>([]);
   const [config, setConfig] = useState<SonifierConfig>(DEFAULT_CONFIG);
+  const [inputValues, setInputValues] = useState<Partial<Record<keyof SonifierConfig, string>>>({});
   const [dataSamples, setDataSamples] = useState<number[]>([
     100, 105, 98, 112, 108, 115, 120, 118, 125, 130, 136, 140, 145,
   ]);
 
   const { sonify, isPlaying, setConfig: updateConfig } = useSonifier(config);
+  const configUpdateTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const chart = useChart({
     data: dataSamples.map((value) => ({
@@ -55,19 +57,57 @@ function DemoSection() {
     ],
   });
 
-  const handleChangeMethod = (details: SelectValueChangeDetails) => {
+  const handleChangeMethod = useCallback((details: SelectValueChangeDetails) => {
     setMethod(details.value as SonificationMethod[]);
-  };
+  }, []);
 
-  const handleChangeAccordion = (details: AccordionValueChangeDetails) => {
+  const handleChangeAccordion = useCallback((details: AccordionValueChangeDetails) => {
     setIsAccordionOpen(details.value);
-  };
+  }, []);
 
-  const handleChangeConfig = (key: keyof SonifierConfig) => (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/[^0-9.]/g, '');
+  const handleChangeConfig = useCallback(
+    (key: keyof SonifierConfig) => (e: ChangeEvent<HTMLInputElement>) => {
+      const rawValue = e.target.value;
+      const cleanedValue = rawValue.replace(/[^0-9.]/g, '');
 
-    setConfig({ ...config, [key]: Number(value) });
-  };
+      setInputValues((prev) => ({ ...prev, [key]: cleanedValue }));
+
+      if (cleanedValue === '' || cleanedValue === '.') {
+        setConfig((prev) => ({ ...prev, [key]: undefined }));
+        return;
+      }
+
+      const numValue = Number(cleanedValue);
+
+      if (!isNaN(numValue) && isFinite(numValue)) {
+        setConfig((prev) => ({ ...prev, [key]: numValue }));
+      }
+    },
+    [],
+  );
+
+  const handleBlurConfig = useCallback(
+    (key: keyof SonifierConfig) => () => {
+      setInputValues((prev) => {
+        const newValues = { ...prev };
+        delete newValues[key];
+        return newValues;
+      });
+    },
+    [],
+  );
+
+  const getInputValue = useCallback(
+    (key: keyof SonifierConfig): string => {
+      if (inputValues[key] !== undefined) {
+        return inputValues[key];
+      }
+
+      const value = config[key];
+      return value !== undefined ? String(value) : '';
+    },
+    [inputValues, config],
+  );
 
   const handlePlay = useCallback(async () => {
     try {
@@ -91,7 +131,19 @@ function DemoSection() {
   }, []);
 
   useEffect(() => {
-    updateConfig(config);
+    if (configUpdateTimeoutRef.current) {
+      clearTimeout(configUpdateTimeoutRef.current);
+    }
+
+    configUpdateTimeoutRef.current = setTimeout(() => {
+      updateConfig(config);
+    }, 500);
+
+    return () => {
+      if (configUpdateTimeoutRef.current) {
+        clearTimeout(configUpdateTimeoutRef.current);
+      }
+    };
   }, [config, updateConfig]);
 
   return (
@@ -216,8 +268,9 @@ function DemoSection() {
                             <InputGroup endElement="Hz">
                               <Input
                                 size="sm"
-                                value={config.sampleRate?.toLocaleString()}
+                                value={getInputValue('sampleRate')}
                                 onChange={handleChangeConfig('sampleRate')}
+                                onBlur={handleBlurConfig('sampleRate')}
                                 placeholder="44100"
                                 bg="gray.700"
                                 borderColor="gray.600"
@@ -235,8 +288,9 @@ function DemoSection() {
                             <InputGroup endElement="sec">
                               <Input
                                 size="sm"
-                                value={config.duration?.toLocaleString()}
+                                value={getInputValue('duration')}
                                 onChange={handleChangeConfig('duration')}
+                                onBlur={handleBlurConfig('duration')}
                                 placeholder="2.0"
                                 bg="gray.700"
                                 borderColor="gray.600"
@@ -270,8 +324,9 @@ function DemoSection() {
                             <InputGroup endElement="Hz">
                               <Input
                                 size="sm"
-                                value={config.frequency?.toLocaleString()}
+                                value={getInputValue('frequency')}
                                 onChange={handleChangeConfig('frequency')}
+                                onBlur={handleBlurConfig('frequency')}
                                 placeholder="825"
                                 bg="gray.700"
                                 borderColor="gray.600"
@@ -289,8 +344,9 @@ function DemoSection() {
                             <InputGroup endElement="Hz">
                               <Input
                                 size="sm"
-                                value={config.minFrequency?.toLocaleString()}
+                                value={getInputValue('minFrequency')}
                                 onChange={handleChangeConfig('minFrequency')}
+                                onBlur={handleBlurConfig('minFrequency')}
                                 placeholder="150"
                                 bg="gray.700"
                                 borderColor="gray.600"
@@ -308,8 +364,9 @@ function DemoSection() {
                             <InputGroup endElement="Hz">
                               <Input
                                 size="sm"
-                                value={config.maxFrequency?.toLocaleString()}
+                                value={getInputValue('maxFrequency')}
                                 onChange={handleChangeConfig('maxFrequency')}
+                                onBlur={handleBlurConfig('maxFrequency')}
                                 placeholder="1500"
                                 bg="gray.700"
                                 borderColor="gray.600"
@@ -349,8 +406,9 @@ function DemoSection() {
                             <InputGroup endElement="(0-1)">
                               <Input
                                 size="sm"
-                                value={config.volume?.toLocaleString()}
+                                value={getInputValue('volume')}
                                 onChange={handleChangeConfig('volume')}
+                                onBlur={handleBlurConfig('volume')}
                                 placeholder="0.3"
                                 bg="gray.700"
                                 borderColor="gray.600"
@@ -368,8 +426,9 @@ function DemoSection() {
                             <InputGroup endElement="(0-1)">
                               <Input
                                 size="sm"
-                                value={config.minVolume?.toLocaleString()}
+                                value={getInputValue('minVolume')}
                                 onChange={handleChangeConfig('minVolume')}
+                                onBlur={handleBlurConfig('minVolume')}
                                 placeholder="0.1"
                                 bg="gray.700"
                                 borderColor="gray.600"
@@ -387,8 +446,9 @@ function DemoSection() {
                             <InputGroup endElement="(0-1)">
                               <Input
                                 size="sm"
-                                value={config.maxVolume?.toLocaleString()}
+                                value={getInputValue('maxVolume')}
                                 onChange={handleChangeConfig('maxVolume')}
+                                onBlur={handleBlurConfig('maxVolume')}
                                 placeholder="0.5"
                                 bg="gray.700"
                                 borderColor="gray.600"
@@ -422,8 +482,9 @@ function DemoSection() {
                             <InputGroup endElement="(0-1)">
                               <Input
                                 size="sm"
-                                value={config.rhythm?.toLocaleString()}
+                                value={getInputValue('rhythm')}
                                 onChange={handleChangeConfig('rhythm')}
+                                onBlur={handleBlurConfig('rhythm')}
                                 placeholder="0.5"
                                 bg="gray.700"
                                 borderColor="gray.600"
@@ -441,8 +502,9 @@ function DemoSection() {
                             <InputGroup endElement="(0-1)">
                               <Input
                                 size="sm"
-                                value={config.minRhythm?.toLocaleString()}
+                                value={getInputValue('minRhythm')}
                                 onChange={handleChangeConfig('minRhythm')}
+                                onBlur={handleBlurConfig('minRhythm')}
                                 placeholder="0.1"
                                 bg="gray.700"
                                 borderColor="gray.600"
@@ -460,8 +522,9 @@ function DemoSection() {
                             <InputGroup endElement="(0-1)">
                               <Input
                                 size="sm"
-                                value={config.maxRhythm?.toLocaleString()}
+                                value={getInputValue('maxRhythm')}
                                 onChange={handleChangeConfig('maxRhythm')}
+                                onBlur={handleBlurConfig('maxRhythm')}
                                 placeholder="1"
                                 bg="gray.700"
                                 borderColor="gray.600"
