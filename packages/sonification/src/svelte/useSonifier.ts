@@ -1,6 +1,7 @@
 import { writable, type Writable } from 'svelte/store';
 import { onDestroy } from 'svelte';
 import Sonifier from '../core/Sonifier';
+import { SonificationError, ERROR_CODES } from '../core/errors';
 import type {
   SonifierConfig,
   SonifierMethod,
@@ -22,7 +23,7 @@ export function useSonifier(initialConfig?: SonifierConfig) {
   const isPlaying: Writable<boolean> = writable(false);
 
   /** Contains the last error (if any) */
-  const error: Writable<Error | null> = writable(null);
+  const error: Writable<SonificationError | null> = writable(null);
 
   /** Contains the last successful sonification result */
   const result: Writable<SonifierResult | null> = writable(null);
@@ -74,7 +75,15 @@ export function useSonifier(initialConfig?: SonifierConfig) {
       result.set(res);
       return res;
     } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
+      // 모든 에러를 SonificationError로 통일
+      const errorObj =
+        err instanceof SonificationError
+          ? err
+          : new SonificationError(
+              err instanceof Error ? err.message : String(err),
+              ERROR_CODES.UNKNOWN_ERROR,
+              { cause: err instanceof Error ? err : undefined },
+            );
       result.set(null);
       error.set(errorObj);
       throw errorObj;
@@ -97,7 +106,15 @@ export function useSonifier(initialConfig?: SonifierConfig) {
     try {
       await sonifierInstance.play(audioBuffer);
     } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
+      // 모든 에러를 SonificationError로 통일
+      const errorObj =
+        err instanceof SonificationError
+          ? err
+          : new SonificationError(
+              err instanceof Error ? err.message : String(err),
+              ERROR_CODES.UNKNOWN_ERROR,
+              { cause: err instanceof Error ? err : undefined },
+            );
       error.set(errorObj);
       throw errorObj;
     } finally {

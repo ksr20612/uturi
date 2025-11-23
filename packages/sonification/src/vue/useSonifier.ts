@@ -1,5 +1,6 @@
 import { ref, onUnmounted } from 'vue';
 import Sonifier from '../core/Sonifier';
+import { SonificationError, ERROR_CODES } from '../core/errors';
 import type {
   SonifierConfig,
   SonifierMethod,
@@ -22,7 +23,7 @@ export function useSonifier(initialConfig?: SonifierConfig) {
   const isPlaying = ref(false);
 
   /** Contains the last error (if any) */
-  const error = ref<Error | null>(null);
+  const error = ref<SonificationError | null>(null);
 
   /** Contains the last successful sonification result */
   const result = ref<SonifierResult | null>(null);
@@ -74,7 +75,15 @@ export function useSonifier(initialConfig?: SonifierConfig) {
       result.value = res;
       return res;
     } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
+      // 모든 에러를 SonificationError로 통일
+      const errorObj =
+        err instanceof SonificationError
+          ? err
+          : new SonificationError(
+              err instanceof Error ? err.message : String(err),
+              ERROR_CODES.UNKNOWN_ERROR,
+              { cause: err instanceof Error ? err : undefined },
+            );
       result.value = null;
       error.value = errorObj;
       throw errorObj;
@@ -97,7 +106,15 @@ export function useSonifier(initialConfig?: SonifierConfig) {
     try {
       await sonifierInstance.value.play(audioBuffer);
     } catch (err) {
-      const errorObj = err instanceof Error ? err : new Error(String(err));
+      // 모든 에러를 SonificationError로 통일
+      const errorObj =
+        err instanceof SonificationError
+          ? err
+          : new SonificationError(
+              err instanceof Error ? err.message : String(err),
+              ERROR_CODES.UNKNOWN_ERROR,
+              { cause: err instanceof Error ? err : undefined },
+            );
       error.value = errorObj;
       throw errorObj;
     } finally {

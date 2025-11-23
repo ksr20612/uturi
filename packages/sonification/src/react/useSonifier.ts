@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Sonifier from '../core/Sonifier';
+import { SonificationError, ERROR_CODES } from '../core/errors';
 import type {
   SonifierConfig,
   SonifierMethod,
@@ -20,7 +21,7 @@ export function useSonifier(initialConfig?: SonifierConfig) {
   const configRef = useRef<SonifierConfig | undefined>(initialConfig);
 
   const [isPlaying, setIsPlaying] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<SonificationError | null>(null);
   const [result, setResult] = useState<SonifierResult | null>(null);
 
   // Stable Sonifier Instance
@@ -71,7 +72,15 @@ export function useSonifier(initialConfig?: SonifierConfig) {
         setResult(res);
         return res;
       } catch (err) {
-        const error = err instanceof Error ? err : new Error(String(err));
+        // 모든 에러를 SonificationError로 통일
+        const error =
+          err instanceof SonificationError
+            ? err
+            : new SonificationError(
+                err instanceof Error ? err.message : String(err),
+                ERROR_CODES.UNKNOWN_ERROR,
+                { cause: err instanceof Error ? err : undefined },
+              );
         setResult(null);
         setError(error);
         throw error;
@@ -97,7 +106,15 @@ export function useSonifier(initialConfig?: SonifierConfig) {
       try {
         await sonifier.play(audioBuffer);
       } catch (err) {
-        const error = err instanceof Error ? err : new Error(String(err));
+        // 모든 에러를 SonificationError로 통일
+        const error =
+          err instanceof SonificationError
+            ? err
+            : new SonificationError(
+                err instanceof Error ? err.message : String(err),
+                ERROR_CODES.UNKNOWN_ERROR,
+                { cause: err instanceof Error ? err : undefined },
+              );
         setError(error);
         throw error;
       } finally {
