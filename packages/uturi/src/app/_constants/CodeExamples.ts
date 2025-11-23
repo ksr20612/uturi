@@ -178,15 +178,98 @@ source.buffer = result.audioBuffer;
 source.connect(audioContext.destination);
 source.start();`,
 
-  errorHandling: `// Error handling example
+  errorHandlingSonificationError: `// SonificationError Class
+import { SonificationError, ERROR_CODES } from '@uturi/sonification';
+
+// All errors thrown by the library are instances of SonificationError
+class SonificationError extends Error {
+  readonly code: SonificationErrorCode;  // Error code to distinguish error types
+  readonly cause?: Error;                 // Original error (if any)
+  readonly field?: string;                // Field name (for validation errors)
+}
+
+// Error Codes
+export const ERROR_CODES = {
+  WORKER_ERROR: 'WORKER_ERROR',           // Web Worker initialization or execution error
+  VALIDATION_ERROR: 'VALIDATION_ERROR',   // Input data or configuration validation failed
+  TIMEOUT_ERROR: 'TIMEOUT_ERROR',         // Audio generation timeout
+  AUDIO_CONTEXT_ERROR: 'AUDIO_CONTEXT_ERROR', // AudioContext related error
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR',         // Unknown error
+} as const;`,
+
+  errorHandling: `import { Sonifier, SonificationError, ERROR_CODES } from '@uturi/sonification';
+
+const sonifier = new Sonifier();
+
 try {
   const result = await sonifier.sonify(data, 'melody', { autoPlay: true });
   console.log('Success:', result);
-  console.log('Data points:', result.dataPoints);
-  console.log('Duration:', result.duration);
 } catch (error) {
-  console.error('Sonification failed:', error);
-  // Handle error appropriately
+  if (error instanceof SonificationError) {
+    switch (error.code) {
+      case ERROR_CODES.VALIDATION_ERROR:
+        console.error('Validation error:', error.message);
+        console.error('Field:', error.field);
+        break;
+      case ERROR_CODES.WORKER_ERROR:
+        console.error('Worker error:', error.message);
+        break;
+      case ERROR_CODES.TIMEOUT_ERROR:
+        console.error('Timeout error:', error.message);
+        break;
+      case ERROR_CODES.AUDIO_CONTEXT_ERROR:
+        console.error('AudioContext error:', error.message);
+        break;
+      default:
+        console.error('Unknown error:', error.message);
+    }
+  }
+}`,
+
+  errorHandlingValidation: `import { Sonifier, SonificationError, ERROR_CODES } from '@uturi/sonification';
+
+const sonifier = new Sonifier();
+
+// Handling validation errors
+try {
+  // Invalid configuration
+  sonifier.setConfig({
+    minFrequency: 1000,
+    maxFrequency: 500, // Invalid: min > max
+  });
+} catch (error) {
+  if (error instanceof SonificationError && error.code === ERROR_CODES.VALIDATION_ERROR) {
+    console.error('Validation failed:', error.message);
+    console.error('Problem field:', error.field); // 'frequency'
+  }
+}
+
+try {
+  // Invalid data
+  await sonifier.sonify([NaN, Infinity, null as any], 'frequency');
+} catch (error) {
+  if (error instanceof SonificationError && error.code === ERROR_CODES.VALIDATION_ERROR) {
+    console.error('Invalid data:', error.message);
+    console.error('Field:', error.field); // 'data'
+  }
+}`,
+
+  errorHandlingFramework: `// React example
+import { useSonifier } from '@uturi/sonification/react';
+import { SonificationError, ERROR_CODES } from '@uturi/sonification';
+
+function ChartWithSound() {
+  const { sonify, error } = useSonifier();
+
+  // error is always SonificationError | null
+  if (error) {
+    if (error.code === ERROR_CODES.VALIDATION_ERROR) {
+      return <div>Validation error: {error.message}</div>;
+    }
+    return <div>Error: {error.message}</div>;
+  }
+
+  // ...
 }`,
 
   dynamicConfig: `// Update configuration dynamically

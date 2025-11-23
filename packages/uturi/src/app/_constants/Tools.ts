@@ -30,13 +30,14 @@ const TOOLS = Object.freeze<Tool[]>([
     githubUrl: 'https://github.com/ksr20612/uturi/tree/main/packages/sonification',
     npmUrl: 'https://www.npmjs.com/package/@uturi/sonification',
     features: [
+      'Type-Safe & Zero-Dependencies',
       'Customizable Audio Settings',
       'Auto Play & Audio Buffer Available',
       'Various Output Formats: Melody, Volume, Frequency and Rhythm',
       'Optimized Audio Performance with Web Worker Support',
       'Framework Support: React, Vue, Svelte',
     ],
-    version: '2.0.0',
+    version: '2.1.0',
   },
   {
     id: 'ui',
