@@ -9,6 +9,7 @@ A data sonification library that transforms numerical data into musical melodies
 - **Flexible Configuration**: Adjust parameters such as frequency, volume, rhythm, and more
 - **TypeScript Support**: Full type safety
 - **Web Worker Support**: Audio generation in background thread for better performance
+- **Comprehensive Error Handling**: Custom error classes with error codes for better error management
 - **Accessibility Focused**: An alternative to data visualization for the visually impaired
 
 ## Demo
@@ -58,6 +59,7 @@ function ChartWithSound() {
     try {
       await sonify(chartData, 'melody', { autoPlay: true });
     } catch (err) {
+      // err is always SonificationError
       console.error('Error:', err);
     }
   }, [chartData, sonify]);
@@ -67,7 +69,12 @@ function ChartWithSound() {
       <button onClick={handlePlaySound} disabled={isPlaying}>
         {isPlaying ? 'Playing...' : 'Play Chart Sound'}
       </button>
-      {error && <div>Error: {error.message}</div>}
+      {error && (
+        <div>
+          Error: {error.message}
+          {error.code && ` (${error.code})`}
+        </div>
+      )}
       {result && <div>Last result: {result.dataPoints.length} data points</div>}
     </div>
   );
@@ -90,6 +97,7 @@ const handlePlaySound = async () => {
   try {
     await sonify(chartData, 'melody', { autoPlay: true });
   } catch (err) {
+    // err is always SonificationError
     console.error('Error:', err);
   }
 };
@@ -100,7 +108,10 @@ const handlePlaySound = async () => {
     <button @click="handlePlaySound" :disabled="isPlaying">
       {{ isPlaying ? 'Playing...' : 'Play Chart Sound' }}
     </button>
-    <div v-if="error">Error: {{ error.message }}</div>
+    <div v-if="error">
+      Error: {{ error.message }}
+      <span v-if="error.code"> ({{ error.code }})</span>
+    </div>
     <div v-if="result">Last result: {{ result.dataPoints.length }} data points</div>
   </div>
 </template>
@@ -122,6 +133,7 @@ const handlePlaySound = async () => {
     try {
       await sonify(chartData, 'melody', { autoPlay: true });
     } catch (err) {
+      // err is always SonificationError
       console.error('Error:', err);
     }
   };
@@ -131,7 +143,10 @@ const handlePlaySound = async () => {
   {$isPlaying ? 'Playing...' : 'Play Chart Sound'}
 </button>
 {#if $error}
-  <div>Error: {$error.message}</div>
+  <div>
+    Error: {$error.message}
+    {#if $error.code} ({$error.code}){/if}
+  </div>
 {/if}
 {#if $result}
   <div>Last result: {$result.dataPoints.length} data points</div>
@@ -318,7 +333,7 @@ const {
   getConfig, // () => Required<SonifierConfig>
   setConfig, // (config) => void
   isPlaying, // boolean
-  error, // Error | null
+  error, // SonificationError | null
   result, // SonifierResult | null
   getSonifier, // () => Sonifier
 } = useSonifier(initialConfig);
@@ -335,7 +350,7 @@ const {
   getConfig, // () => Required<SonifierConfig>
   setConfig, // (config) => void
   isPlaying, // Ref<boolean>
-  error, // Ref<Error | null>
+  error, // Ref<SonificationError | null>
   result, // Ref<SonifierResult | null>
   getSonifier, // () => Sonifier
 } = useSonifier(initialConfig);
@@ -352,7 +367,7 @@ const {
   getConfig, // () => Required<SonifierConfig>
   setConfig, // (config) => void
   isPlaying, // Writable<boolean>
-  error, // Writable<Error | null>
+  error, // Writable<SonificationError | null>
   result, // Writable<SonifierResult | null>
   getSonifier, // () => Sonifier
 } = useSonifier(initialConfig);
@@ -380,6 +395,35 @@ interface DataPoint {
   frequency: number; // Frequency value in Hz
   note?: string; // Note name (only for melody method: 'C', 'D', 'E', 'F', 'G', 'A', 'B')
 }
+```
+
+#### `SonificationError`
+
+```typescript
+class SonificationError extends Error {
+  readonly code: SonificationErrorCode; // Error code to distinguish error types
+  readonly cause?: Error; // Original error that caused this error
+  readonly field?: string; // Field name where error occurred (for validation errors)
+}
+```
+
+#### `ERROR_CODES`
+
+```typescript
+export const ERROR_CODES = {
+  WORKER_ERROR: 'WORKER_ERROR', // Web Worker initialization or execution error
+  VALIDATION_ERROR: 'VALIDATION_ERROR', // Input data or configuration validation failed
+  TIMEOUT_ERROR: 'TIMEOUT_ERROR', // Audio generation timeout
+  AUDIO_CONTEXT_ERROR: 'AUDIO_CONTEXT_ERROR', // AudioContext related error
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR', // Unknown error
+} as const;
+
+export type SonificationErrorCode =
+  | typeof ERROR_CODES.WORKER_ERROR
+  | typeof ERROR_CODES.VALIDATION_ERROR
+  | typeof ERROR_CODES.TIMEOUT_ERROR
+  | typeof ERROR_CODES.AUDIO_CONTEXT_ERROR
+  | typeof ERROR_CODES.UNKNOWN_ERROR;
 ```
 
 ## Requirements
@@ -427,13 +471,116 @@ source.start();
 
 ### Error Handling
 
+All errors thrown by the library are instances of `SonificationError`, which provides structured error information including error codes, field names, and cause errors.
+
+#### Error Types
+
+The library uses error codes to distinguish different types of errors:
+
 ```typescript
+import { SonificationError, ERROR_CODES } from '@uturi/sonification';
+
 try {
   const result = await sonifier.sonify(data, 'melody', { autoPlay: true });
   console.log('Success:', result);
 } catch (error) {
-  console.error('Sonification failed:', error);
-  // Handle error appropriately
+  if (error instanceof SonificationError) {
+    switch (error.code) {
+      case ERROR_CODES.VALIDATION_ERROR:
+        console.error('Validation error:', error.message);
+        console.error('Field:', error.field); // Field name where error occurred
+        break;
+      case ERROR_CODES.WORKER_ERROR:
+        console.error('Worker error:', error.message);
+        if (error.cause) {
+          console.error('Cause:', error.cause);
+        }
+        break;
+      case ERROR_CODES.TIMEOUT_ERROR:
+        console.error('Timeout error:', error.message);
+        break;
+      case ERROR_CODES.AUDIO_CONTEXT_ERROR:
+        console.error('AudioContext error:', error.message);
+        break;
+      default:
+        console.error('Unknown error:', error.message);
+    }
+  }
+}
+```
+
+#### Error Codes
+
+```typescript
+export const ERROR_CODES = {
+  WORKER_ERROR: 'WORKER_ERROR', // Web Worker initialization or execution error
+  VALIDATION_ERROR: 'VALIDATION_ERROR', // Input data or configuration validation failed
+  TIMEOUT_ERROR: 'TIMEOUT_ERROR', // Audio generation timeout
+  AUDIO_CONTEXT_ERROR: 'AUDIO_CONTEXT_ERROR', // AudioContext related error
+  UNKNOWN_ERROR: 'UNKNOWN_ERROR', // Unknown error
+} as const;
+```
+
+#### SonificationError Class
+
+```typescript
+class SonificationError extends Error {
+  readonly code: SonificationErrorCode; // Error code
+  readonly cause?: Error; // Original error (if any)
+  readonly field?: string; // Field name (for validation errors)
+}
+```
+
+#### Example: Handling Validation Errors
+
+```typescript
+import { Sonifier, SonificationError, ERROR_CODES } from '@uturi/sonification';
+
+const sonifier = new Sonifier();
+
+try {
+  // Invalid configuration
+  sonifier.setConfig({
+    minFrequency: 1000,
+    maxFrequency: 500, // Invalid: min > max
+  });
+} catch (error) {
+  if (error instanceof SonificationError && error.code === ERROR_CODES.VALIDATION_ERROR) {
+    console.error('Validation failed:', error.message);
+    console.error('Problem field:', error.field); // 'frequency'
+  }
+}
+
+try {
+  // Invalid data
+  await sonifier.sonify([NaN, Infinity, null as any], 'frequency');
+} catch (error) {
+  if (error instanceof SonificationError && error.code === ERROR_CODES.VALIDATION_ERROR) {
+    console.error('Invalid data:', error.message);
+    console.error('Field:', error.field); // 'data'
+  }
+}
+```
+
+#### Example: Framework Integration
+
+```typescript
+// React
+import { useSonifier } from '@uturi/sonification/react';
+import { SonificationError, ERROR_CODES } from '@uturi/sonification';
+
+function MyComponent() {
+  const { sonify, error } = useSonifier();
+
+  // error is always SonificationError | null
+  if (error) {
+    if (error.code === ERROR_CODES.VALIDATION_ERROR) {
+      return <div>Validation error: {error.message}</div>;
+    }
+    return <div>Error: {error.message}</div>;
+  }
+
+  // ...
 }
 ```
 
