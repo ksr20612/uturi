@@ -19,6 +19,17 @@ interface AudioWorkerResponse {
   };
 }
 
+interface AudioWorkerErrorResponse {
+  type: 'ERROR';
+  payload: {
+    error: {
+      message: string;
+      name: string;
+      stack?: string;
+    };
+  };
+}
+
 let workerConfig: Required<SonifierConfig> | null = null;
 let lastProcessedData: number[] | null = null;
 
@@ -240,42 +251,57 @@ self.onmessage = (event: MessageEvent<AudioWorkerMessage>) => {
   const { type, payload } = event.data;
 
   if (type === 'GENERATE_AUDIO') {
-    const { data, method, config } = payload;
+    try {
+      const { data, method, config } = payload;
 
-    validateConfig(config);
+      validateConfig(config);
 
-    workerConfig = config;
-    lastProcessedData = data;
+      workerConfig = config;
+      lastProcessedData = data;
 
-    let result: { audioData: Float32Array; dataPoints: DataPoint[] };
+      let result: { audioData: Float32Array; dataPoints: DataPoint[] };
 
-    switch (method) {
-      case 'volume':
-        result = generateVolumeAudio(data);
-        break;
-      case 'rhythm':
-        result = generateRhythmAudio(data);
-        break;
-      case 'melody':
-        result = generateMelodyAudio(data);
-        break;
-      case 'frequency':
-        result = generateFrequencyAudio(data);
-        break;
-      default:
-        result = generateMelodyAudio(data);
+      switch (method) {
+        case 'volume':
+          result = generateVolumeAudio(data);
+          break;
+        case 'rhythm':
+          result = generateRhythmAudio(data);
+          break;
+        case 'melody':
+          result = generateMelodyAudio(data);
+          break;
+        case 'frequency':
+          result = generateFrequencyAudio(data);
+          break;
+        default:
+          result = generateMelodyAudio(data);
+      }
+
+      const response: AudioWorkerResponse = {
+        type: 'AUDIO_GENERATED',
+        payload: {
+          audioData: result.audioData,
+          dataPoints: result.dataPoints,
+          sampleRate: config.sampleRate,
+          duration: config.duration,
+        },
+      };
+
+      self.postMessage(response, { transfer: [result.audioData.buffer] });
+    } catch (error) {
+      const errorResponse: AudioWorkerErrorResponse = {
+        type: 'ERROR',
+        payload: {
+          error: {
+            message: error instanceof Error ? error.message : String(error),
+            name: error instanceof Error ? error.name : 'Error',
+            stack: error instanceof Error ? error.stack : undefined,
+          },
+        },
+      };
+
+      self.postMessage(errorResponse);
     }
-
-    const response: AudioWorkerResponse = {
-      type: 'AUDIO_GENERATED',
-      payload: {
-        audioData: result.audioData,
-        dataPoints: result.dataPoints,
-        sampleRate: config.sampleRate,
-        duration: config.duration,
-      },
-    };
-
-    self.postMessage(response, { transfer: [result.audioData.buffer] });
   }
 };
