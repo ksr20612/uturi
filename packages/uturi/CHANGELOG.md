@@ -1,5 +1,12 @@
 # @uturi/uturi
 
+## 0.1.4
+
+### Patch Changes
+
+- Updated dependencies [bba5ba1]
+  - @uturi/sonification@2.1.0
+
 ## 0.1.3
 
 ### Patch Changes
