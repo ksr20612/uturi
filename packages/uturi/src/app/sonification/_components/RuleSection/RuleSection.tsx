@@ -167,9 +167,18 @@ function RuleSection() {
           <Heading as="h3" size="md" mb={4} color="white">
             Error Handling
           </Heading>
-          <CodeBlock language="typescript" title="Proper error handling pattern">
-            {CODE_EXAMPLES.errorHandling}
-          </CodeBlock>
+          <VStack gap={4} align="start">
+            <Box w="full">
+              <CodeBlock language="typescript" title="SonificationError Class">
+                {CODE_EXAMPLES.errorHandlingSonificationError}
+              </CodeBlock>
+            </Box>
+            <Box w="full">
+              <CodeBlock language="typescript" title="Basic Error Handling">
+                {CODE_EXAMPLES.errorHandling}
+              </CodeBlock>
+            </Box>
+          </VStack>
         </Box>
 
         {/* Real-time Data */}
