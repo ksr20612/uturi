@@ -5,6 +5,11 @@ import { VStack } from '@chakra-ui/react/stack';
 import CodeBlock from '@/app/_components/CodeBlock/CodeBlock';
 import { CODE_EXAMPLES } from '@/app/_constants/CodeExamples';
 
+/**
+ * Render the "Getting Started" documentation section containing installation instructions, quick-start examples, sonification method samples, configuration snippets, manual audio playback, and error-handling examples.
+ *
+ * @returns A JSX element representing the composed "Getting Started" section with styled headings and CodeBlock entries.
+ */
 function RuleSection() {
   return (
     <Box as="section">
