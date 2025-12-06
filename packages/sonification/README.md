@@ -5,8 +5,9 @@ A data sonification library that transforms numerical data into musical melodies
 ## Features
 
 - **4 Sonification Methods**: frequency, volume, rhythm, melody
+- **3 Waveform Types**: sine, square, sawtooth
 - **Framework Support**: Works with React, Vue, Svelte, or vanilla JavaScript
-- **Flexible Configuration**: Adjust parameters such as frequency, volume, rhythm, and more
+- **Flexible Configuration**: Adjust parameters such as frequency, volume, rhythm, waveform, and more
 - **TypeScript Support**: Full type safety
 - **Web Worker Support**: Audio generation in background thread for better performance
 - **Comprehensive Error Handling**: Custom error classes with error codes for better error management
@@ -200,6 +201,7 @@ interface SonifierConfig {
   // Basic audio settings
   sampleRate?: number; // Sample rate (default: 44100)
   duration?: number; // Audio duration in seconds (default: 2.0)
+  waveType?: 'sine' | 'square' | 'sawtooth'; // Waveform type (default: 'sine')
 
   // Frequency settings
   frequency?: number; // Base frequency in Hz (default: 825)
@@ -226,6 +228,25 @@ interface SonifierOptions {
 }
 ```
 
+### Waveform Types
+
+The library supports three waveform types that produce different sound characteristics:
+
+- **`'sine'`** (default): Smooth, rounded waveform. Produces a soft, pure tone.
+- **`'square'`**: Sharp, rectangular waveform. Produces a bright, buzzy sound with rich harmonics.
+- **`'sawtooth'`**: Triangular waveform. Produces a bright, edgy sound with a distinctive character.
+
+```typescript
+const sonifier = new Sonifier({
+  waveType: 'square', // Use square wave for a brighter sound
+});
+
+// Or change it dynamically
+sonifier.setConfig({
+  waveType: 'sawtooth', // Switch to sawtooth wave
+});
+```
+
 ### Example: Custom Configuration
 
 ```typescript
@@ -235,6 +256,7 @@ const sonifier = new Sonifier({
   // Basic audio settings
   duration: 3.0, // 3 seconds playback
   sampleRate: 44100, // CD quality
+  waveType: 'square', // Use square wave
 
   // Frequency range (Hz)
   minFrequency: 200, // Lowest pitch
@@ -253,6 +275,7 @@ const sonifier = new Sonifier({
 sonifier.setConfig({
   duration: 4.0,
   volume: 0.6,
+  waveType: 'sawtooth', // Change waveform type
 });
 
 const result = await sonifier.sonify(salesData, 'frequency', { autoPlay: true });
