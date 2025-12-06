@@ -1,6 +1,7 @@
 const DEFAULT_CONFIG = Object.freeze({
   sampleRate: 44100,
   duration: 2.0,
+  waveType: 'sine',
   frequency: 825,
   minFrequency: 150,
   maxFrequency: 1500,

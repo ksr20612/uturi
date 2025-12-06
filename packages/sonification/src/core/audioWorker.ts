@@ -1,4 +1,5 @@
 import type { SonifierConfig, SonifierMethod, DataPoint } from '../typings/sonification';
+import Oscillator from './modules/Oscillator';
 
 interface AudioWorkerMessage {
   type: 'GENERATE_AUDIO';
@@ -115,6 +116,7 @@ function generateVolumeAudio(data: number[]): { audioData: Float32Array; dataPoi
   const audioData = new Float32Array(bufferLength);
   const timeStep = config.duration / data.length;
   const baseFrequency = config.frequency;
+  const oscillator = new Oscillator(config.waveType);
 
   const dataPoints: DataPoint[] = data.map((value, index) => ({
     value,
@@ -132,7 +134,7 @@ function generateVolumeAudio(data: number[]): { audioData: Float32Array; dataPoi
     for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
       const timePosition = sample / config.sampleRate;
       const localTime = timePosition - i * timeStep;
-      audioData[sample] = Math.sin(2 * Math.PI * baseFrequency * localTime) * volume;
+      audioData[sample] = oscillator.oscillate(baseFrequency, localTime) * volume;
     }
   }
 
@@ -144,6 +146,7 @@ function generateRhythmAudio(data: number[]): { audioData: Float32Array; dataPoi
   const bufferLength = config.sampleRate * config.duration;
   const audioData = new Float32Array(bufferLength);
   const baseFrequency = config.frequency;
+  const oscillator = new Oscillator(config.waveType);
 
   const dataPoints: DataPoint[] = data.map((value, index) => ({
     value,
@@ -163,7 +166,7 @@ function generateRhythmAudio(data: number[]): { audioData: Float32Array; dataPoi
     for (let sample = startSample; sample < soundEndSample && sample < audioData.length; sample++) {
       const time = sample / config.sampleRate;
       const localTime = time - timestamp;
-      audioData[sample] = Math.sin(2 * Math.PI * baseFrequency * localTime) * config.volume;
+      audioData[sample] = oscillator.oscillate(baseFrequency, localTime) * config.volume;
     }
 
     if (i < data.length - 1) {
@@ -189,6 +192,7 @@ function generateMelodyAudio(data: number[]): { audioData: Float32Array; dataPoi
   const bufferLength = config.sampleRate * config.duration;
   const audioData = new Float32Array(bufferLength);
   const timeStep = config.duration / data.length;
+  const oscillator = new Oscillator(config.waveType);
 
   const dataPoints: DataPoint[] = data.map((value, index) => ({
     value,
@@ -207,7 +211,7 @@ function generateMelodyAudio(data: number[]): { audioData: Float32Array; dataPoi
     for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
       const time = sample / config.sampleRate;
       const localTime = time - i * timeStep;
-      audioData[sample] = Math.sin(2 * Math.PI * frequency * localTime) * config.volume;
+      audioData[sample] = oscillator.oscillate(frequency, localTime) * config.volume;
     }
   }
 
@@ -222,6 +226,7 @@ function generateFrequencyAudio(data: number[]): {
   const bufferLength = config.sampleRate * config.duration;
   const audioData = new Float32Array(bufferLength);
   const timeStep = config.duration / data.length;
+  const oscillator = new Oscillator(config.waveType);
 
   const dataPoints: DataPoint[] = data.map((value, index) => ({
     value,
@@ -239,7 +244,7 @@ function generateFrequencyAudio(data: number[]): {
     for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
       const time = sample / config.sampleRate;
       const localTime = time - i * timeStep;
-      audioData[sample] = Math.sin(2 * Math.PI * frequency * localTime) * config.volume;
+      audioData[sample] = oscillator.oscillate(frequency, localTime) * config.volume;
     }
   }
 

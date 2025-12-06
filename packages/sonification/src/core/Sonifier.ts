@@ -8,11 +8,13 @@ import type {
 import defaultConfig from '../constants/defaultConfig';
 import AudioWorker from './audioWorker?worker&inline';
 import { SonificationError, ERROR_CODES } from './errors';
+import Oscillator from './modules/Oscillator';
 
 export default class Sonifier {
   private config: Required<SonifierConfig>;
   private lastProcessedData: number[] | null = null;
   private audioContext: AudioContext | null = null;
+  private oscillator: Oscillator;
   private worker: Worker | null = null;
   private isWorkerSupported: boolean;
 
@@ -25,6 +27,8 @@ export default class Sonifier {
     this.validateConfig(mergedConfig);
     this.config = mergedConfig;
     this.isWorkerSupported = typeof Worker !== 'undefined';
+
+    this.oscillator = new Oscillator(this.config.waveType);
 
     if (this.isWorkerSupported) {
       this.initializeWorker();
@@ -314,7 +318,7 @@ export default class Sonifier {
       for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
         const timePosition = sample / this.config.sampleRate;
         const localTime = timePosition - i * timeStep;
-        audioData[sample] = Math.sin(2 * Math.PI * baseFrequency * localTime) * volume;
+        audioData[sample] = this.oscillator.oscillate(baseFrequency, localTime) * volume;
       }
     }
 
@@ -355,7 +359,8 @@ export default class Sonifier {
       ) {
         const time = sample / this.config.sampleRate;
         const localTime = time - timestamp;
-        audioData[sample] = Math.sin(2 * Math.PI * baseFrequency * localTime) * this.config.volume;
+        audioData[sample] =
+          this.oscillator.oscillate(baseFrequency, localTime) * this.config.volume;
       }
 
       if (i < data.length - 1) {
@@ -404,7 +409,7 @@ export default class Sonifier {
       for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
         const time = sample / this.config.sampleRate;
         const localTime = time - i * timeStep;
-        audioData[sample] = Math.sin(2 * Math.PI * frequency * localTime) * this.config.volume;
+        audioData[sample] = this.oscillator.oscillate(frequency, localTime) * this.config.volume;
       }
     }
 
@@ -438,7 +443,7 @@ export default class Sonifier {
       for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
         const time = sample / this.config.sampleRate;
         const localTime = time - i * timeStep;
-        audioData[sample] = Math.sin(2 * Math.PI * frequency * localTime) * this.config.volume;
+        audioData[sample] = this.oscillator.oscillate(frequency, localTime) * this.config.volume;
       }
     }
 

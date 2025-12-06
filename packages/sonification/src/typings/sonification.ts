@@ -2,6 +2,7 @@ export interface SonifierConfig {
   // 기본 오디오 설정
   sampleRate?: number; // 샘플레이트 (기본값: 44100)
   duration?: number; // 오디오 길이 (기본값: 2.0초)
+  waveType?: WaveType; // 파형 타입 (기본값: 'sine')
 
   // 주파수 설정
   frequency?: number; // 기본 주파수 (기본값: 825Hz)
@@ -18,6 +19,8 @@ export interface SonifierConfig {
   minRhythm?: number; // 최소 리듬 (기본값: 0.1)
   maxRhythm?: number; // 최대 리듬 (기본값: 1)
 }
+
+export type WaveType = 'sine' | 'square' | 'sawtooth';
 
 export interface SonifierOptions {
   autoPlay?: boolean; // 자동 재생 여부
