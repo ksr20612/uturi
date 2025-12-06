@@ -8,11 +8,13 @@ import type {
 import defaultConfig from '../constants/defaultConfig';
 import AudioWorker from './audioWorker?worker&inline';
 import { SonificationError, ERROR_CODES } from './errors';
+import Oscillator from './modules/Oscillator';
+import SoundGenerator from './modules/SoundGenerator';
 
 export default class Sonifier {
   private config: Required<SonifierConfig>;
-  private lastProcessedData: number[] | null = null;
   private audioContext: AudioContext | null = null;
+  private oscillator: Oscillator;
   private worker: Worker | null = null;
   private isWorkerSupported: boolean;
 
@@ -26,6 +28,8 @@ export default class Sonifier {
     this.config = mergedConfig;
     this.isWorkerSupported = typeof Worker !== 'undefined';
 
+    this.oscillator = new Oscillator(this.config.waveType);
+
     if (this.isWorkerSupported) {
       this.initializeWorker();
     }
@@ -37,7 +41,6 @@ export default class Sonifier {
     options?: SonifierOptions,
   ): Promise<SonifierResult> {
     this.validateData(data);
-    this.lastProcessedData = data;
 
     try {
       const { audioBuffer, dataPoints } = await this.generateAudio(data, method);
@@ -105,6 +108,7 @@ export default class Sonifier {
 
     this.validateConfig(mergedConfig);
     this.config = mergedConfig;
+    this.oscillator = new Oscillator(this.config.waveType);
   }
 
   cleanup(): void {
@@ -258,7 +262,7 @@ export default class Sonifier {
       } catch (error) {
         // Worker 에러는 메인 스레드로 폴백 (타임아웃 제외)
         if (error instanceof SonificationError && error.code === ERROR_CODES.TIMEOUT_ERROR) {
-          throw error; // 타임아웃은 재시도하지 않음
+          throw error;
         }
 
         // eslint-disable-next-line no-console
@@ -274,235 +278,13 @@ export default class Sonifier {
     data: number[],
     method: SonifierMethod = 'melody',
   ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
-    switch (method) {
-      case 'melody':
-        return this.generateMelodyAudio(data);
-      case 'frequency':
-        return this.generateFrequencyAudio(data);
-      case 'volume':
-        return this.generateVolumeAudio(data);
-      case 'rhythm':
-        return this.generateRhythmAudio(data);
-      default:
-        return this.generateMelodyAudio(data);
-    }
-  }
-
-  // Sonify by volume
-  private async generateVolumeAudio(
-    data: number[],
-  ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
-    const bufferLength = this.config.sampleRate * this.config.duration;
-    const audioData = new Float32Array(bufferLength);
-    const timeStep = this.config.duration / data.length;
-    const baseFrequency = this.config.frequency;
-
-    const dataPoints: DataPoint[] = data.map((value, index) => ({
-      value,
-      timestamp: index * timeStep,
-      volume: this.mapValueToVolume(value),
-      frequency: this.mapValueToFrequency(value),
-    }));
-
-    for (let i = 0; i < data.length; i++) {
-      const value = data[i];
-      const startSample = Math.floor(i * timeStep * this.config.sampleRate);
-      const endSample = Math.floor((i + 1) * timeStep * this.config.sampleRate);
-
-      const volume = this.mapValueToVolume(value);
-
-      for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
-        const timePosition = sample / this.config.sampleRate;
-        const localTime = timePosition - i * timeStep;
-        audioData[sample] = Math.sin(2 * Math.PI * baseFrequency * localTime) * volume;
-      }
-    }
-
+    const generator = new SoundGenerator(method);
+    const { audioData, dataPoints } = generator.generate(data, this.config, this.oscillator);
     const buffer = this.createAudioBuffer(audioData, this.config.sampleRate);
 
     return { audioBuffer: buffer, dataPoints };
   }
 
-  // Sonify by rhythm
-  private async generateRhythmAudio(
-    data: number[],
-  ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
-    const bufferLength = this.config.sampleRate * this.config.duration;
-    const audioData = new Float32Array(bufferLength);
-    const baseFrequency = this.config.frequency;
-
-    const dataPoints: DataPoint[] = data.map((value, index) => ({
-      value,
-      timestamp: index * (this.config.duration / data.length),
-      volume: this.mapValueToVolume(value),
-      frequency: this.mapValueToFrequency(value),
-    }));
-
-    for (let i = 0; i < data.length; i++) {
-      const value = data[i];
-      const interval = this.mapValueToInterval(value);
-      const timestamp = i * (this.config.duration / data.length);
-
-      const startSample = Math.floor(timestamp * this.config.sampleRate);
-
-      const soundDuration = Math.min(0.1, interval * 0.1);
-      const soundEndSample = Math.floor((timestamp + soundDuration) * this.config.sampleRate);
-
-      for (
-        let sample = startSample;
-        sample < soundEndSample && sample < audioData.length;
-        sample++
-      ) {
-        const time = sample / this.config.sampleRate;
-        const localTime = time - timestamp;
-        audioData[sample] = Math.sin(2 * Math.PI * baseFrequency * localTime) * this.config.volume;
-      }
-
-      if (i < data.length - 1) {
-        const nextTimestamp = (i + 1) * (this.config.duration / data.length);
-        const silenceStartSample = soundEndSample;
-        const silenceEndSample = Math.floor(nextTimestamp * this.config.sampleRate);
-
-        for (
-          let sample = silenceStartSample;
-          sample < silenceEndSample && sample < audioData.length;
-          sample++
-        ) {
-          audioData[sample] = 0;
-        }
-      }
-    }
-
-    const buffer = this.createAudioBuffer(audioData, this.config.sampleRate);
-
-    return { audioBuffer: buffer, dataPoints };
-  }
-
-  // Sonify by melody
-  private async generateMelodyAudio(
-    data: number[],
-  ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
-    const bufferLength = this.config.sampleRate * this.config.duration;
-    const audioData = new Float32Array(bufferLength);
-    const timeStep = this.config.duration / data.length;
-
-    const dataPoints: DataPoint[] = data.map((value, index) => ({
-      value,
-      timestamp: index * timeStep,
-      volume: this.mapValueToVolume(value),
-      frequency: this.mapValueToFrequency(value),
-      note: this.mapValueToNoteName(value),
-    }));
-
-    for (let i = 0; i < data.length; i++) {
-      const value = data[i];
-      const startSample = Math.floor(i * timeStep * this.config.sampleRate);
-      const endSample = Math.floor((i + 1) * timeStep * this.config.sampleRate);
-
-      const frequency = this.mapValueToNote(value);
-
-      for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
-        const time = sample / this.config.sampleRate;
-        const localTime = time - i * timeStep;
-        audioData[sample] = Math.sin(2 * Math.PI * frequency * localTime) * this.config.volume;
-      }
-    }
-
-    const buffer = this.createAudioBuffer(audioData, this.config.sampleRate);
-
-    return { audioBuffer: buffer, dataPoints };
-  }
-
-  // Sonify by frequency
-  private async generateFrequencyAudio(
-    data: number[],
-  ): Promise<{ audioBuffer: AudioBuffer; dataPoints: DataPoint[] }> {
-    const bufferLength = this.config.sampleRate * this.config.duration;
-    const audioData = new Float32Array(bufferLength);
-    const timeStep = this.config.duration / data.length;
-
-    const dataPoints: DataPoint[] = data.map((value, index) => ({
-      value,
-      timestamp: index * timeStep,
-      volume: this.mapValueToVolume(value),
-      frequency: this.mapValueToFrequency(value),
-    }));
-
-    for (let i = 0; i < data.length; i++) {
-      const value = data[i];
-      const startSample = Math.floor(i * timeStep * this.config.sampleRate);
-      const endSample = Math.floor((i + 1) * timeStep * this.config.sampleRate);
-
-      const frequency = this.mapValueToFrequency(value);
-
-      for (let sample = startSample; sample < endSample && sample < audioData.length; sample++) {
-        const time = sample / this.config.sampleRate;
-        const localTime = time - i * timeStep;
-        audioData[sample] = Math.sin(2 * Math.PI * frequency * localTime) * this.config.volume;
-      }
-    }
-
-    const buffer = this.createAudioBuffer(audioData, this.config.sampleRate);
-
-    return { audioBuffer: buffer, dataPoints };
-  }
-
-  private normalizeValue(value: number): number {
-    // lastProcessedData가 없거나 비어있는 경우, 입력값을 0-1 범위로 정규화
-    if (!this.lastProcessedData || this.lastProcessedData.length === 0) {
-      return Math.max(0, Math.min(1, value));
-    }
-
-    const dataMin = Math.min(...this.lastProcessedData);
-    const dataMax = Math.max(...this.lastProcessedData);
-    const dataRange = dataMax - dataMin;
-
-    return dataRange > 0 ? Math.max(0, Math.min(1, (value - dataMin) / dataRange)) : 0.5;
-  }
-
-  private mapValueToFrequency(value: number): number {
-    const normalizedValue = this.normalizeValue(value);
-    const minFrequency = this.config.minFrequency;
-    const maxFrequency = this.config.maxFrequency;
-
-    return minFrequency + normalizedValue * (maxFrequency - minFrequency);
-  }
-
-  private mapValueToVolume(value: number): number {
-    const normalizedValue = this.normalizeValue(value);
-    const minVolume = this.config.minVolume;
-    const maxVolume = this.config.maxVolume;
-
-    return minVolume + normalizedValue * (maxVolume - minVolume);
-  }
-
-  private mapValueToInterval(value: number): number {
-    const normalizedValue = this.normalizeValue(value);
-    const minRhythm = this.config.minRhythm;
-    const maxRhythm = this.config.maxRhythm;
-
-    return minRhythm + (1 - normalizedValue) * (maxRhythm - minRhythm);
-  }
-
-  private mapValueToNote(value: number): number {
-    const normalizedValue = this.normalizeValue(value);
-    const notes = [261.63, 293.66, 329.63, 349.23, 392.0, 440.0, 493.88];
-    const noteIndex = Math.min(Math.floor(normalizedValue * 7), 6);
-
-    return notes[noteIndex];
-  }
-
-  private mapValueToNoteName(value: number): string {
-    const normalizedValue = this.normalizeValue(value);
-    const noteNames = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-    const noteIndex = Math.min(Math.floor(normalizedValue * 7), 6);
-
-    return noteNames[noteIndex];
-  }
-
-  /**
-   * 입력 데이터 검증
-   */
   private validateData(data: number[]): void {
     if (!Array.isArray(data)) {
       throw new SonificationError('Data must be an array', ERROR_CODES.VALIDATION_ERROR, {
@@ -510,10 +292,10 @@ export default class Sonifier {
       });
     }
 
-    if (data.length === 0) {
-      return; // 빈 배열은 허용
-    }
+    // 빈 배열 허용
+    if (data.length === 0) return;
 
+    // TODO: 스트리밍 기능 추가되면 제한 전략 수정 필요
     if (data.length > 10000) {
       throw new SonificationError(
         'Data array too large (max 10000 items)',
@@ -535,9 +317,6 @@ export default class Sonifier {
     }
   }
 
-  /**
-   * 설정값 검증
-   */
   private validateConfig(config: Required<SonifierConfig>): void {
     if (config.sampleRate <= 0) {
       throw new SonificationError('Sample rate must be positive', ERROR_CODES.VALIDATION_ERROR, {
