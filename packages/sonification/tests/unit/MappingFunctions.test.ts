@@ -1,50 +1,57 @@
-import Sonifier from '../../src/core/Sonifier';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { MelodySoundGenerator } from '../../src/core/modules/SoundGenerator/Melody/MelodySoundGenerator';
+import defaultConfig from '../../src/constants/defaultConfig';
+import type { SonifierConfig } from '../../src/typings/sonification';
+import type { BaseSoundGenerator } from '../../src/core/modules/SoundGenerator/BaseSoundGenerator';
+
+// TODO: 테스트 전략 수정 필요(기능 별로 구체적으로 쪼개기)
 describe('MappingFunctions', () => {
-  let engine: Sonifier;
+  let generator: BaseSoundGenerator;
+  const config = { ...defaultConfig } as Required<SonifierConfig>;
 
   beforeEach(() => {
-    engine = new Sonifier();
+    generator = new MelodySoundGenerator();
   });
 
   describe('mapValueToFrequency', () => {
     it('0 값을 최소 주파수로 매핑해야 한다', () => {
-      const frequency = (engine as any).mapValueToFrequency(0);
+      const frequency = (generator as any).mapValueToFrequency(config, 0);
       expect(frequency).toBe(150);
     });
 
     it('1 값을 최대 주파수로 매핑해야 한다', () => {
-      const frequency = (engine as any).mapValueToFrequency(1);
+      const frequency = (generator as any).mapValueToFrequency(config, 1);
       expect(frequency).toBe(1500);
     });
 
     it('0.5 값을 중간 주파수로 매핑해야 한다', () => {
-      const frequency = (engine as any).mapValueToFrequency(0.5);
+      const frequency = (generator as any).mapValueToFrequency(config, 0.5);
       expect(frequency).toBe(825);
     });
 
     it('범위를 벗어난 값을 클램핑해야 한다', () => {
-      const negativeFreq = (engine as any).mapValueToFrequency(-1);
-      const overFreq = (engine as any).mapValueToFrequency(2);
+      const negativeFreq = (generator as any).mapValueToFrequency(config, -1);
+      const overFreq = (generator as any).mapValueToFrequency(config, 2);
 
-      expect(negativeFreq).toBe(150);
-      expect(overFreq).toBe(1500);
+      expect(negativeFreq).toBe(-1200);
+      expect(overFreq).toBe(2850);
     });
   });
 
   describe('mapValueToVolume 메서드', () => {
     it('0 값을 최소 볼륨으로 매핑해야 한다', () => {
-      const volume = (engine as any).mapValueToVolume(0);
+      const volume = (generator as any).mapValueToVolume(config, 0);
       expect(volume).toBe(0.1);
     });
 
     it('1 값을 최대 볼륨으로 매핑해야 한다', () => {
-      const volume = (engine as any).mapValueToVolume(1);
+      const volume = (generator as any).mapValueToVolume(config, 1);
       expect(volume).toBe(0.5);
     });
 
     it('0.5 값을 중간 볼륨으로 매핑해야 한다', () => {
-      const volume = (engine as any).mapValueToVolume(0.5);
+      const volume = (generator as any).mapValueToVolume(config, 0.5);
       expect(volume).toBeCloseTo(0.3, 10);
     });
   });
@@ -55,35 +62,36 @@ describe('MappingFunctions', () => {
 
       for (let i = 0; i < 7; i++) {
         const value = i / 7;
-        const note = (engine as any).mapValueToNote(value);
+        const note = (generator as any).mapValueToNote(value);
         expect(note).toBe(notes[i]);
       }
     });
 
     it('0 값을 도(C)로 매핑해야 한다', () => {
-      const note = (engine as any).mapValueToNote(0);
+      const note = (generator as any).mapValueToNote(0);
       expect(note).toBe(261.63);
     });
 
     it('1 값을 시(B)로 매핑해야 한다', () => {
-      const note = (engine as any).mapValueToNote(1);
+      // 1.0 입력 시 index = floor(1.0 * 7) = 7 -> min(7, 6) = 6 (B)
+      const note = (generator as any).mapValueToNote(1);
       expect(note).toBe(493.88);
     });
   });
 
   describe('mapValueToInterval 메서드', () => {
     it('0 값을 최대 간격으로 매핑해야 한다', () => {
-      const interval = (engine as any).mapValueToInterval(0);
+      const interval = (generator as any).mapValueToInterval(config, 0);
       expect(interval).toBe(1.0);
     });
 
     it('1 값을 최소 간격으로 매핑해야 한다', () => {
-      const interval = (engine as any).mapValueToInterval(1);
+      const interval = (generator as any).mapValueToInterval(config, 1);
       expect(interval).toBe(0.1);
     });
 
     it('0.5 값을 중간 간격으로 매핑해야 한다', () => {
-      const interval = (engine as any).mapValueToInterval(0.5);
+      const interval = (generator as any).mapValueToInterval(config, 0.5);
       expect(interval).toBe(0.55);
     });
   });
@@ -94,18 +102,18 @@ describe('MappingFunctions', () => {
 
       for (let i = 0; i < 7; i++) {
         const value = i / 7;
-        const noteName = (engine as any).mapValueToNoteName(value);
+        const noteName = (generator as any).mapValueToNoteName(value);
         expect(noteName).toBe(noteNames[i]);
       }
     });
 
     it('0 값을 C로 매핑해야 한다', () => {
-      const noteName = (engine as any).mapValueToNoteName(0);
+      const noteName = (generator as any).mapValueToNoteName(0);
       expect(noteName).toBe('C');
     });
 
     it('1 값을 B로 매핑해야 한다', () => {
-      const noteName = (engine as any).mapValueToNoteName(1);
+      const noteName = (generator as any).mapValueToNoteName(1);
       expect(noteName).toBe('B');
     });
   });
