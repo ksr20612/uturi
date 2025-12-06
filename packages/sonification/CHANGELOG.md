@@ -1,5 +1,11 @@
 # @uturi/sonification
 
+## 2.2.0
+
+### Minor Changes
+
+- b7b2acf: feat(sonification): Add waveform options(squre, sawtooth)
+
 ## 2.1.0
 
 ### Minor Changes
