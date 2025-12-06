@@ -26,7 +26,7 @@ export class VolumeSoundGenerator extends BaseSoundGenerator {
         value,
         timestamp: index * timeStep,
         volume: this.mapValueToVolume(config, normalizedValue),
-        frequency: this.mapValueToFrequency(config, normalizedValue),
+        frequency: baseFrequency, // Volume uses constant base frequency
       };
     });
 

@@ -25,7 +25,7 @@ export class RhythmSoundGenerator extends BaseSoundGenerator {
         value,
         timestamp: index * (config.duration / data.length),
         volume: this.mapValueToVolume(config, normalizedValue),
-        frequency: this.mapValueToFrequency(config, normalizedValue),
+        frequency: baseFrequency, // Rhythm uses constant base frequency
       };
     });
 

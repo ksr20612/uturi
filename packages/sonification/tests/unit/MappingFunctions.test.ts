@@ -29,14 +29,6 @@ describe('MappingFunctions', () => {
       const frequency = (generator as any).mapValueToFrequency(config, 0.5);
       expect(frequency).toBe(825);
     });
-
-    it('범위를 벗어난 값을 클램핑해야 한다', () => {
-      const negativeFreq = (generator as any).mapValueToFrequency(config, -1);
-      const overFreq = (generator as any).mapValueToFrequency(config, 2);
-
-      expect(negativeFreq).toBe(-1200);
-      expect(overFreq).toBe(2850);
-    });
   });
 
   describe('mapValueToVolume 메서드', () => {

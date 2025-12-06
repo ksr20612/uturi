@@ -108,6 +108,7 @@ export default class Sonifier {
 
     this.validateConfig(mergedConfig);
     this.config = mergedConfig;
+    this.oscillator = new Oscillator(this.config.waveType);
   }
 
   cleanup(): void {
