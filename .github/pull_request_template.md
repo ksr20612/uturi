@@ -6,6 +6,7 @@ Select the package(s) affected by this PR (at least one):
 
 - [x] @uturi/sonification
 - [ ] @uturi/uturi (website)
+- [ ] @uturi/maru
 - [ ] Root / General documentation
 - [ ] Other / Multiple packages
 

@@ -1,0 +1,18 @@
+{
+  "extends": "@uturi/config-typescript/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": ".",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "types": ["vitest/globals"],
+    "baseUrl": ".",
+    "paths": {
+      "@utils/*": ["./src/utils/*"],
+      "@components/*": ["./src/components/*"],
+      "@core/*": ["./src/core/*"],
+      "@typings/*": ["./src/typings/*"]
+    }
+  },
+  "include": ["src/**/*", "tests", "vite-env.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}
