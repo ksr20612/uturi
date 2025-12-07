@@ -8,7 +8,7 @@ describe('accordionMachine', () => {
     expect(actor.getSnapshot().value).toBe('closed');
   });
 
-  it('should toggle from off to on', () => {
+  it('should toggle from closed to open', () => {
     const actor = createActor(accordionMachine).start();
 
     actor.send({ type: 'TOGGLE' });
