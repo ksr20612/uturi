@@ -7,25 +7,11 @@ import RuleSection from '@/app/sonification/_components/RuleSection/RuleSection'
 export default function SonificationPage() {
   return (
     <Box as="main" minH="100vh">
-      <Container maxW="7xl">
-        <VStack gap={0} align="stretch">
+      <Container maxW="5xl">
+        <VStack gap={12} mb={12} align="stretch">
           <IntroSection />
-          <Box
-            display="grid"
-            gridTemplateColumns={{ base: '1fr', lg: '1fr 1fr' }}
-            gap={12}
-            mb={12}
-            alignItems="start"
-          >
-            <Box
-              position={{ base: 'static', lg: 'sticky' }}
-              top={{ base: 'auto', lg: '90px' }}
-              alignSelf="start"
-            >
-              <DemoSection />
-            </Box>
-            <RuleSection />
-          </Box>
+          <DemoSection />
+          <RuleSection />
         </VStack>
       </Container>
     </Box>

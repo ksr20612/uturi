@@ -20,6 +20,7 @@ import { VStack } from '@chakra-ui/react/stack';
 import { Text } from '@chakra-ui/react/text';
 
 import type { SonifierConfig } from '@uturi/sonification';
+
 import { useSonifier } from '@uturi/sonification/react';
 import { GiPerspectiveDiceSixFacesRandom } from 'react-icons/gi';
 
@@ -29,12 +30,15 @@ import {
   DEFAULT_CONFIG,
   SONIFICATION_LIST_COLLECTION,
   SonificationMethod,
+  WAVEFORM_LIST_COLLECTION,
+  WaveformType,
 } from '@/app/sonification/_constants/SonificationOptions';
 
 import ChakraTooltip from '../../../_components/Tooltip/Tooltip';
 
 function DemoSection() {
   const [method, setMethod] = useState<SonificationMethod[]>([SonificationMethod.MELODY]);
+  const [waveformType, setWaveformType] = useState<WaveformType[]>([WaveformType.SINE]);
   const [isAccordionOpen, setIsAccordionOpen] = useState<string[]>([]);
   const [config, setConfig] = useState<SonifierConfig>(DEFAULT_CONFIG);
   const [inputValues, setInputValues] = useState<Partial<Record<keyof SonifierConfig, string>>>({});
@@ -59,6 +63,12 @@ function DemoSection() {
 
   const handleChangeMethod = useCallback((details: SelectValueChangeDetails) => {
     setMethod(details.value as SonificationMethod[]);
+  }, []);
+
+  const handleChangeWaveformType = useCallback((details: SelectValueChangeDetails) => {
+    const selectedWaveform = details.value[0] as WaveformType;
+    setWaveformType(details.value as WaveformType[]);
+    setConfig((prev) => ({ ...prev, waveType: selectedWaveform }));
   }, []);
 
   const handleChangeAccordion = useCallback((details: AccordionValueChangeDetails) => {
@@ -225,6 +235,54 @@ function DemoSection() {
                         _focus={{ bg: 'gray.600' }}
                       >
                         {method.label}
+                        <Select.ItemIndicator />
+                      </Select.Item>
+                    ))}
+                  </Select.Content>
+                </Select.Positioner>
+              </Portal>
+            </Select.Root>
+          </Box>
+
+          <Box>
+            <Select.Root
+              size="lg"
+              collection={WAVEFORM_LIST_COLLECTION}
+              value={waveformType}
+              onValueChange={handleChangeWaveformType}
+            >
+              <Select.HiddenSelect />
+              <Select.Label fontSize="md" color="fg.muted">
+                Waveform Type
+              </Select.Label>
+              <Select.Control>
+                <Select.Trigger
+                  bg="gray.700"
+                  borderColor="gray.600"
+                  color="white"
+                  _focus={{
+                    borderColor: 'teal.400',
+                    boxShadow: '0 0 0 1px var(--chakra-colors-teal-400)',
+                  }}
+                >
+                  <Select.ValueText placeholder="Select waveform type" />
+                </Select.Trigger>
+                <Select.IndicatorGroup>
+                  <Select.Indicator />
+                </Select.IndicatorGroup>
+              </Select.Control>
+              <Portal>
+                <Select.Positioner>
+                  <Select.Content bg="gray.700" borderColor="gray.600" color="white">
+                    {WAVEFORM_LIST_COLLECTION.items.map((waveform) => (
+                      <Select.Item
+                        item={waveform}
+                        key={waveform.value}
+                        color="white"
+                        _hover={{ bg: 'gray.600' }}
+                        _focus={{ bg: 'gray.600' }}
+                      >
+                        {waveform.label}
                         <Select.ItemIndicator />
                       </Select.Item>
                     ))}

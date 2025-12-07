@@ -1,49 +1,22 @@
 export const CODE_EXAMPLES = {
-  installation: 'npm install @uturi/sonification',
+  installation: `npm install @uturi/sonification
+# or
+yarn add @uturi/sonification
+# or
+pnpm add @uturi/sonification`,
+
+  installationParticular: `// you can also install the particular framework version
+npm install @uturi/sonification/react
+# or
+yarn add @uturi/sonification/react
+# or
+pnpm add @uturi/sonification/react`,
 
   quickStart: `import { Sonifier } from '@uturi/sonification';
 
-// Simple array sonification
 const salesData = [100, 150, 80, 200, 175, 300];
 const sonifier = new Sonifier();
-const result = await sonifier.sonify(salesData, 'frequency', { autoPlay: true });`,
-
-  reactBasic: `import { Sonifier } from '@uturi/sonification';
-import { useState, useRef, useEffect, useCallback } from 'react';
-
-function ChartWithSound() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const chartData = [10, 25, 15, 40, 35, 60];
-  const sonifierRef = useRef<Sonifier | null>(null);
-
-  // Sonifier 인스턴스 초기화
-  useEffect(() => {
-    sonifierRef.current = new Sonifier();
-    
-    return () => {
-      sonifierRef.current?.cleanup();
-    };
-  }, []);
-
-  const handlePlaySound = useCallback(async () => {
-    if (!sonifierRef.current) return;
-    
-    setIsPlaying(true);
-    try {
-      await sonifierRef.current.sonify(chartData, 'frequency', { autoPlay: true });
-    } finally {
-      setIsPlaying(false);
-    }
-  }, [chartData]);
-
-  return (
-    <div>
-      <button onClick={handlePlaySound} disabled={isPlaying}>
-        {isPlaying ? 'Playing...' : 'Play Chart Sound'}
-      </button>
-    </div>
-  );
-}`,
+sonifier.sonify(salesData, 'frequency', { autoPlay: true });`,
 
   reactHook: `import { useSonifier } from '@uturi/sonification/react';
 import { useCallback } from 'react';
@@ -56,14 +29,13 @@ function ChartWithSound() {
     volume: 0.5,
   });
 
-  const handlePlaySound = useCallback(async () => {
+  const handlePlaySound = async () => {
     try {
-      const sonificationResult = await sonify(chartData, 'melody', { autoPlay: true });
-      console.log('Sonification result:', sonificationResult);
+      await sonify(chartData, 'melody', { autoPlay: true });
     } catch (err) {
       console.error('Error:', err);
     }
-  }, [chartData, sonify]);
+  };
 
   return (
     <div>
@@ -71,7 +43,6 @@ function ChartWithSound() {
         {isPlaying ? 'Playing...' : 'Play Chart Sound'}
       </button>
       {error && <div>Error: {error.message}</div>}
-      {result && <div>Last result: {result.dataPoints.length} data points</div>}
     </div>
   );
 }`,
@@ -86,7 +57,7 @@ const { sonify, isPlaying, error, result } = useSonifier({
 
 const handlePlaySound = async () => {
   try {
-    await sonify(chartData, 'melody', { autoPlay: true });
+    await sonify(chartData, 'volume', { autoPlay: true });
   } catch (err) {
     console.error('Error:', err);
   }
@@ -98,7 +69,6 @@ const handlePlaySound = async () => {
       {{ isPlaying ? 'Playing...' : 'Play Chart Sound' }}
     </button>
     <div v-if="error">Error: {{ error.message }}</div>
-    <div v-if="result">Last result: {{ result.dataPoints.length }} data points</div>
   </div>
 </template>`,
 
@@ -112,7 +82,7 @@ const { sonify, isPlaying, error, result } = useSonifier({
 
 const handlePlaySound = async () => {
   try {
-    await sonify(chartData, 'melody', { autoPlay: true });
+    await sonify(chartData, 'frequency', { autoPlay: true });
   } catch (err) {
     console.error('Error:', err);
   }
@@ -123,26 +93,7 @@ const handlePlaySound = async () => {
 </button>
 {#if $error}
   <div>Error: {$error.message}</div>
-{/if}
-{#if $result}
-  <div>Last result: {$result.dataPoints.length} data points</div>
 {/if}`,
-
-  sonificationMethods: `// 4 different conversion methods
-const data = [10, 20, 30, 40, 50];
-const sonifier = new Sonifier();
-
-// 1. Frequency variation (higher value = higher pitch)
-await sonifier.sonify(data, 'frequency', { autoPlay: true });
-
-// 2. Volume variation (higher value = louder sound)
-await sonifier.sonify(data, 'volume', { autoPlay: true });
-
-// 3. Rhythm variation (higher value = faster rhythm)
-await sonifier.sonify(data, 'rhythm', { autoPlay: true });
-
-// 4. Melody variation (musical scale: C, D, E, F, G, A, B)
-await sonifier.sonify(data, 'melody', { autoPlay: true });`,
 
   frequencyMethod: `// Frequency: Pitch changes according to value
 // Higher values produce higher pitches
@@ -163,6 +114,20 @@ const result = await sonifier.sonify(data, 'rhythm', { autoPlay: true });`,
 // Creates a musical melody using notes (C, D, E, F, G, A, B)
 const sonifier = new Sonifier();
 const result = await sonifier.sonify(data, 'melody', { autoPlay: true });`,
+
+  waveformTypes: `// Three waveform types available
+const sonifier = new Sonifier({
+  waveType: 'sine',     // default
+  // waveType: 'square',
+  // waveType: 'sawtooth',
+});
+
+// Change waveform dynamically
+sonifier.setConfig({
+  waveType: 'square',  // Switch to square wave
+});
+
+await sonifier.sonify(data, 'frequency', { autoPlay: true });`,
 
   manualPlayback: `// Generate audio without auto-playing
 const sonifier = new Sonifier();
@@ -226,62 +191,18 @@ try {
   }
 }`,
 
-  errorHandlingValidation: `import { Sonifier, SonificationError, ERROR_CODES } from '@uturi/sonification';
-
-const sonifier = new Sonifier();
-
-// Handling validation errors
-try {
-  // Invalid configuration
-  sonifier.setConfig({
-    minFrequency: 1000,
-    maxFrequency: 500, // Invalid: min > max
-  });
-} catch (error) {
-  if (error instanceof SonificationError && error.code === ERROR_CODES.VALIDATION_ERROR) {
-    console.error('Validation failed:', error.message);
-    console.error('Problem field:', error.field); // 'frequency'
-  }
-}
-
-try {
-  // Invalid data
-  await sonifier.sonify([NaN, Infinity, null as any], 'frequency');
-} catch (error) {
-  if (error instanceof SonificationError && error.code === ERROR_CODES.VALIDATION_ERROR) {
-    console.error('Invalid data:', error.message);
-    console.error('Field:', error.field); // 'data'
-  }
-}`,
-
-  errorHandlingFramework: `// React example
-import { useSonifier } from '@uturi/sonification/react';
-import { SonificationError, ERROR_CODES } from '@uturi/sonification';
-
-function ChartWithSound() {
-  const { sonify, error } = useSonifier();
-
-  // error is always SonificationError | null
-  if (error) {
-    if (error.code === ERROR_CODES.VALIDATION_ERROR) {
-      return <div>Validation error: {error.message}</div>;
-    }
-    return <div>Error: {error.message}</div>;
-  }
-
-  // ...
-}`,
-
   dynamicConfig: `// Update configuration dynamically
 const sonifier = new Sonifier({
   duration: 2.0,
   volume: 0.3,
+  waveType: 'sine',
 });
 
 // Later, update the configuration
 sonifier.setConfig({
   duration: 4.0,
   volume: 0.6,
+  waveType: 'square',  // Change waveform type
 });
 
 // Get current configuration
@@ -293,6 +214,7 @@ const sonifier = new Sonifier({
   // Basic audio settings
   duration: 3.0,        // 3 seconds playback
   sampleRate: 44100,    // CD quality
+  waveType: 'square',   // Waveform type: 'sine' | 'square' | 'sawtooth'
   
   // Frequency range (Hz)
   minFrequency: 200,    // Lowest pitch
