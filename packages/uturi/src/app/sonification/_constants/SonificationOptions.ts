@@ -1,8 +1,6 @@
 import { createListCollection } from '@chakra-ui/react';
 import type { SonifierConfig } from '@uturi/sonification';
 
-// export type WaveType = 'sine' | 'square' | 'sawtooth';
-
 export const enum SonificationMethod {
   FREQUENCY = 'frequency',
   VOLUME = 'volume',
@@ -16,10 +14,10 @@ export const enum WaveformType {
   SAWTOOTH = 'sawtooth',
 }
 
-export const DEFAULT_CONFIG = {
+export const DEFAULT_CONFIG: SonifierConfig & { waveType?: string } = {
   sampleRate: 44100,
   duration: 2.0,
-  waveType: WaveformType.SINE,
+  waveType: WaveformType.SINE as 'sine' | 'square' | 'sawtooth',
   frequency: 825,
   minFrequency: 150,
   maxFrequency: 1500,
@@ -29,7 +27,7 @@ export const DEFAULT_CONFIG = {
   rhythm: 0.5,
   minRhythm: 0.1,
   maxRhythm: 1,
-} satisfies SonifierConfig & { waveType?: WaveformType };
+};
 
 export const SONIFICATION_LIST_COLLECTION = createListCollection({
   items: [
