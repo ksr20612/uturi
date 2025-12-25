@@ -1,5 +1,11 @@
 # @uturi/sonification
 
+## 2.2.1
+
+### Patch Changes
+
+- 59b6fa2: fix: improve empty data input handling in sound generation
+
 ## 2.2.0
 
 ### Minor Changes

@@ -271,7 +271,7 @@ importers:
         specifier: ^15.5.13
         version: 15.5.13
       '@uturi/sonification':
-        specifier: 2.2.0
+        specifier: 2.2.1
         version: link:../sonification
       next:
         specifier: ^14.0.0
