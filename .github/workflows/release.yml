@@ -59,9 +59,9 @@ jobs:
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets
-        uses: changesets/action@v1
+        uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba # v1.5.3
         with:
-          publish: pnpm publish --no-git-checks --filter=!@uturi/monorepo --filter=!@uturi/config-eslint --filter=!@uturi/config-typescript --filter=!@uturi/config-prettier --filter=!@uturi/config-vitest
+          publish: pnpm publish --no-git-checks --filter=!@uturi/config-eslint --filter=!@uturi/config-typescript --filter=!@uturi/config-prettier --filter=!@uturi/config-vitest
           title: 'release: version packages'
           commit: 'release: version packages'
           createGithubReleases: true
