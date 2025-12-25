@@ -1,12 +1,12 @@
-import { describe, it, expect, beforeEach, afterEach, beforeAll, afterAll } from 'vitest';
-import Sonifier from '../../src/core/Sonifier';
-import type { SonifierMethod } from '../../src/typings/sonification';
-import { applyAudioPolyfill, restoreAudioPolyfill } from './integration.setup';
 import {
-  registrar,
   AudioBuffer as AudioBufferMock,
   AudioContext as AudioContextMock,
+  registrar,
 } from 'standardized-audio-context-mock';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import Sonifier from '../../src/core/Sonifier';
+import type { SonifierMethod } from '../../src/typings/sonifier';
+import { applyAudioPolyfill, restoreAudioPolyfill } from './integration.setup';
 
 describe('Sonifier Integration Test - Web Audio API Polyfill', () => {
   let sonifier: Sonifier;

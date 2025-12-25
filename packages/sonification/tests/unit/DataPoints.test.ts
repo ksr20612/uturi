@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 import Sonifier from '../../src/core/Sonifier';
-import type { SonifierMethod } from '../../src/typings/sonification';
+import type { SonifierMethod } from '../../src/typings/sonifier';
 
 const mockAudioContext = {
   createBuffer: vi.fn(),

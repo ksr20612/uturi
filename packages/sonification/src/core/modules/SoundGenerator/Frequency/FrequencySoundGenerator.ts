@@ -1,5 +1,5 @@
 import type { SoundGenerationResult } from '..';
-import type { SonifierConfig, DataPoint } from '../../../../typings/sonification';
+import type { SonifierConfig, DataPoint } from '../../../../typings/sonifier';
 import type Oscillator from '../../Oscillator';
 import { BaseSoundGenerator } from '../BaseSoundGenerator';
 
@@ -14,10 +14,7 @@ export class FrequencySoundGenerator extends BaseSoundGenerator {
     const timeStep = config.duration / data.length;
 
     // 데이터 범위 계산 (캐싱)
-    const min = Math.min(...data);
-    const max = Math.max(...data);
-    const range = max - min;
-    const cache = { min, max, range };
+    const cache = this.calculateDataRange(data);
 
     const dataPoints: DataPoint[] = data.map((value, index) => {
       const normalizedValue = this.normalizeValue(value, data, cache);

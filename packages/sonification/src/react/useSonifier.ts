@@ -6,7 +6,7 @@ import type {
   SonifierMethod,
   SonifierOptions,
   SonifierResult,
-} from '../typings/sonification';
+} from '../typings/sonifier';
 
 /**
  * React hook providing a stable Sonifier instance and helpers

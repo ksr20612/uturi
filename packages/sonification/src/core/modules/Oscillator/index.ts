@@ -1,4 +1,4 @@
-import type { WaveType } from '../../../typings/sonification';
+import type { WaveType } from '../../../typings/sonifier';
 import SawtoothOscillator from './Sawtooth/SawtoothOscillator';
 import SineOscillator from './Sine/SineOscillator';
 import SquareOscillator from './Square/SquareOscillator';
