@@ -10,8 +10,14 @@ export abstract class BaseSoundGenerator implements SoundGeneratorStrategy {
   ): SoundGenerationResult;
 
   protected calculateDataRange(data: number[]): { min: number; max: number; range: number } {
-    const min = data.reduce((a, b) => Math.min(a, b), Infinity);
-    const max = data.reduce((a, b) => Math.max(a, b), -Infinity);
+    let min = Infinity;
+    let max = -Infinity;
+
+    for (const value of data) {
+      if (value < min) min = value;
+      if (value > max) max = value;
+    }
+
     const range = max - min || 1;
     return { min, max, range };
   }
