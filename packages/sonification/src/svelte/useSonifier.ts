@@ -7,7 +7,7 @@ import type {
   SonifierMethod,
   SonifierOptions,
   SonifierResult,
-} from '../typings/sonification';
+} from '../typings/sonifier';
 
 /**
  * Svelte composable providing a stable Sonifier instance and helpers

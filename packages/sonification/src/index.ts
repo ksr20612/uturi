@@ -1,2 +1,2 @@
-export type * from './typings/sonification';
+export type * from './typings/sonifier';
 export * from './core';

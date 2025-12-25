@@ -1,5 +1,5 @@
 import type { SoundGenerationResult, SoundGeneratorStrategy } from '.';
-import type { SonifierConfig } from '../../../typings/sonification';
+import type { SonifierConfig } from '../../../typings/sonifier';
 import type Oscillator from '../Oscillator';
 
 export abstract class BaseSoundGenerator implements SoundGeneratorStrategy {
@@ -9,24 +9,29 @@ export abstract class BaseSoundGenerator implements SoundGeneratorStrategy {
     oscillator: Oscillator,
   ): SoundGenerationResult;
 
+  protected calculateDataRange(data: number[]): { min: number; max: number; range: number } {
+    let min = Infinity;
+    let max = -Infinity;
+
+    for (const value of data) {
+      if (value < min) min = value;
+      if (value > max) max = value;
+    }
+
+    const range = max - min || 1;
+    return { min, max, range };
+  }
+
   protected normalizeValue(
     value: number,
     data: number[],
     cache?: { min: number; max: number; range: number },
   ): number {
     // 캐시된 값이 있으면 사용 (성능 최적화)
-    let min, max, range;
+    const { min, range } = cache ?? this.calculateDataRange(data);
 
-    if (cache) {
-      ({ min, max, range } = cache);
-    } else {
-      if (data.length === 0) return Math.max(0, Math.min(1, value));
-      min = Math.min(...data);
-      max = Math.max(...data);
-      range = max - min;
-    }
-
-    return range > 0 ? Math.max(0, Math.min(1, (value - min) / range)) : 0.5;
+    if (range <= 0) return 0.5;
+    return Math.max(0, Math.min(1, (value - min) / range));
   }
 
   protected mapValueToFrequency(config: Required<SonifierConfig>, normalizedValue: number): number {

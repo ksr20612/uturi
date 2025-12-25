@@ -1,4 +1,4 @@
-import type { SonifierConfig, SonifierMethod, DataPoint } from '../typings/sonification';
+import type { SonifierConfig, SonifierMethod, DataPoint } from '../typings/sonifier';
 import Oscillator from './modules/Oscillator';
 import SoundGenerator from './modules/SoundGenerator';
 

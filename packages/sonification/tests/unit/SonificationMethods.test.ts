@@ -1,5 +1,6 @@
 import { vi } from 'vitest';
 import Sonifier from '../../src/core/Sonifier';
+import type { SonifierMethod } from '../../src/typings/sonifier';
 
 const mockAudioContext = {
   createBuffer: vi.fn(),
@@ -135,7 +136,7 @@ describe('SonificationMethods', () => {
       });
     });
 
-    it('빈 데이터로도 음성화할 수 있어야 한다', async () => {
+    it('빈 데이터도 허용할 수 있어야 한다', async () => {
       const emptyData: number[] = [];
       const result = await engine.sonify(emptyData, 'melody');
 
@@ -171,7 +172,7 @@ describe('SonificationMethods', () => {
 
   describe('에러 처리', () => {
     it('잘못된 메서드에 대해 기본값을 사용해야 한다', async () => {
-      const result = await engine.sonify(testData, 'invalid' as any);
+      const result = await engine.sonify(testData, 'invalid' as SonifierMethod);
 
       expect(result).toHaveProperty('audioBuffer');
     });

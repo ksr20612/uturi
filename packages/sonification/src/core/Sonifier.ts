@@ -4,7 +4,7 @@ import type {
   SonifierResult,
   SonifierMethod,
   SonifierOptions,
-} from '../typings/sonification';
+} from '../typings/sonifier';
 import defaultConfig from '../constants/defaultConfig';
 import AudioWorker from './audioWorker?worker&inline';
 import { SonificationError, ERROR_CODES } from './errors';
@@ -146,8 +146,17 @@ export default class Sonifier {
   private createAudioBuffer(audioData: Float32Array, sampleRate: number): AudioBuffer {
     try {
       const audioContext = this.getAudioContext();
-      const buffer = audioContext.createBuffer(1, audioData.length, sampleRate);
-      buffer.getChannelData(0).set(audioData);
+
+      const frames = Math.max(1, audioData.length);
+      const buffer = audioContext.createBuffer(1, frames, sampleRate);
+
+      if (audioData.length > 0) {
+        buffer.getChannelData(0).set(audioData);
+      } else {
+        // eslint-disable-next-line no-console
+        console.warn('Audio data is empty, creating buffer with 1 frame');
+      }
+
       return buffer;
     } catch (error) {
       if (error instanceof SonificationError) {
@@ -285,15 +294,12 @@ export default class Sonifier {
     return { audioBuffer: buffer, dataPoints };
   }
 
-  private validateData(data: number[]): void {
+  private validateData(data: number[]): boolean {
     if (!Array.isArray(data)) {
       throw new SonificationError('Data must be an array', ERROR_CODES.VALIDATION_ERROR, {
         field: 'data',
       });
     }
-
-    // 빈 배열 허용
-    if (data.length === 0) return;
 
     // TODO: 스트리밍 기능 추가되면 제한 전략 수정 필요
     if (data.length > 10000) {
@@ -315,6 +321,8 @@ export default class Sonifier {
         { field: 'data' },
       );
     }
+
+    return true;
   }
 
   private validateConfig(config: Required<SonifierConfig>): void {

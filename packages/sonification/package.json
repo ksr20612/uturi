@@ -2,7 +2,8 @@
   "name": "@uturi/sonification",
   "version": "2.2.0",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "description": "Accessibility tool that converts numerical data into musical melodies for visually impaired users",
   "main": "./dist/index.js",

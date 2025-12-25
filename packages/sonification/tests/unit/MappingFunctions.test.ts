@@ -2,7 +2,7 @@
 
 import { MelodySoundGenerator } from '../../src/core/modules/SoundGenerator/Melody/MelodySoundGenerator';
 import defaultConfig from '../../src/constants/defaultConfig';
-import type { SonifierConfig } from '../../src/typings/sonification';
+import type { SonifierConfig } from '../../src/typings/sonifier';
 import type { BaseSoundGenerator } from '../../src/core/modules/SoundGenerator/BaseSoundGenerator';
 
 // TODO: 테스트 전략 수정 필요(기능 별로 구체적으로 쪼개기)
