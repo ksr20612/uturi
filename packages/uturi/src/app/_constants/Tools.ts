@@ -37,7 +37,7 @@ const TOOLS = Object.freeze<Tool[]>([
       'Type-Safe & Zero-Dependencies',
       'Framework Agnostic',
     ],
-    version: '2.2.0',
+    version: '2.2.1',
   },
   {
     id: 'ui',
