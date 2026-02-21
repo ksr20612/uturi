@@ -43,7 +43,7 @@ const TOOLS = Object.freeze<Tool[]>([
     id: 'ui',
     name: '@uturi/maru',
     description:
-      'Rapidly Build Accessible UI Components Like AutoComplete, Select, and ChainPicker',
+      'Rapidly Build Complex, but Accessible UI Components Like AutoComplete, Select, and ChainPicker.',
     status: ToolStatus.DEVELOPING,
     url: '/maru',
     githubUrl: 'https://github.com/ksr20612/uturi/tree/main/packages/maru',
