@@ -1,4 +1,4 @@
-import { NumberAnalyzer } from '../src/core/analyzers/NumberAnalyzer';
+import { NumberAnalyzer } from '../src/core/modules/Analyzer/NumberAnalyzer';
 
 describe('NumberAnalyzer', () => {
   const analyzer = new NumberAnalyzer();

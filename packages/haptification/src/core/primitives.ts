@@ -1,6 +1,11 @@
-import type { HapticFrame, HapticSequence } from './types';
+import type { HapticFrame, HapticSequence, HaptifierConfig } from '../typings/haptifier';
+import Haptifier from './Haptifier';
 
-export function pulse(options: { intensity: number; duration: number; pause?: number }): HapticFrame {
+export function pulse(options: {
+  intensity: number;
+  duration: number;
+  pause?: number;
+}): HapticFrame {
   return {
     intensity: Math.max(0, Math.min(1, options.intensity)),
     duration: options.duration,
@@ -8,7 +13,11 @@ export function pulse(options: { intensity: number; duration: number; pause?: nu
   };
 }
 
-export function wave(options: { intensity: number; duration: number; pause?: number }): HapticFrame {
+export function wave(options: {
+  intensity: number;
+  duration: number;
+  pause?: number;
+}): HapticFrame {
   return {
     intensity: Math.max(0, Math.min(1, options.intensity)),
     duration: options.duration,
@@ -22,4 +31,15 @@ export function silence(duration: number): HapticFrame {
 
 export function sequence(parts: Array<HapticSequence | HapticFrame>): HapticSequence {
   return parts.flatMap((part) => (Array.isArray(part) ? part : [part]));
+}
+
+export function haptify(data: number[], config?: Omit<HaptifierConfig, 'driver'>): void {
+  new Haptifier(config).play(data);
+}
+
+export function toHapticSequence(
+  data: number[],
+  config?: Omit<HaptifierConfig, 'driver'>,
+): HapticSequence {
+  return new Haptifier(config).haptify(data);
 }

@@ -1,13 +1,13 @@
-import type { HapticSequence } from '../types';
-import { BaseGenerator } from './BaseGenerator';
+import type { HaptifierConfig, HapticSequence } from '../../../../typings/haptifier';
+import { BaseVibrationGenerator } from '../BaseVibrationGenerator';
 
 const MAX_PULSES = 5;
 const PULSE_DURATION = 50;
 const PULSE_INNER_PAUSE = 30;
 const PULSE_GAP = 150;
 
-export class PulseGenerator extends BaseGenerator {
-  generate(normalized: number[]): HapticSequence {
+export class PulseVibrationGenerator extends BaseVibrationGenerator {
+  generate(normalized: number[], _config: HaptifierConfig): HapticSequence {
     const frames: HapticSequence = [];
 
     for (const value of normalized) {

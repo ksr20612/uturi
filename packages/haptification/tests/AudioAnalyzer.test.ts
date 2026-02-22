@@ -1,4 +1,4 @@
-import { AudioAnalyzer } from '../src/core/analyzers/AudioAnalyzer';
+import { AudioAnalyzer } from '../src/core/modules/Analyzer/AudioAnalyzer';
 
 function createMockAudioBuffer(samples: number[]): AudioBuffer {
   return {

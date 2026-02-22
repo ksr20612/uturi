@@ -1,6 +1,6 @@
-import type { VibrationDriver, HapticSequence } from '../types';
+import type { VibrationDriver, HapticSequence } from '../../../../typings/haptifier';
 
-export class WebDriver implements VibrationDriver {
+export class WebVibrationDriver implements VibrationDriver {
   isSupported(): boolean {
     return typeof navigator !== 'undefined' && 'vibrate' in navigator;
   }
