@@ -41,12 +41,11 @@ const TOOLS = Object.freeze<Tool[]>([
   },
   {
     id: 'ui',
-    name: '@uturi/maru',
-    description:
-      'Rapidly Build Complex, but Accessible UI Components Like AutoComplete, Select, and ChainPicker.',
+    name: '@uturi/haptification',
+    description: 'Transform numbers into vibration patterns to make data more accessible.',
     status: ToolStatus.DEVELOPING,
-    url: '/maru',
-    githubUrl: 'https://github.com/ksr20612/uturi/tree/main/packages/maru',
+    url: '/haptification',
+    githubUrl: 'https://github.com/ksr20612/uturi/tree/main/packages/haptification',
     features: [],
   },
   // {
