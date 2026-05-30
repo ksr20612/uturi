@@ -97,7 +97,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         with:
-          version: pnpm changeset version
+          version: pnpm changeset version && pnpm install --lockfile-only
           publish: pnpm changeset publish
           title: 'release: version packages'
           commit: 'release: version packages'
