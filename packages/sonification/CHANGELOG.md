@@ -1,5 +1,11 @@
 # @uturi/sonification
 
+## 2.2.2
+
+### Patch Changes
+
+- 0c2b2cb: feat(sonification): apply OIDC
+
 ## 2.2.1
 
 ### Patch Changes
