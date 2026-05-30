@@ -9,11 +9,27 @@ on:
       - '.changeset/**'
   workflow_dispatch:
     inputs:
+      mode:
+        description: 'Release mode'
+        required: true
+        default: 'release'
+        type: choice
+        options:
+          - release
+          - snapshot
       dry_run:
-        description: 'Dry run the release process'
+        description: 'Dry run the release process (release mode only)'
         required: false
-        default: 'false'
+        default: false
         type: boolean
+      tag:
+        description: 'Snapshot dist-tag (snapshot mode only)'
+        required: false
+        default: 'snapshot'
+        type: choice
+        options:
+          - snapshot
+          - next
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -37,9 +53,12 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           registry-url: https://registry.npmjs.org
           scope: '@uturi'
+
+      - name: Upgrade npm (npm >= 11.5.1)
+        run: npm install -g npm@latest
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -62,15 +81,19 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Bump versions in snapshot mode
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'snapshot' }}
+        run: pnpm changeset version --snapshot ${{ inputs.tag }}
+
       - name: Build packages
         run: pnpm build
 
       - name: Show Changeset Status (Dry Run)
-        if: ${{ inputs.dry_run }}
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.dry_run }}
         run: pnpm changeset status
 
       - name: Create Release Pull Request or Publish to npm
-        if: ${{ !inputs.dry_run }}
+        if: ${{ (github.event_name == 'push' || inputs.mode == 'release') && !inputs.dry_run }}
         id: changesets
         uses: changesets/action@v1
         with:
@@ -81,4 +104,15 @@ jobs:
           createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          # OIDC(Trusted Publishing) 사용(issue #1152)
+          NPM_TOKEN: ''
+
+      - name: Publish snapshot to npm
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'snapshot' }}
+        run: pnpm changeset publish --tag ${{ inputs.tag }}
+
+      - name: Show published snapshot versions
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'snapshot' }}
+        run: |
+          echo "Snapshot release finished."
+          echo "tag:   ${{ inputs.tag }}"
