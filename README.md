@@ -1,6 +1,8 @@
 # Uturi
 
-<img src="https://github.com/user-attachments/assets/3fc7ba69-400f-458f-81eb-f1a22fd28066" width="200px" height="200px" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3fc7ba69-400f-458f-81eb-f1a22fd28066" width="300px" height="300px" />
+</p>
 
 Uturi is a set of accessibility tools and libraries that give people with disabilities greater autonomy and access to information. The name "Uturi" comes from the Korean folktale "Baby General Uturi" (아기장수 우투리), where Uturi overcomes disabilities and becomes a hero who fights for the weak.
 
@@ -29,13 +31,16 @@ Uturi strives to:
 
 ### [@uturi/sonification](https://github.com/ksr20612/uturi/blob/main/packages/sonification/README.md)
 
+[![npm](https://img.shields.io/npm/v/@uturi/sonification.svg)](https://www.npmjs.com/package/@uturi/sonification)
+[![docs](https://img.shields.io/badge/docs-@uturi--sonification-0284c7)](https://uturi.vercel.app/sonification)
+
 A data sonification library that transforms numerical data into musical melodies, enabling visually impaired users to experience data audibly. Inspired by synesthesia—a condition where people experience colors when hearing music—and synesthetic imagery in literature, this library bridges the gap between visual and auditory perception.
 
 **Features:**
 
 - **4 Sonification Methods**: frequency, volume, rhythm, melody
-- **Framework Support**: Works with React, Vue, Svelte, or vanilla JavaScript
-- **Flexible Configuration**: Adjust parameters such as frequency, volume, rhythm, and more
+- **Framework-Agnostic**: Works with React, Vue, Svelte, or vanilla JavaScript
+- **Flexible Configuration**: Adjust parameters such as sampling rate
 - **TypeScript Support**: Full type safety
 - **Web Worker Support**: Audio generation in background thread for better performance
 - **Accessibility Focused**: An alternative to data visualization for the visually impaired
