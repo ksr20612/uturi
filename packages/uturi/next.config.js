@@ -3,6 +3,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['@chakra-ui/react'],
   },
+  reactCompiler: true,
   transpilePackages: ['@uturi/sonification'],
 };
 
