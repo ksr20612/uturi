@@ -1,0 +1,87 @@
+---
+title: Configuration
+description: Configure duration, waveform, and ranges for frequency, volume, and rhythm.
+---
+
+## SonifierConfig
+
+```ts
+interface SonifierConfig {
+  // Basic audio settings
+  sampleRate?: number; // Sample rate (default: 44100)
+  duration?: number; // Audio duration in seconds (default: 2.0)
+  waveType?: 'sine' | 'square' | 'sawtooth'; // default: 'sine'
+
+  // Frequency settings
+  frequency?: number; // Base frequency in Hz (default: 825)
+  minFrequency?: number; // Minimum frequency in Hz (default: 150)
+  maxFrequency?: number; // Maximum frequency in Hz (default: 1500)
+
+  // Volume settings
+  volume?: number; // Base volume (range: 0 ~ 1, default: 0.3)
+  minVolume?: number; // Minimum volume (default: 0.1)
+  maxVolume?: number; // Maximum volume (default: 0.5)
+
+  // Rhythm settings
+  rhythm?: number; // Base rhythm (range: 0 ~ 1, default: 0.5)
+  minRhythm?: number; // Minimum rhythm (default: 0.1)
+  maxRhythm?: number; // Maximum rhythm (default: 1)
+}
+```
+
+## SonifierOptions
+
+```ts
+interface SonifierOptions {
+  autoPlay?: boolean; // Play audio automatically (default: false)
+}
+```
+
+## Custom configuration
+
+```ts
+import { Sonifier } from '@uturi/sonification';
+
+const sonifier = new Sonifier({
+  duration: 3.0,
+  sampleRate: 44100,
+  waveType: 'square',
+
+  minFrequency: 200,
+  maxFrequency: 800,
+
+  minVolume: 0.1,
+  maxVolume: 0.8,
+
+  minRhythm: 0.2,
+  maxRhythm: 0.9,
+});
+
+await sonifier.sonify(salesData, 'frequency', { autoPlay: true });
+```
+
+## Dynamic updates
+
+```ts
+const sonifier = new Sonifier({
+  duration: 2.0,
+  volume: 0.3,
+  waveType: 'sine',
+});
+
+sonifier.setConfig({
+  duration: 4.0,
+  volume: 0.6,
+  waveType: 'square',
+});
+
+const currentConfig = sonifier.getConfig();
+console.log('Current config:', currentConfig);
+```
+
+## Validation rules
+
+- `data` must be an array of finite numbers (max length 10000)
+- `sampleRate` and `duration` must be greater than 0
+- For frequency / volume / rhythm ranges, `min` must be less than `max`
+- `volume` and `rhythm` values must be in `[0, 1]`

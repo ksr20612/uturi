@@ -1,0 +1,121 @@
+---
+title: Advanced Usage
+description: Core-only imports, manual playback, real-time feedback, and accessibility patterns.
+---
+
+## Using the core API only
+
+If you only need the core API without framework hooks:
+
+```ts
+import { Sonifier } from '@uturi/sonification/core';
+
+const sonifier = new Sonifier();
+await sonifier.sonify(data, 'melody', { autoPlay: true });
+```
+
+## Manual audio playback
+
+Generate audio without playing it immediately, then play it later—or pass the buffer into the Web Audio API:
+
+```ts
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'melody', { autoPlay: false });
+
+// Play later
+await sonifier.play(result.audioBuffer);
+
+// Or use the AudioBuffer with other Web Audio API features
+const audioContext = new AudioContext();
+const source = audioContext.createBufferSource();
+source.buffer = result.audioBuffer;
+source.connect(audioContext.destination);
+source.start();
+```
+
+## Real-time data processing
+
+Keep a stable `Sonifier` instance and sonify only the most recent window of points:
+
+```tsx
+import { Sonifier } from '@uturi/sonification';
+import { useEffect, useRef, useState } from 'react';
+
+function LiveChart({ apiData }: { apiData: number[] }) {
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const sonifierRef = useRef<Sonifier | null>(null);
+
+  useEffect(() => {
+    sonifierRef.current = new Sonifier({ duration: 1.5 });
+    return () => {
+      sonifierRef.current?.cleanup();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (audioEnabled && apiData?.length > 0 && sonifierRef.current) {
+      const recentData = apiData.slice(-10);
+      void sonifierRef.current.sonify(recentData, 'frequency', { autoPlay: true });
+    }
+  }, [apiData, audioEnabled]);
+
+  return (
+    <button onClick={() => setAudioEnabled((v) => !v)}>
+      {audioEnabled ? 'Disable' : 'Enable'} Audio Feedback
+    </button>
+  );
+}
+```
+
+## Accessibility integration
+
+Announce playback with `SpeechSynthesis`, then sonify. Provide a clear control for assistive technologies:
+
+```tsx
+import { Sonifier } from '@uturi/sonification';
+import { useCallback, useEffect, useRef } from 'react';
+
+function AccessibleChart({ data, title }: { data: number[]; title: string }) {
+  const sonifierRef = useRef<Sonifier | null>(null);
+
+  useEffect(() => {
+    sonifierRef.current?.cleanup();
+    sonifierRef.current = new Sonifier({
+      duration: Math.max(2, data.length * 0.3),
+      volume: 0.6,
+    });
+
+    return () => {
+      sonifierRef.current?.cleanup();
+    };
+  }, [data.length]);
+
+  const playChartSound = useCallback(async () => {
+    if (!sonifierRef.current) return;
+
+    const announcement = new SpeechSynthesisUtterance(
+      `Playing sound for ${title} chart with ${data.length} data points`,
+    );
+    speechSynthesis.speak(announcement);
+
+    setTimeout(async () => {
+      await sonifierRef.current!.sonify(data, 'melody', { autoPlay: true });
+    }, 1000);
+  }, [data, title]);
+
+  return (
+    <div role="img" aria-label={`${title} chart`}>
+      <button
+        onClick={playChartSound}
+        aria-label={`Play audio representation of ${title} chart`}
+      >
+        Listen to Chart
+      </button>
+    </div>
+  );
+}
+```
+
+## Performance note
+
+Audio generation runs in a Web Worker when available, falls back to the main thread if needed, and times out after 10 seconds (`TIMEOUT_ERROR`).

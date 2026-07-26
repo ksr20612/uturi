@@ -54,3 +54,7 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+
+      - name: Build docs
+        if: matrix.node-version == '20.x'
+        run: pnpm --filter docs build
