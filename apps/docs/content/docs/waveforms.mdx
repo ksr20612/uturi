@@ -1,0 +1,39 @@
+---
+title: Waveform Types
+description: Choose sine, square, or sawtooth based on timbre and what the data needs to communicate.
+---
+
+When choosing a waveform, consider both **how the sound will feel** and **what the data needs to communicate**. Each waveform has a distinct timbre, so the best choice depends on the data.
+
+## Comparison
+
+| Waveform | Characteristics | Change Detection Accuracy | Auditory Fatigue | Suitable Use Cases |
+| --- | --- | --- | --- | --- |
+| Sine | Smooth and pure tone | ★★★★★ | ★★★★★ | Everyday values and gently sloping trends |
+| Square | Strong attack, abrupt transitions | ★★★☆☆ | ★★☆☆☆ | Outliers, warnings, and state transitions |
+| Sawtooth | Clear rise/fall, strong harmonics | ★★☆☆☆ | ★★☆☆☆ | Emphasizing slopes and trends |
+
+In this table, more stars under Auditory Fatigue mean greater listening comfort (less fatiguing).
+
+## Usage
+
+```ts
+const sonifier = new Sonifier({
+  waveType: 'sine', // default
+  // waveType: 'square',
+  // waveType: 'sawtooth',
+});
+
+// Change waveform dynamically
+sonifier.setConfig({
+  waveType: 'square',
+});
+
+await sonifier.sonify(data, 'frequency', { autoPlay: true });
+```
+
+## Sound character
+
+- **`sine`** (default): A smooth, rounded wave with a soft, pure tone.
+- **`square`**: A sharp, rectangular wave with a bright, buzzy tone and rich harmonics.
+- **`sawtooth`**: A bright, edgy tone that makes rises and falls easier to hear.

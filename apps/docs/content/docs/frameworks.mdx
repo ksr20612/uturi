@@ -1,0 +1,83 @@
+---
+title: Framework Hooks
+description: useSonifier for React, Vue, and Svelte—same API, different reactivity primitives.
+---
+
+All framework packages export a `useSonifier(initialConfig?)` hook with the same capabilities.
+They differ only in how reactive state is exposed.
+
+## Shared API
+
+| Field | Description |
+| --- | --- |
+| `sonify` | `(data, method, options?) => Promise<SonifierResult>` |
+| `play` | `(audioBuffer) => Promise<void>` |
+| `getConfig` | `() => Required<SonifierConfig>` |
+| `setConfig` | `(config) => void` |
+| `getSonifier` | `() => Sonifier` |
+| `isPlaying` | Whether audio is currently playing |
+| `error` | Last `SonificationError` or `null` |
+| `result` | Last `SonifierResult` or `null` |
+
+## React
+
+State values are plain React state.
+
+```ts
+import { useSonifier } from '@uturi/sonification/react';
+
+const {
+  sonify,
+  play,
+  getConfig,
+  setConfig,
+  isPlaying, // boolean
+  error, // SonificationError | null
+  result, // SonifierResult | null
+  getSonifier,
+} = useSonifier(initialConfig);
+```
+
+## Vue
+
+State values are `Ref`s.
+
+```ts
+import { useSonifier } from '@uturi/sonification/vue';
+
+const {
+  sonify,
+  play,
+  getConfig,
+  setConfig,
+  isPlaying, // Ref<boolean>
+  error, // Ref<SonificationError | null>
+  result, // Ref<SonifierResult | null>
+  getSonifier,
+} = useSonifier(initialConfig);
+```
+
+## Svelte
+
+State values are `Writable` stores. Subscribe with `$` in templates.
+
+```ts
+import { useSonifier } from '@uturi/sonification/svelte';
+
+const {
+  sonify,
+  play,
+  getConfig,
+  setConfig,
+  isPlaying, // Writable<boolean>
+  error, // Writable<SonificationError | null>
+  result, // Writable<SonifierResult | null>
+  getSonifier,
+} = useSonifier(initialConfig);
+```
+
+```svelte
+<button disabled={$isPlaying}>{$isPlaying ? 'Playing...' : 'Play'}</button>
+```
+
+See [Quick Start](/docs/quick-start) for full component examples.

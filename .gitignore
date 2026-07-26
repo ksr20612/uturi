@@ -78,3 +78,8 @@ test-results/
 # Next.js
 .next/
 packages/*/.next/
+apps/*/.next/
+
+# fumadocs
+.source/
+apps/*/.source/

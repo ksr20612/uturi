@@ -1,0 +1,127 @@
+---
+title: Quick Start
+description: Get started with vanilla TypeScript, React, Vue, or Svelte.
+---
+
+## Vanilla JavaScript / TypeScript
+
+```ts
+import { Sonifier } from '@uturi/sonification';
+
+const data = [10, 50, 30, 80, 20, 90, 40, 70];
+const sonifier = new Sonifier();
+
+const result = await sonifier.sonify(data, 'frequency', { autoPlay: true });
+
+console.log('Generated data points:', result.dataPoints);
+console.log('Audio duration:', result.duration);
+```
+
+## React
+
+```tsx
+import { useSonifier } from '@uturi/sonification/react';
+import { useCallback } from 'react';
+
+function ChartWithSound() {
+  const chartData = [10, 25, 15, 40, 35, 60];
+  const { sonify, isPlaying, error, result } = useSonifier({
+    duration: 2.0,
+    volume: 0.5,
+  });
+
+  const handlePlaySound = useCallback(async () => {
+    try {
+      await sonify(chartData, 'melody', { autoPlay: true });
+    } catch (err) {
+      // err is always SonificationError
+      console.error('Error:', err);
+    }
+  }, [chartData, sonify]);
+
+  return (
+    <div>
+      <button onClick={handlePlaySound} disabled={isPlaying}>
+        {isPlaying ? 'Playing...' : 'Play Chart Sound'}
+      </button>
+      {error && (
+        <div>
+          Error: {error.message}
+          {error.code && ` (${error.code})`}
+        </div>
+      )}
+      {result && <div>Last result: {result.dataPoints.length} data points</div>}
+    </div>
+  );
+}
+```
+
+## Vue
+
+```vue
+<script setup lang="ts">
+import { useSonifier } from '@uturi/sonification/vue';
+
+const chartData = [10, 25, 15, 40, 35, 60];
+const { sonify, isPlaying, error, result } = useSonifier({
+  duration: 2.0,
+  volume: 0.5,
+});
+
+const handlePlaySound = async () => {
+  try {
+    await sonify(chartData, 'melody', { autoPlay: true });
+  } catch (err) {
+    console.error('Error:', err);
+  }
+};
+</script>
+
+<template>
+  <div>
+    <button @click="handlePlaySound" :disabled="isPlaying">
+      {{ isPlaying ? 'Playing...' : 'Play Chart Sound' }}
+    </button>
+    <div v-if="error">
+      Error: {{ error.message }}
+      <span v-if="error.code"> ({{ error.code }})</span>
+    </div>
+    <div v-if="result">Last result: {{ result.dataPoints.length }} data points</div>
+  </div>
+</template>
+```
+
+## Svelte
+
+```svelte
+<script lang="ts">
+  import { useSonifier } from '@uturi/sonification/svelte';
+
+  const chartData = [10, 25, 15, 40, 35, 60];
+  const { sonify, isPlaying, error, result } = useSonifier({
+    duration: 2.0,
+    volume: 0.5,
+  });
+
+  const handlePlaySound = async () => {
+    try {
+      await sonify(chartData, 'melody', { autoPlay: true });
+    } catch (err) {
+      console.error('Error:', err);
+    }
+  };
+</script>
+
+<button on:click={handlePlaySound} disabled={$isPlaying}>
+  {$isPlaying ? 'Playing...' : 'Play Chart Sound'}
+</button>
+{#if $error}
+  <div>
+    Error: {$error.message}
+    {#if $error.code} ({$error.code}){/if}
+  </div>
+{/if}
+{#if $result}
+  <div>Last result: {$result.dataPoints.length} data points</div>
+{/if}
+```

@@ -1,0 +1,90 @@
+---
+title: API Reference
+description: Core Sonifier class methods and return types.
+---
+
+## Sonifier
+
+The main class for creating and controlling sonification.
+
+```ts
+class Sonifier {
+  constructor(config?: SonifierConfig);
+
+  sonify(
+    data: number[],
+    method: SonifierMethod,
+    options?: SonifierOptions,
+  ): Promise<SonifierResult>;
+
+  play(audioBuffer: AudioBuffer): Promise<void>;
+  getConfig(): Required<SonifierConfig>;
+  setConfig(config: SonifierConfig): void;
+  cleanup(): void;
+}
+```
+
+### `sonify(data, method, options?)`
+
+Converts numeric data into audio.
+
+**Parameters**
+
+- `data: number[]` — Array of numeric values to sonify
+- `method: SonifierMethod` — `'frequency' | 'volume' | 'rhythm' | 'melody'`
+- `options?: SonifierOptions` — Optional playback options
+
+**Returns:** `Promise<SonifierResult>`
+
+```ts
+const result = await sonifier.sonify([10, 20, 30, 40, 50], 'melody', {
+  autoPlay: true,
+});
+```
+
+### `play(audioBuffer)`
+
+Plays an `AudioBuffer` through the Sonifier instance.
+
+```ts
+const result = await sonifier.sonify(data, 'frequency');
+await sonifier.play(result.audioBuffer);
+```
+
+### `getConfig()` / `setConfig(config)`
+
+Read or update configuration. `setConfig` merges with defaults and re-validates.
+
+### `cleanup()`
+
+Releases `AudioContext` and worker resources. Call when the instance is no longer needed.
+
+## Return types
+
+### `SonifierResult`
+
+```ts
+interface SonifierResult {
+  audioBuffer: AudioBuffer; // Generated audio buffer
+  duration: number; // Audio duration in seconds
+  dataPoints: DataPoint[]; // Mapped data points
+}
+```
+
+### `DataPoint`
+
+```ts
+interface DataPoint {
+  value: number; // Original value
+  timestamp: number; // Time position in seconds
+  volume: number; // Volume value
+  frequency: number; // Frequency value in Hz
+  note?: string; // Note name for melody: 'C' | 'D' | 'E' | 'F' | 'G' | 'A' | 'B'
+}
+```
+
+### `SonifierMethod`
+
+```ts
+type SonifierMethod = 'frequency' | 'volume' | 'rhythm' | 'melody';
+```

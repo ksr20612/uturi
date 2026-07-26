@@ -54,3 +54,6 @@ jobs:
 
       - name: Run tests
         run: pnpm test
+
+      - name: Build docs
+        run: pnpm --filter docs build

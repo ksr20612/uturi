@@ -1,0 +1,15 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "index",
+    "installation",
+    "quick-start",
+    "methods",
+    "waveforms",
+    "configuration",
+    "api",
+    "frameworks",
+    "errors",
+    "advanced"
+  ]
+}

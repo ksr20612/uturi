@@ -1,0 +1,53 @@
+---
+title: Sonification Methods
+description: Map numeric values to pitch, loudness, rhythm, or musical melody.
+---
+
+Choose how each data point is expressed in sound. For every method, higher values produce a stronger corresponding cue.
+
+## 1. Frequency (Pitch Variation)
+
+Pitch varies with the value. Higher values produce higher pitches.
+
+```ts
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'frequency', { autoPlay: true });
+```
+
+## 2. Volume (Volume Variation)
+
+Volume varies with the value. Higher values produce louder sounds.
+
+```ts
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'volume', { autoPlay: true });
+```
+
+## 3. Rhythm (Rhythm Variation)
+
+Rhythm varies with the value. Higher values produce faster rhythms.
+
+```ts
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'rhythm', { autoPlay: true });
+```
+
+## 4. Melody (Melody Variation)
+
+Values are mapped onto a musical scale (C, D, E, F, G, A, B) to form a melody.
+
+```ts
+const sonifier = new Sonifier();
+const result = await sonifier.sonify(data, 'melody', { autoPlay: true });
+```
+
+## Choosing a method
+
+| Method | Perceptual rule | Good for |
+| --- | --- | --- |
+| `frequency` | Higher value → higher pitch | Trends and continuous change |
+| `volume` | Higher value → louder | Emphasis / intensity |
+| `rhythm` | Higher value → faster rhythm | Patterns where tempo carries meaning |
+| `melody` | Value → scale note (C–B) | Musical, memorable summaries |
+
+Try them in the [live demo](/docs#live-demo) to hear the difference.
