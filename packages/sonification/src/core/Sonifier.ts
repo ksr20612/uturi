@@ -17,6 +17,8 @@ export default class Sonifier {
   private oscillator: Oscillator;
   private worker: Worker | null = null;
   private isWorkerSupported: boolean;
+  private currentSource: AudioBufferSourceNode | null = null;
+  private playResolve: (() => void) | null = null;
 
   constructor(config: SonifierConfig = {}) {
     const mergedConfig = {
@@ -69,6 +71,8 @@ export default class Sonifier {
 
   async play(audioBuffer: AudioBuffer): Promise<void> {
     try {
+      this.stop();
+
       const audioContext = this.getAudioContext();
 
       if (audioContext.state === 'suspended') {
@@ -78,10 +82,19 @@ export default class Sonifier {
       const source = audioContext.createBufferSource();
       source.buffer = audioBuffer;
       source.connect(audioContext.destination);
+      this.currentSource = source;
       source.start();
 
       return new Promise((resolve) => {
-        source.onended = () => resolve();
+        this.playResolve = resolve;
+        source.onended = () => {
+          if (this.currentSource === source) {
+            this.currentSource = null;
+          }
+          const playResolve = this.playResolve;
+          this.playResolve = null;
+          playResolve?.();
+        };
       });
     } catch (error) {
       if (error instanceof SonificationError) {
@@ -96,13 +109,37 @@ export default class Sonifier {
     }
   }
 
+  /**
+   * Stops the currently playing audio, if any.
+   * Resolves any pending `play()` promise. Does not cancel in-flight audio generation.
+   */
+  stop(): void {
+    const source = this.currentSource;
+    if (!source) {
+      return;
+    }
+
+    this.currentSource = null;
+    source.onended = null;
+
+    try {
+      source.stop();
+    } catch {
+      // Already stopped or never started
+    }
+
+    const playResolve = this.playResolve;
+    this.playResolve = null;
+    playResolve?.();
+  }
+
   getConfig(): Required<SonifierConfig> {
     return { ...this.config };
   }
 
   setConfig(config: SonifierConfig): void {
     const mergedConfig = {
-      ...defaultConfig,
+      ...this.config,
       ...config,
     };
 
@@ -112,6 +149,8 @@ export default class Sonifier {
   }
 
   cleanup(): void {
+    this.stop();
+
     if (this.audioContext) {
       this.audioContext.close();
       this.audioContext = null;

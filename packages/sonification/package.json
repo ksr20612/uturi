@@ -93,7 +93,7 @@
     "url": "https://github.com/ksr20612/uturi.git",
     "directory": "packages/sonification"
   },
-  "homepage": "https://github.com/ksr20612/uturi/tree/main/packages/sonification#readme",
+  "homepage": "https://uturi-sonification-docs.vercel.app/",
   "bugs": {
     "url": "https://github.com/ksr20612/uturi/issues"
   }

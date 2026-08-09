@@ -12,10 +12,11 @@ They differ only in how reactive state is exposed.
 | --- | --- |
 | `sonify` | `(data, method, options?) => Promise<SonifierResult>` |
 | `play` | `(audioBuffer) => Promise<void>` |
+| `stop` | `() => void` — stops current playback (does not cancel generation) |
 | `getConfig` | `() => Required<SonifierConfig>` |
 | `setConfig` | `(config) => void` |
 | `getSonifier` | `() => Sonifier` |
-| `isPlaying` | Whether audio is currently playing |
+| `isPlaying` | Whether a sonify or play operation is in progress |
 | `error` | Last `SonificationError` or `null` |
 | `result` | Last `SonifierResult` or `null` |
 
@@ -29,6 +30,7 @@ import { useSonifier } from '@uturi/sonification/react';
 const {
   sonify,
   play,
+  stop,
   getConfig,
   setConfig,
   isPlaying, // boolean
@@ -48,6 +50,7 @@ import { useSonifier } from '@uturi/sonification/vue';
 const {
   sonify,
   play,
+  stop,
   getConfig,
   setConfig,
   isPlaying, // Ref<boolean>
@@ -67,6 +70,7 @@ import { useSonifier } from '@uturi/sonification/svelte';
 const {
   sonify,
   play,
+  stop,
   getConfig,
   setConfig,
   isPlaying, // Writable<boolean>

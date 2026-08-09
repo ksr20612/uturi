@@ -62,6 +62,8 @@ await sonifier.sonify(salesData, 'frequency', { autoPlay: true });
 
 ## Dynamic updates
 
+`setConfig` applies a partial update on top of the current configuration. Fields you omit are left unchanged.
+
 ```ts
 const sonifier = new Sonifier({
   duration: 2.0,
@@ -73,6 +75,11 @@ sonifier.setConfig({
   duration: 4.0,
   volume: 0.6,
   waveType: 'square',
+});
+
+// Only change waveform; duration and volume stay at 4.0 / 0.6
+sonifier.setConfig({
+  waveType: 'sawtooth',
 });
 
 const currentConfig = sonifier.getConfig();

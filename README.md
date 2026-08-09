@@ -6,6 +6,8 @@
 
 Uturi is a set of accessibility tools and libraries that give people with disabilities greater autonomy and access to information. The name "Uturi" comes from the Korean folktale "Baby General Uturi" (아기장수 우투리), where Uturi overcomes disabilities and becomes a hero who fights for the weak.
 
+[![home](https://img.shields.io/badge/@uturi)](https://uturi.vercel.app)
+
 ## Mission
 
 Our mission is to make the digital world more inclusive for people with disabilities.
@@ -32,7 +34,7 @@ Uturi strives to:
 ### [@uturi/sonification](https://github.com/ksr20612/uturi/blob/main/packages/sonification/README.md)
 
 [![npm](https://img.shields.io/npm/v/@uturi/sonification.svg)](https://www.npmjs.com/package/@uturi/sonification)
-[![docs](https://img.shields.io/badge/docs-@uturi--sonification-0284c7)](https://uturi.vercel.app/sonification)
+[![docs](https://img.shields.io/badge/docs-@uturi--sonification-0284c7)](https://uturi-sonification-docs.vercel.app/)
 
 A data sonification library that transforms numerical data into musical melodies, enabling visually impaired users to experience data audibly. Inspired by synesthesia—a condition where people experience colors when hearing music—and synesthetic imagery in literature, this library bridges the gap between visual and auditory perception.
 
@@ -45,7 +47,7 @@ A data sonification library that transforms numerical data into musical melodies
 - **Web Worker Support**: Audio generation in background thread for better performance
 - **Accessibility Focused**: An alternative to data visualization for the visually impaired
 
-[View Documentation →](https://github.com/ksr20612/uturi/blob/main/packages/sonification/README.md) | [Try Demo →](https://uturi.vercel.app/sonification)
+[View Documentation →](https://uturi-sonification-docs.vercel.app/) | [Try Demo →](https://uturi-sonification-docs.vercel.app/docs#live-demo)
 
 ## License
 

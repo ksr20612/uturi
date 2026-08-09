@@ -115,4 +115,39 @@ describe('SonificationEngine', () => {
       expect(config.frequency).toBe(825);
     });
   });
+
+  describe('setConfig 메서드', () => {
+    it('부분 업데이트 시 기존 커스텀 설정을 유지해야 한다', () => {
+      const customEngine = new Sonifier({
+        duration: 3.0,
+        volume: 0.8,
+        minFrequency: 200,
+        maxFrequency: 800,
+        waveType: 'sine',
+      });
+
+      customEngine.setConfig({ waveType: 'square' });
+      const config = customEngine.getConfig();
+
+      expect(config.waveType).toBe('square');
+      expect(config.duration).toBe(3.0);
+      expect(config.volume).toBe(0.8);
+      expect(config.minFrequency).toBe(200);
+      expect(config.maxFrequency).toBe(800);
+    });
+
+    it('지정한 필드만 덮어써야 한다', () => {
+      const customEngine = new Sonifier({
+        duration: 3.0,
+        volume: 0.8,
+      });
+
+      customEngine.setConfig({ duration: 5.0 });
+      const config = customEngine.getConfig();
+
+      expect(config.duration).toBe(5.0);
+      expect(config.volume).toBe(0.8);
+      expect(config.sampleRate).toBe(44100);
+    });
+  });
 });

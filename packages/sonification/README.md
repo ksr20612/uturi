@@ -13,9 +13,10 @@ A data sonification library that transforms numerical data into musical melodies
 - **Comprehensive Error Handling**: Custom error classes with error codes for better error management
 - **Accessibility Focused**: An alternative to data visualization for the visually impaired
 
-## Demo
+## Documentation
 
-open https://uturi.vercel.app/sonification
+- [Developer Docs](https://uturi-sonification-docs.vercel.app/)
+- [Live Demo](https://uturi-sonification-docs.vercel.app/docs#live-demo)
 
 ## Installation
 
@@ -271,11 +272,16 @@ const sonifier = new Sonifier({
   maxRhythm: 0.9, // Maximum rhythm
 });
 
-// Configuration can also be updated dynamically
+// Configuration can also be updated dynamically (partial merge into current config)
 sonifier.setConfig({
   duration: 4.0,
   volume: 0.6,
   waveType: 'sawtooth', // Change waveform type
+});
+
+// Only change waveform; duration and volume stay at 4.0 / 0.6
+sonifier.setConfig({
+  waveType: 'square',
 });
 
 const result = await sonifier.sonify(salesData, 'frequency', { autoPlay: true });
@@ -300,11 +306,16 @@ class Sonifier {
   ): Promise<SonifierResult>;
 
   play(audioBuffer: AudioBuffer): Promise<void>;
+  stop(): void;
   getConfig(): Required<SonifierConfig>;
-  setConfig(config: SonifierConfig): void;
+  setConfig(config: SonifierConfig): void; // merges into current config
   cleanup(): void;
 }
 ```
+
+#### `getConfig()` / `setConfig(config)`
+
+Read or update configuration. `setConfig` merges the provided fields into the **current** config and re-validates. Unspecified fields keep their existing values.
 
 #### `sonify(data, method, options?)`
 
@@ -328,7 +339,7 @@ const result = await sonifier.sonify([10, 20, 30, 40, 50], 'melody', {
 
 #### `play(audioBuffer)`
 
-Plays an AudioBuffer through the Sonifier instance.
+Plays an AudioBuffer through the Sonifier instance. Starting a new playback automatically stops any previous one.
 
 **Parameters:**
 
@@ -343,6 +354,18 @@ const result = await sonifier.sonify(data, 'frequency');
 await sonifier.play(result.audioBuffer);
 ```
 
+#### `stop()`
+
+Stops the currently playing audio, if any, and resolves the pending `play()` promise. Does **not** cancel in-flight audio generation from `sonify()`.
+
+```typescript
+const result = await sonifier.sonify(data, 'melody');
+const playback = sonifier.play(result.audioBuffer);
+
+sonifier.stop();
+await playback;
+```
+
 ### Framework Hooks
 
 #### React: `useSonifier(initialConfig?)`
@@ -353,6 +376,7 @@ import { useSonifier } from '@uturi/sonification/react';
 const {
   sonify, // (data, method, options?) => Promise<SonifierResult>
   play, // (audioBuffer) => Promise<void>
+  stop, // () => void
   getConfig, // () => Required<SonifierConfig>
   setConfig, // (config) => void
   isPlaying, // boolean
@@ -370,6 +394,7 @@ import { useSonifier } from '@uturi/sonification/vue';
 const {
   sonify, // (data, method, options?) => Promise<SonifierResult>
   play, // (audioBuffer) => Promise<void>
+  stop, // () => void
   getConfig, // () => Required<SonifierConfig>
   setConfig, // (config) => void
   isPlaying, // Ref<boolean>
@@ -387,6 +412,7 @@ import { useSonifier } from '@uturi/sonification/svelte';
 const {
   sonify, // (data, method, options?) => Promise<SonifierResult>
   play, // (audioBuffer) => Promise<void>
+  stop, // () => void
   getConfig, // () => Required<SonifierConfig>
   setConfig, // (config) => void
   isPlaying, // Writable<boolean>
@@ -482,7 +508,11 @@ const sonifier = new Sonifier();
 const result = await sonifier.sonify(data, 'melody', { autoPlay: false });
 
 // Play later
-await sonifier.play(result.audioBuffer);
+const playback = sonifier.play(result.audioBuffer);
+
+// Stop early if needed
+sonifier.stop();
+await playback;
 
 // Or use the AudioBuffer with other Web Audio API features
 const audioContext = new AudioContext();
@@ -639,5 +669,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Related Links
 
+- [Documentation](https://uturi-sonification-docs.vercel.app/)
 - [GitHub Repository](https://github.com/ksr20612/uturi/tree/main/packages/sonification)
 - [Issue Tracker](https://github.com/ksr20612/uturi/issues)
