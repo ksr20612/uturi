@@ -1,5 +1,13 @@
 # @uturi/uturi
 
+## 0.1.9
+
+### Patch Changes
+
+- 1c19dcc: feat(sonification): add Sonifier.stop() to stop current playback, auto-stop previous audio on a new play()
+- Updated dependencies [1c19dcc]
+  - @uturi/sonification@2.3.0
+
 ## 0.1.7
 
 ### Patch Changes
