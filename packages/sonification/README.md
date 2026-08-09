@@ -272,11 +272,16 @@ const sonifier = new Sonifier({
   maxRhythm: 0.9, // Maximum rhythm
 });
 
-// Configuration can also be updated dynamically
+// Configuration can also be updated dynamically (partial merge into current config)
 sonifier.setConfig({
   duration: 4.0,
   volume: 0.6,
   waveType: 'sawtooth', // Change waveform type
+});
+
+// Only change waveform; duration and volume stay at 4.0 / 0.6
+sonifier.setConfig({
+  waveType: 'square',
 });
 
 const result = await sonifier.sonify(salesData, 'frequency', { autoPlay: true });
@@ -302,10 +307,14 @@ class Sonifier {
 
   play(audioBuffer: AudioBuffer): Promise<void>;
   getConfig(): Required<SonifierConfig>;
-  setConfig(config: SonifierConfig): void;
+  setConfig(config: SonifierConfig): void; // merges into current config
   cleanup(): void;
 }
 ```
+
+#### `getConfig()` / `setConfig(config)`
+
+Read or update configuration. `setConfig` merges the provided fields into the **current** config and re-validates. Unspecified fields keep their existing values.
 
 #### `sonify(data, method, options?)`
 

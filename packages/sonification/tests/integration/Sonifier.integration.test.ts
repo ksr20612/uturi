@@ -326,6 +326,27 @@ describe('Sonifier Integration Test - Web Audio API Polyfill', () => {
       expect(updatedConfig.duration).toBe(3.0);
       expect(updatedConfig.frequency).toBe(initialConfig.frequency);
     });
+
+    it('setConfig 부분 업데이트 시 기존 커스텀 설정을 유지해야 함', () => {
+      const customSonifier = new Sonifier({
+        duration: 3.0,
+        volume: 0.8,
+        minFrequency: 200,
+        maxFrequency: 800,
+        waveType: 'sine',
+      });
+
+      customSonifier.setConfig({ waveType: 'square' });
+      const config = customSonifier.getConfig();
+
+      expect(config.waveType).toBe('square');
+      expect(config.duration).toBe(3.0);
+      expect(config.volume).toBe(0.8);
+      expect(config.minFrequency).toBe(200);
+      expect(config.maxFrequency).toBe(800);
+
+      customSonifier.cleanup();
+    });
   });
 
   describe('에러 처리 검증', () => {

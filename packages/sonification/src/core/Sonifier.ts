@@ -102,7 +102,7 @@ export default class Sonifier {
 
   setConfig(config: SonifierConfig): void {
     const mergedConfig = {
-      ...defaultConfig,
+      ...this.config,
       ...config,
     };
 

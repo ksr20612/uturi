@@ -53,7 +53,7 @@ await sonifier.play(result.audioBuffer);
 
 ### `getConfig()` / `setConfig(config)`
 
-Read or update configuration. `setConfig` merges with defaults and re-validates.
+Read or update configuration. `setConfig` merges the provided fields into the **current** config and re-validates. Unspecified fields keep their existing values.
 
 ### `cleanup()`
 
