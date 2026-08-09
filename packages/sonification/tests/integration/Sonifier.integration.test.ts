@@ -284,6 +284,54 @@ describe('Sonifier Integration Test - Web Audio API Polyfill', () => {
       expect(result.audioBuffer).toBeDefined();
       expect(result.dataPoints.length).toBe(testData.length);
     });
+
+    it('stop 호출 시 재생이 중단되고 play Promise가 resolve 되어야 함', async () => {
+      const playPromise = sonifier.play(audioBufferMock as unknown as AudioBuffer);
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const [audioBufferSourceNodeMock] = registrar.getAudioNodes(
+        audioContextMock,
+        'AudioBufferSourceNode',
+      );
+
+      expect(audioBufferSourceNodeMock).toBeDefined();
+
+      sonifier.stop();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((audioBufferSourceNodeMock.stop as any).called).toBe(true);
+      await expect(playPromise).resolves.not.toThrow();
+    });
+
+    it('연속 play 호출 시 이전 재생이 중단되어야 함', async () => {
+      const firstPlay = sonifier.play(audioBufferMock as unknown as AudioBuffer);
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      const secondBuffer = new AudioBufferMock({ length: 10, sampleRate: 44100 });
+      const secondPlay = sonifier.play(secondBuffer as unknown as AudioBuffer);
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      const nodes = registrar.getAudioNodes(audioContextMock, 'AudioBufferSourceNode');
+      expect(nodes.length).toBeGreaterThanOrEqual(2);
+
+      const firstNode = nodes[0];
+      const secondNode = nodes[nodes.length - 1];
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((firstNode.stop as any).called).toBe(true);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((secondNode.start as any).called).toBe(true);
+
+      await expect(firstPlay).resolves.not.toThrow();
+
+      sonifier.stop();
+      await expect(secondPlay).resolves.not.toThrow();
+    });
+
+    it('재생 중이 아닐 때 stop을 호출해도 예외가 발생하지 않아야 함', () => {
+      expect(() => sonifier.stop()).not.toThrow();
+    });
   });
 
   describe('설정 관리 검증', () => {

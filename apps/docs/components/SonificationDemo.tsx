@@ -127,7 +127,7 @@ export function SonificationDemo() {
   const [dataSamples, setDataSamples] = useState(DEFAULT_DATA);
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const { sonify, isPlaying, error, setConfig: updateConfig } = useSonifier(config);
+  const { sonify, stop, isPlaying, error, setConfig: updateConfig } = useSonifier(config);
   const configUpdateTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -299,6 +299,14 @@ export function SonificationDemo() {
           className="rounded-md bg-fd-primary px-3 py-1.5 text-sm font-medium text-fd-primary-foreground transition hover:opacity-90 disabled:opacity-60"
         >
           {isPlaying ? 'Playing...' : 'Sonify'}
+        </button>
+        <button
+          type="button"
+          onClick={stop}
+          disabled={!isPlaying}
+          className="rounded-md border border-fd-border px-3 py-1.5 text-sm font-medium text-fd-foreground transition hover:bg-fd-accent disabled:opacity-60"
+        >
+          Stop
         </button>
       </div>
     </div>

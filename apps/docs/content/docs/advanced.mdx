@@ -23,7 +23,11 @@ const sonifier = new Sonifier();
 const result = await sonifier.sonify(data, 'melody', { autoPlay: false });
 
 // Play later
-await sonifier.play(result.audioBuffer);
+const playback = sonifier.play(result.audioBuffer);
+
+// Stop early if needed
+sonifier.stop();
+await playback;
 
 // Or use the AudioBuffer with other Web Audio API features
 const audioContext = new AudioContext();

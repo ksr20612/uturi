@@ -122,6 +122,14 @@ export function useSonifier(initialConfig?: SonifierConfig) {
     }
   };
 
+  /**
+   * Stops the currently playing audio, if any.
+   * Does not cancel in-flight audio generation.
+   */
+  const stop = (): void => {
+    sonifierInstance.value.stop();
+  };
+
   onUnmounted(() => {
     sonifierInstance.value.cleanup();
   });
@@ -131,6 +139,8 @@ export function useSonifier(initialConfig?: SonifierConfig) {
     sonify,
     /** Plays an AudioBuffer */
     play,
+    /** Stops the currently playing audio */
+    stop,
     /** Returns current configuration */
     getConfig,
     /** Updates Sonifier configuration */

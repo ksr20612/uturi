@@ -18,6 +18,7 @@ class Sonifier {
   ): Promise<SonifierResult>;
 
   play(audioBuffer: AudioBuffer): Promise<void>;
+  stop(): void;
   getConfig(): Required<SonifierConfig>;
   setConfig(config: SonifierConfig): void;
   cleanup(): void;
@@ -44,11 +45,24 @@ const result = await sonifier.sonify([10, 20, 30, 40, 50], 'melody', {
 
 ### `play(audioBuffer)`
 
-Plays an `AudioBuffer` through the Sonifier instance.
+Plays an `AudioBuffer` through the Sonifier instance. Starting a new playback automatically stops any previous one.
 
 ```ts
 const result = await sonifier.sonify(data, 'frequency');
 await sonifier.play(result.audioBuffer);
+```
+
+### `stop()`
+
+Stops the currently playing audio, if any, and resolves the pending `play()` promise. Does **not** cancel in-flight audio generation from `sonify()`.
+
+```ts
+const result = await sonifier.sonify(data, 'melody');
+const playback = sonifier.play(result.audioBuffer);
+
+// Later
+sonifier.stop();
+await playback; // resolves when stopped
 ```
 
 ### `getConfig()` / `setConfig(config)`

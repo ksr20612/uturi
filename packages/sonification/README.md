@@ -306,6 +306,7 @@ class Sonifier {
   ): Promise<SonifierResult>;
 
   play(audioBuffer: AudioBuffer): Promise<void>;
+  stop(): void;
   getConfig(): Required<SonifierConfig>;
   setConfig(config: SonifierConfig): void; // merges into current config
   cleanup(): void;
@@ -338,7 +339,7 @@ const result = await sonifier.sonify([10, 20, 30, 40, 50], 'melody', {
 
 #### `play(audioBuffer)`
 
-Plays an AudioBuffer through the Sonifier instance.
+Plays an AudioBuffer through the Sonifier instance. Starting a new playback automatically stops any previous one.
 
 **Parameters:**
 
@@ -353,6 +354,18 @@ const result = await sonifier.sonify(data, 'frequency');
 await sonifier.play(result.audioBuffer);
 ```
 
+#### `stop()`
+
+Stops the currently playing audio, if any, and resolves the pending `play()` promise. Does **not** cancel in-flight audio generation from `sonify()`.
+
+```typescript
+const result = await sonifier.sonify(data, 'melody');
+const playback = sonifier.play(result.audioBuffer);
+
+sonifier.stop();
+await playback;
+```
+
 ### Framework Hooks
 
 #### React: `useSonifier(initialConfig?)`
@@ -363,6 +376,7 @@ import { useSonifier } from '@uturi/sonification/react';
 const {
   sonify, // (data, method, options?) => Promise<SonifierResult>
   play, // (audioBuffer) => Promise<void>
+  stop, // () => void
   getConfig, // () => Required<SonifierConfig>
   setConfig, // (config) => void
   isPlaying, // boolean
@@ -380,6 +394,7 @@ import { useSonifier } from '@uturi/sonification/vue';
 const {
   sonify, // (data, method, options?) => Promise<SonifierResult>
   play, // (audioBuffer) => Promise<void>
+  stop, // () => void
   getConfig, // () => Required<SonifierConfig>
   setConfig, // (config) => void
   isPlaying, // Ref<boolean>
@@ -397,6 +412,7 @@ import { useSonifier } from '@uturi/sonification/svelte';
 const {
   sonify, // (data, method, options?) => Promise<SonifierResult>
   play, // (audioBuffer) => Promise<void>
+  stop, // () => void
   getConfig, // () => Required<SonifierConfig>
   setConfig, // (config) => void
   isPlaying, // Writable<boolean>
@@ -492,7 +508,11 @@ const sonifier = new Sonifier();
 const result = await sonifier.sonify(data, 'melody', { autoPlay: false });
 
 // Play later
-await sonifier.play(result.audioBuffer);
+const playback = sonifier.play(result.audioBuffer);
+
+// Stop early if needed
+sonifier.stop();
+await playback;
 
 // Or use the AudioBuffer with other Web Audio API features
 const audioContext = new AudioContext();
