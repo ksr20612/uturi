@@ -36,7 +36,7 @@
     "test": "turbo run test",
     "clean": "turbo run clean",
     "changeset": "changeset",
-    "version-packages": "changeset version",
+    "version-packages": "changeset version && pnpm install --lockfile-only",
     "publish": "turbo run build && changeset publish"
   },
   "pnpm": {

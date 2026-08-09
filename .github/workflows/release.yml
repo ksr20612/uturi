@@ -83,22 +83,22 @@ jobs:
 
       - name: Bump versions in snapshot mode
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'snapshot' }}
-        run: pnpm changeset version --snapshot ${{ inputs.tag }}
+        run: pnpm exec changeset version --snapshot ${{ inputs.tag }}
 
       - name: Build packages
         run: pnpm build
 
       - name: Show Changeset Status (Dry Run)
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'release' && inputs.dry_run }}
-        run: pnpm changeset status
+        run: pnpm exec changeset status
 
       - name: Create Release Pull Request or Publish to npm
         if: ${{ (github.event_name == 'push' || inputs.mode == 'release') && !inputs.dry_run }}
         id: changesets
         uses: changesets/action@v1
         with:
-          version: pnpm changeset version && pnpm install --lockfile-only
-          publish: pnpm changeset publish
+          version: pnpm version-packages
+          publish: pnpm exec changeset publish
           title: 'release: version packages'
           commit: 'release: version packages'
           createGithubReleases: true
@@ -109,7 +109,7 @@ jobs:
 
       - name: Publish snapshot to npm
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'snapshot' }}
-        run: pnpm changeset publish --tag ${{ inputs.tag }}
+        run: pnpm exec changeset publish --tag ${{ inputs.tag }}
 
       - name: Show published snapshot versions
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'snapshot' }}
