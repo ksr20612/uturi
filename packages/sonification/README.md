@@ -13,9 +13,10 @@ A data sonification library that transforms numerical data into musical melodies
 - **Comprehensive Error Handling**: Custom error classes with error codes for better error management
 - **Accessibility Focused**: An alternative to data visualization for the visually impaired
 
-## Demo
+## Documentation
 
-open https://uturi.vercel.app/sonification
+- [Developer Docs](https://uturi-sonification-docs.vercel.app/)
+- [Live Demo](https://uturi-sonification-docs.vercel.app/docs#live-demo)
 
 ## Installation
 
@@ -639,5 +640,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Related Links
 
+- [Documentation](https://uturi-sonification-docs.vercel.app/)
 - [GitHub Repository](https://github.com/ksr20612/uturi/tree/main/packages/sonification)
 - [Issue Tracker](https://github.com/ksr20612/uturi/issues)
