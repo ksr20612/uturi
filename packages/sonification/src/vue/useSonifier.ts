@@ -1,6 +1,7 @@
 import { ref, onUnmounted } from 'vue';
 import Sonifier from '../core/Sonifier';
 import { SonificationError, ERROR_CODES } from '../core/errors';
+import { createOperationGate } from '../shared/createOperationGate';
 import type {
   SonifierConfig,
   SonifierMethod,
@@ -19,6 +20,8 @@ import type {
  * @returns An object containing sonification methods, state, and configuration helpers.
  */
 export function useSonifier(initialConfig?: SonifierConfig) {
+  const operations = createOperationGate();
+
   /** Indicates whether a sonify or play operation is in progress */
   const isPlaying = ref(false);
 
@@ -67,12 +70,15 @@ export function useSonifier(initialConfig?: SonifierConfig) {
     method: SonifierMethod = 'melody',
     options?: SonifierOptions,
   ): Promise<SonifierResult> => {
+    const operationId = operations.begin();
     isPlaying.value = true;
     error.value = null;
 
     try {
       const res = await sonifierInstance.value.sonify(data, method, options);
-      result.value = res;
+      if (operations.isCurrent(operationId)) {
+        result.value = res;
+      }
       return res;
     } catch (err) {
       // 모든 에러를 SonificationError로 통일
@@ -84,11 +90,15 @@ export function useSonifier(initialConfig?: SonifierConfig) {
               ERROR_CODES.UNKNOWN_ERROR,
               { cause: err instanceof Error ? err : undefined },
             );
-      result.value = null;
-      error.value = errorObj;
+      if (operations.isCurrent(operationId)) {
+        result.value = null;
+        error.value = errorObj;
+      }
       throw errorObj;
     } finally {
-      isPlaying.value = false;
+      if (operations.isCurrent(operationId)) {
+        isPlaying.value = false;
+      }
     }
   };
 
@@ -100,6 +110,7 @@ export function useSonifier(initialConfig?: SonifierConfig) {
    * @throws Error if playback fails.
    */
   const play = async (audioBuffer: AudioBuffer): Promise<void> => {
+    const operationId = operations.begin();
     isPlaying.value = true;
     error.value = null;
 
@@ -115,22 +126,29 @@ export function useSonifier(initialConfig?: SonifierConfig) {
               ERROR_CODES.UNKNOWN_ERROR,
               { cause: err instanceof Error ? err : undefined },
             );
-      error.value = errorObj;
+      if (operations.isCurrent(operationId)) {
+        error.value = errorObj;
+      }
       throw errorObj;
     } finally {
-      isPlaying.value = false;
+      if (operations.isCurrent(operationId)) {
+        isPlaying.value = false;
+      }
     }
   };
 
   /**
    * Stops the currently playing audio, if any.
-   * Does not cancel in-flight audio generation.
+   * Does not cancel in-flight audio generation, but skips autoPlay and clears the playing state.
    */
   const stop = (): void => {
+    operations.invalidate();
+    isPlaying.value = false;
     sonifierInstance.value.stop();
   };
 
   onUnmounted(() => {
+    operations.invalidate();
     sonifierInstance.value.cleanup();
   });
 

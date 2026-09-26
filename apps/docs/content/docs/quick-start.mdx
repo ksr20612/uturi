@@ -22,7 +22,7 @@ console.log('Generated data points:', result.dataPoints);
 console.log('Audio duration:', result.duration);
 ```
 
-Call `stop()` while audio is playing to end playback. It does not cancel in-flight audio generation.
+Call `stop()` while audio is playing to end playback. It does not cancel in-flight audio generation. If generation is still running, that `sonify()` call still returns its result and skips `autoPlay`.
 
 ## React
 

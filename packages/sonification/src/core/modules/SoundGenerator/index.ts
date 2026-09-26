@@ -1,6 +1,6 @@
 import type { DataPoint, SonifierConfig, SonifierMethod } from '../../../typings/sonifier';
 import type Oscillator from '../Oscillator';
-import { EMPTY_SOUND_RESULT } from './constants/soundResult';
+import { createEmptySoundResult } from './constants/soundResult';
 import { FrequencySoundGenerator } from './Frequency/FrequencySoundGenerator';
 import { MelodySoundGenerator } from './Melody/MelodySoundGenerator';
 import { RhythmSoundGenerator } from './Rhythm/RhythmSoundGenerator';
@@ -38,7 +38,7 @@ export default class SoundGenerator {
     oscillator: Oscillator,
   ): SoundGenerationResult {
     if (data.length === 0) {
-      return EMPTY_SOUND_RESULT;
+      return createEmptySoundResult();
     }
 
     return this.strategy.generate(data, config, oscillator);
