@@ -1,0 +1,58 @@
+{
+  "name": "@uturi/haptification",
+  "version": "0.1.0",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "description": "Accessibility tool that converts data into haptic vibration patterns for tactile feedback",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist/**"
+  ],
+  "keywords": [
+    "accessibility",
+    "a11y",
+    "haptification",
+    "haptic",
+    "vibration",
+    "tactile"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "lint": "eslint src --ext .ts",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "test": "vitest --run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@uturi/config-eslint": "workspace:*",
+    "@uturi/config-typescript": "workspace:*",
+    "@uturi/config-vitest": "workspace:*",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ksr20612/uturi.git",
+    "directory": "packages/haptification"
+  },
+  "homepage": "https://github.com/ksr20612/uturi/tree/main/packages/haptification#readme",
+  "bugs": {
+    "url": "https://github.com/ksr20612/uturi/issues"
+  }
+}
