@@ -158,6 +158,7 @@ export const ERROR_CODES = {
   WORKER_ERROR: 'WORKER_ERROR',           // Web Worker initialization or execution error
   VALIDATION_ERROR: 'VALIDATION_ERROR',   // Input data or configuration validation failed
   TIMEOUT_ERROR: 'TIMEOUT_ERROR',         // Audio generation timeout
+  CANCELLED: 'CANCELLED',                 // In-flight generation cancelled by cleanup()
   AUDIO_CONTEXT_ERROR: 'AUDIO_CONTEXT_ERROR', // AudioContext related error
   UNKNOWN_ERROR: 'UNKNOWN_ERROR',         // Unknown error
 } as const;`,
@@ -181,6 +182,9 @@ try {
         break;
       case ERROR_CODES.TIMEOUT_ERROR:
         console.error('Timeout error:', error.message);
+        break;
+      case ERROR_CODES.CANCELLED:
+        console.error('Cancelled:', error.message);
         break;
       case ERROR_CODES.AUDIO_CONTEXT_ERROR:
         console.error('AudioContext error:', error.message);

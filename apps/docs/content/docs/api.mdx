@@ -54,7 +54,7 @@ await sonifier.play(result.audioBuffer);
 
 ### `stop()`
 
-Stops the currently playing audio, if any, and resolves the pending `play()` promise. Does **not** cancel in-flight audio generation from `sonify()`.
+Stops the currently playing audio, if any, and resolves the pending `play()` promise. Does **not** cancel in-flight audio generation from `sonify()`. If `stop()` runs while that `sonify()` call is still generating, the call still resolves with its result and `autoPlay` is skipped.
 
 ```ts
 const result = await sonifier.sonify(data, 'melody');
@@ -71,7 +71,7 @@ Read or update configuration. `setConfig` merges the provided fields into the **
 
 ### `cleanup()`
 
-Releases `AudioContext` and worker resources. Call when the instance is no longer needed.
+Releases `AudioContext` and worker resources. In-flight worker generation is rejected with `CANCELLED`. Call when the instance is no longer needed.
 
 ## Return types
 

@@ -6,10 +6,29 @@ import type {
   SonifierOptions,
 } from '../typings/sonifier';
 import defaultConfig from '../constants/defaultConfig';
-import AudioWorker from './audioWorker?worker&inline';
+import createAudioWorker from './createAudioWorker';
 import { SonificationError, ERROR_CODES } from './errors';
 import Oscillator from './modules/Oscillator';
 import SoundGenerator from './modules/SoundGenerator';
+
+interface PendingWorkerRequest {
+  reject: (error: SonificationError) => void;
+  timeoutId: ReturnType<typeof setTimeout>;
+  handleMessage: (event: MessageEvent) => void;
+}
+
+interface WorkerResponseMessage {
+  type?: string;
+  requestId?: number;
+  payload?: {
+    audioData?: Float32Array;
+    dataPoints?: DataPoint[];
+    sampleRate?: number;
+    error?: {
+      message?: string;
+    };
+  };
+}
 
 export default class Sonifier {
   private config: Required<SonifierConfig>;
@@ -19,6 +38,9 @@ export default class Sonifier {
   private isWorkerSupported: boolean;
   private currentSource: AudioBufferSourceNode | null = null;
   private playResolve: (() => void) | null = null;
+  private playbackEpoch = 0;
+  private nextWorkerRequestId = 0;
+  private pendingWorkerRequests = new Map<number, PendingWorkerRequest>();
 
   constructor(config: SonifierConfig = {}) {
     const mergedConfig = {
@@ -43,11 +65,12 @@ export default class Sonifier {
     options?: SonifierOptions,
   ): Promise<SonifierResult> {
     this.validateData(data);
+    const playbackEpoch = this.playbackEpoch;
 
     try {
       const { audioBuffer, dataPoints } = await this.generateAudio(data, method);
 
-      if (options?.autoPlay) {
+      if (options?.autoPlay && playbackEpoch === this.playbackEpoch) {
         await this.play(audioBuffer);
       }
 
@@ -71,7 +94,7 @@ export default class Sonifier {
 
   async play(audioBuffer: AudioBuffer): Promise<void> {
     try {
-      this.stop();
+      this.stopCurrentSource();
 
       const audioContext = this.getAudioContext();
 
@@ -111,9 +134,15 @@ export default class Sonifier {
 
   /**
    * Stops the currently playing audio, if any.
-   * Resolves any pending `play()` promise. Does not cancel in-flight audio generation.
+   * Resolves any pending `play()` promise.
+   * Does not cancel in-flight audio generation, but skips `autoPlay` for a `sonify()` that is still generating.
    */
   stop(): void {
+    this.playbackEpoch += 1;
+    this.stopCurrentSource();
+  }
+
+  private stopCurrentSource(): void {
     const source = this.currentSource;
     if (!source) {
       return;
@@ -150,6 +179,9 @@ export default class Sonifier {
 
   cleanup(): void {
     this.stop();
+    this.rejectPendingWorkerRequests(
+      new SonificationError('Sonifier was cleaned up', ERROR_CODES.CANCELLED),
+    );
 
     if (this.audioContext) {
       this.audioContext.close();
@@ -214,12 +246,39 @@ export default class Sonifier {
     if (this.worker || !this.isWorkerSupported) return;
 
     try {
-      this.worker = new AudioWorker();
+      this.worker = createAudioWorker();
     } catch (error) {
       throw new SonificationError('Failed to initialize Web Worker', ERROR_CODES.WORKER_ERROR, {
         cause: error instanceof Error ? error : undefined,
       });
     }
+  }
+
+  private rejectPendingWorkerRequests(error: SonificationError): void {
+    for (const requestId of [...this.pendingWorkerRequests.keys()]) {
+      const pending = this.pendingWorkerRequests.get(requestId);
+      if (!pending) continue;
+
+      this.settleWorkerRequest(requestId);
+      pending.reject(error);
+    }
+  }
+
+  private settleWorkerRequest(requestId: number): PendingWorkerRequest | undefined {
+    const pending = this.pendingWorkerRequests.get(requestId);
+    if (!pending) return undefined;
+
+    clearTimeout(pending.timeoutId);
+    this.worker?.removeEventListener('message', pending.handleMessage);
+    this.pendingWorkerRequests.delete(requestId);
+    return pending;
+  }
+
+  private isTerminalWorkerError(error: unknown): boolean {
+    return (
+      error instanceof SonificationError &&
+      (error.code === ERROR_CODES.TIMEOUT_ERROR || error.code === ERROR_CODES.CANCELLED)
+    );
   }
 
   private generateAudioWithWorker(
@@ -230,56 +289,70 @@ export default class Sonifier {
       throw new SonificationError('Web Worker initialization failed', ERROR_CODES.WORKER_ERROR);
     }
 
+    const requestId = ++this.nextWorkerRequestId;
+    const worker = this.worker;
+
     return new Promise((resolve, reject) => {
-      // timeout
-      const timeout = setTimeout(() => {
-        this.worker?.removeEventListener('message', handleMessage);
+      const timeoutId = setTimeout(() => {
+        if (!this.pendingWorkerRequests.has(requestId)) return;
+
+        this.settleWorkerRequest(requestId);
         reject(
           new SonificationError('Sonification timeout after 10 seconds', ERROR_CODES.TIMEOUT_ERROR),
         );
       }, 1000 * 10);
 
-      const handleMessage = (event: MessageEvent) => {
-        if (event.data.type === 'AUDIO_GENERATED') {
-          clearTimeout(timeout);
-          this.worker!.removeEventListener('message', handleMessage);
+      const handleMessage = (event: MessageEvent<WorkerResponseMessage>) => {
+        const message = event.data;
+        if (!message || message.requestId !== requestId) return;
 
+        this.settleWorkerRequest(requestId);
+
+        if (message.type === 'AUDIO_GENERATED') {
           try {
-            const { audioData, dataPoints, sampleRate } = event.data.payload;
+            const audioData = message.payload?.audioData;
+            const dataPoints = message.payload?.dataPoints;
+            const sampleRate = message.payload?.sampleRate;
+
+            if (!audioData || !dataPoints || sampleRate === undefined) {
+              reject(
+                new SonificationError(
+                  'Worker response is missing audio data',
+                  ERROR_CODES.WORKER_ERROR,
+                ),
+              );
+              return;
+            }
 
             const buffer = this.createAudioBuffer(audioData, sampleRate);
             resolve({ audioBuffer: buffer, dataPoints });
           } catch (error) {
             reject(error);
           }
-        } else if (event.data.type === 'ERROR') {
-          clearTimeout(timeout);
-          this.worker!.removeEventListener('message', handleMessage);
+          return;
+        }
 
-          const { error: workerError } = event.data.payload;
+        if (message.type === 'ERROR') {
+          const workerErrorMessage = message.payload?.error?.message;
           reject(
             new SonificationError(
-              workerError.message || 'Worker error occurred',
+              workerErrorMessage || 'Worker error occurred',
               ERROR_CODES.WORKER_ERROR,
               {
-                cause: new Error(workerError.message || 'Unknown worker error'),
+                cause: new Error(workerErrorMessage || 'Unknown worker error'),
               },
             ),
           );
         }
       };
 
-      if (!this.worker) {
-        clearTimeout(timeout);
-        reject(new SonificationError('Web Worker is not available', ERROR_CODES.WORKER_ERROR));
-        return;
-      }
-
-      this.worker.addEventListener('message', handleMessage);
+      this.pendingWorkerRequests.set(requestId, { reject, timeoutId, handleMessage });
+      worker.addEventListener('message', handleMessage);
 
       try {
-        this.worker.postMessage({
+        worker.postMessage({
           type: 'GENERATE_AUDIO',
+          requestId,
           payload: {
             data,
             method,
@@ -287,10 +360,7 @@ export default class Sonifier {
           },
         });
       } catch (error) {
-        clearTimeout(timeout);
-        if (this.worker) {
-          this.worker.removeEventListener('message', handleMessage);
-        }
+        this.settleWorkerRequest(requestId);
         reject(
           new SonificationError('Failed to send message to worker', ERROR_CODES.WORKER_ERROR, {
             cause: error instanceof Error ? error : undefined,
@@ -308,8 +378,8 @@ export default class Sonifier {
       try {
         return await this.generateAudioWithWorker(data, method);
       } catch (error) {
-        // Worker 에러는 메인 스레드로 폴백 (타임아웃 제외)
-        if (error instanceof SonificationError && error.code === ERROR_CODES.TIMEOUT_ERROR) {
+        // 타임아웃과 정리는 메인 스레드로 다시 시도하지 않는다.
+        if (this.isTerminalWorkerError(error)) {
           throw error;
         }
 

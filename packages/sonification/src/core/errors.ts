@@ -8,6 +8,8 @@ export const ERROR_CODES = {
   VALIDATION_ERROR: 'VALIDATION_ERROR',
   /** Audio generation timeout */
   TIMEOUT_ERROR: 'TIMEOUT_ERROR',
+  /** In-flight generation was cancelled because the Sonifier was cleaned up */
+  CANCELLED: 'CANCELLED',
   /** AudioContext related error */
   AUDIO_CONTEXT_ERROR: 'AUDIO_CONTEXT_ERROR',
   /** Unknown error */
@@ -18,6 +20,7 @@ export type SonificationErrorCode =
   | typeof ERROR_CODES.WORKER_ERROR
   | typeof ERROR_CODES.VALIDATION_ERROR
   | typeof ERROR_CODES.TIMEOUT_ERROR
+  | typeof ERROR_CODES.CANCELLED
   | typeof ERROR_CODES.AUDIO_CONTEXT_ERROR
   | typeof ERROR_CODES.UNKNOWN_ERROR;
 

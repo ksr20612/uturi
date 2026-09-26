@@ -144,6 +144,34 @@ describe('SonificationMethods', () => {
       expect(result.dataPoints).toHaveLength(0);
     });
 
+    it('빈 데이터 결과는 서로 다른 배열을 반환해야 한다', async () => {
+      const first = await engine.sonify([], 'melody');
+      const second = await engine.sonify([], 'melody');
+
+      expect(first.dataPoints).not.toBe(second.dataPoints);
+      first.dataPoints.push({
+        value: 1,
+        timestamp: 0,
+        volume: 0,
+        frequency: 0,
+      });
+      expect(second.dataPoints).toHaveLength(0);
+    });
+
+    it('생성 중 stop을 호출하면 autoPlay를 건너뛰고 결과는 반환해야 한다', async () => {
+      const playSpy = vi.spyOn(engine, 'play').mockResolvedValue();
+      const pending = engine.sonify(testData, 'melody', { autoPlay: true });
+
+      engine.stop();
+      const result = await pending;
+
+      expect(playSpy).not.toHaveBeenCalled();
+      expect(result.dataPoints).toHaveLength(testData.length);
+      expect(result.audioBuffer).toBe(mockAudioBuffer);
+
+      playSpy.mockRestore();
+    });
+
     it('autoPlay 옵션이 true일 때 play가 호출되어야 한다', async () => {
       const playSpy = vi.spyOn(engine, 'play').mockResolvedValue();
 

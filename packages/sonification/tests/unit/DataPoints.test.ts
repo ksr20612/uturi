@@ -89,6 +89,31 @@ describe('DataPoints', () => {
       }
     });
 
+    it('같은 값만 있는 데이터는 스케일 중간으로 매핑해야 한다', async () => {
+      const melody = await engine.sonify([4, 4, 4], 'melody');
+      melody.dataPoints.forEach((point) => {
+        expect(point.frequency).toBe(825);
+        expect(point.volume).toBeCloseTo(0.3, 10);
+        expect(point.note).toBe('F');
+      });
+
+      const frequency = await engine.sonify([4], 'frequency');
+      expect(frequency.dataPoints[0].frequency).toBe(825);
+      expect(frequency.dataPoints[0].volume).toBeCloseTo(0.3, 10);
+
+      const volume = await engine.sonify([9, 9], 'volume');
+      volume.dataPoints.forEach((point) => {
+        expect(point.frequency).toBe(825);
+        expect(point.volume).toBeCloseTo(0.3, 10);
+      });
+
+      const rhythm = await engine.sonify([2, 2], 'rhythm');
+      rhythm.dataPoints.forEach((point) => {
+        expect(point.frequency).toBe(825);
+        expect(point.volume).toBeCloseTo(0.3, 10);
+      });
+    });
+
     it('빈 데이터에 대해 빈 데이터 포인트 배열을 반환해야 한다', async () => {
       const emptyData: number[] = [];
       const result = await engine.sonify(emptyData, 'melody');

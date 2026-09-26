@@ -4,6 +4,7 @@ import SoundGenerator from './modules/SoundGenerator';
 
 interface AudioWorkerMessage {
   type: 'GENERATE_AUDIO';
+  requestId: number;
   payload: {
     data: number[];
     method: SonifierMethod;
@@ -13,6 +14,7 @@ interface AudioWorkerMessage {
 
 interface AudioWorkerResponse {
   type: 'AUDIO_GENERATED';
+  requestId: number;
   payload: {
     audioData: Float32Array;
     dataPoints: DataPoint[];
@@ -23,6 +25,7 @@ interface AudioWorkerResponse {
 
 interface AudioWorkerErrorResponse {
   type: 'ERROR';
+  requestId: number;
   payload: {
     error: {
       message: string;
@@ -53,7 +56,7 @@ function validateConfig(config: Required<SonifierConfig>): void {
 
 // 메시지 수신 처리
 self.onmessage = (event: MessageEvent<AudioWorkerMessage>) => {
-  const { type, payload } = event.data;
+  const { type, payload, requestId } = event.data;
 
   if (type === 'GENERATE_AUDIO') {
     try {
@@ -67,6 +70,7 @@ self.onmessage = (event: MessageEvent<AudioWorkerMessage>) => {
 
       const response: AudioWorkerResponse = {
         type: 'AUDIO_GENERATED',
+        requestId,
         payload: {
           audioData: result.audioData,
           dataPoints: result.dataPoints,
@@ -79,6 +83,7 @@ self.onmessage = (event: MessageEvent<AudioWorkerMessage>) => {
     } catch (error) {
       const errorResponse: AudioWorkerErrorResponse = {
         type: 'ERROR',
+        requestId,
         payload: {
           error: {
             message: error instanceof Error ? error.message : String(error),

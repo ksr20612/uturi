@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Sonifier from '../core/Sonifier';
 import { SonificationError, ERROR_CODES } from '../core/errors';
+import { createOperationGate } from '../shared/createOperationGate';
 import type {
   SonifierConfig,
   SonifierMethod,
@@ -19,6 +20,7 @@ import type {
  */
 export function useSonifier(initialConfig?: SonifierConfig) {
   const configRef = useRef<SonifierConfig | undefined>(initialConfig);
+  const operations = useMemo(() => createOperationGate(), []);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [error, setError] = useState<SonificationError | null>(null);
@@ -64,12 +66,15 @@ export function useSonifier(initialConfig?: SonifierConfig) {
    */
   const sonify = useCallback(
     async (data: number[], method: SonifierMethod = 'melody', options?: SonifierOptions) => {
+      const operationId = operations.begin();
       setIsPlaying(true);
       setError(null);
 
       try {
         const res = await sonifier.sonify(data, method, options);
-        setResult(res);
+        if (operations.isCurrent(operationId)) {
+          setResult(res);
+        }
         return res;
       } catch (err) {
         // 모든 에러를 SonificationError로 통일
@@ -81,14 +86,18 @@ export function useSonifier(initialConfig?: SonifierConfig) {
                 ERROR_CODES.UNKNOWN_ERROR,
                 { cause: err instanceof Error ? err : undefined },
               );
-        setResult(null);
-        setError(error);
+        if (operations.isCurrent(operationId)) {
+          setResult(null);
+          setError(error);
+        }
         throw error;
       } finally {
-        setIsPlaying(false);
+        if (operations.isCurrent(operationId)) {
+          setIsPlaying(false);
+        }
       }
     },
-    [sonifier],
+    [operations, sonifier],
   );
 
   /**
@@ -100,6 +109,7 @@ export function useSonifier(initialConfig?: SonifierConfig) {
    */
   const play = useCallback(
     async (audioBuffer: AudioBuffer) => {
+      const operationId = operations.begin();
       setIsPlaying(true);
       setError(null);
 
@@ -115,28 +125,35 @@ export function useSonifier(initialConfig?: SonifierConfig) {
                 ERROR_CODES.UNKNOWN_ERROR,
                 { cause: err instanceof Error ? err : undefined },
               );
-        setError(error);
+        if (operations.isCurrent(operationId)) {
+          setError(error);
+        }
         throw error;
       } finally {
-        setIsPlaying(false);
+        if (operations.isCurrent(operationId)) {
+          setIsPlaying(false);
+        }
       }
     },
-    [sonifier],
+    [operations, sonifier],
   );
 
   /**
    * Stops the currently playing audio, if any.
-   * Does not cancel in-flight audio generation.
+   * Does not cancel in-flight audio generation, but skips autoPlay and clears the playing state.
    */
   const stop = useCallback(() => {
+    operations.invalidate();
+    setIsPlaying(false);
     sonifier.stop();
-  }, [sonifier]);
+  }, [operations, sonifier]);
 
   useEffect(() => {
     return () => {
+      operations.invalidate();
       sonifier.cleanup();
     };
-  }, [sonifier]);
+  }, [operations, sonifier]);
 
   return {
     /** Generates audio from numeric data */

@@ -10,16 +10,20 @@ export abstract class BaseSoundGenerator implements SoundGeneratorStrategy {
   ): SoundGenerationResult;
 
   protected calculateDataRange(data: number[]): { min: number; max: number; range: number } {
-    let min = Infinity;
-    let max = -Infinity;
+    if (data.length === 0) {
+      return { min: 0, max: 0, range: 0 };
+    }
 
-    for (const value of data) {
+    let min = data[0];
+    let max = data[0];
+
+    for (let index = 1; index < data.length; index++) {
+      const value = data[index];
       if (value < min) min = value;
       if (value > max) max = value;
     }
 
-    const range = max - min || 1;
-    return { min, max, range };
+    return { min, max, range: max - min };
   }
 
   protected normalizeValue(
@@ -30,7 +34,7 @@ export abstract class BaseSoundGenerator implements SoundGeneratorStrategy {
     // 캐시된 값이 있으면 사용 (성능 최적화)
     const { min, range } = cache ?? this.calculateDataRange(data);
 
-    if (range <= 0) return 0.5;
+    if (!Number.isFinite(range) || range <= 0) return 0.5;
     return Math.max(0, Math.min(1, (value - min) / range));
   }
 
