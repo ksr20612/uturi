@@ -6,7 +6,7 @@
 
 Uturi is a set of accessibility tools and libraries that give people with disabilities greater autonomy and access to information. The name "Uturi" comes from the Korean folktale "Baby General Uturi" (아기장수 우투리), where Uturi overcomes disabilities and becomes a hero who fights for the weak.
 
-[![home](https://img.shields.io/badge/@uturi)](https://uturi.vercel.app)
+[![home](https://img.shields.io/badge/Vercel-%23000000.svg)](https://uturi.vercel.app)
 
 ## Mission
 
